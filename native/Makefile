@@ -28,7 +28,7 @@ AL_INC = \
  -I$(AL_DIR)/extern/c/src/tinyxml
 
 AL_LIB = \
- -rdynamic -ldl -lpython2.5 -ldl -lpython2.5 -lutil \
+ -rdynamic -ldl -lpython2.5 -lutil \
   $(AL_DIR)/extern/c/aldebaran/alcommon/lib/linux/libalcommon.a \
   $(AL_DIR)/extern/c/linux/lib/libboost_filesystem-mt.a \
   $(AL_DIR)/extern/c/linux/lib/libboost_signals-mt.a \
@@ -56,12 +56,12 @@ CXXINCLUDEPATH = \
 
 CXXFLAGS = --sysroot ${CTC_DIR}/staging/i486-linux/ $(CXXINCLUDEPATH)
 
-all : naoji_main naoji.so
+all : naoji_main libnaoji.so
 
 naoji_main : almain.o NaojiModule.o
 	$(CXX) almain.o NaojiModule.o $(LDFLAGS) $(JAVA_LIB) $(AL_LIB) -o $@
 
-naoji.so : alboot.o NaojiModule.o
+libnaoji.so : alboot.o NaojiModule.o
 	$(CXX) -shared -fPIC $(LDFLAGS) $(JAVA_LIB) $(AL_LIB) alboot.o NaojiModule.o -o $@
 
 .cpp.o : NaojiModule.hpp

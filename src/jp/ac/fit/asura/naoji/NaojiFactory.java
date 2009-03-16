@@ -9,7 +9,6 @@ package jp.ac.fit.asura.naoji;
  * @version $Id: $
  *
  */
-public interface Naoji {
-	public void init(Object o);
-	public void exit();
+public interface NaojiFactory {
+	public Naoji create();
 }
