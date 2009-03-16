@@ -6,9 +6,6 @@ package jp.ac.fit.asura.naoji;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.ac.fit.asura.naoji.al.ALMemory;
-import jp.ac.fit.asura.naoji.al.ALMotion;
-
 /**
  * @author $Author: sey $
  *
