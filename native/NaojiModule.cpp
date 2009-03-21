@@ -6,6 +6,8 @@
  */
 
 #include <iostream>
+#include <cassert>
+
 #include "alproxy.h"
 #include "alptr.h"
 #include "albroker.h"
@@ -15,6 +17,8 @@
 
 using namespace AL;
 using namespace Naoji;
+
+#define NAOJI_AUTORUN 1
 
 //______________________________________________
 // constructor
@@ -104,8 +108,26 @@ ALValue NaojiModule::jvmTestFunction() {
 }
 
 void NaojiModule::initNaojiModule() {
-	JNIEnv *env; /* pointer to native method interface */
+	JNIEnv *env;
+	int res = initJVM(&env);
+	if (res < 0) {
+		isOk = false;
+		cerr << "Initilization failed. code:" << res;
+		return;
+	}
+	assert(jvm != NULL);
+	assert(env != NULL);
 
+	initJavaModule(env);
+
+#ifdef NAOJI_AUTORUN
+	runJavaModule(env);
+#endif
+
+	jvm->DetachCurrentThread();
+}
+
+int NaojiModule::initJVM(JNIEnv **env) {
 	JavaVMInitArgs vm_args;
 	JavaVMOption options[4];
 
@@ -116,11 +138,15 @@ void NaojiModule::initNaojiModule() {
 	vm_args.nOptions = 0;
 	vm_args.ignoreUnrecognized = false;
 
+	/*
+	 * Set JVM options.
+	 * We can use -Dxxx, -Xxxx, -verbose options.
+	 * see http://java.sun.com/javase/ja/6/docs/ja/technotes/guides/jni/spec/invocation.html#wp16334
+	 */
 	options[vm_args.nOptions++].optionString
 			= "-Djava.class.path=/home/root/naoji/classes:."; /* user classes */
 	options[vm_args.nOptions++].optionString
 			= "-Djava.library.path=/home/root/naoji/lib:."; /* set native library path */
-	//	options[vm_args.nOptions++].optionString = "-server";
 	options[vm_args.nOptions++].optionString = "-Xms64m";
 	options[vm_args.nOptions++].optionString = "-Xshare:off";
 	//	options[vm_args.nOptions++].optionString = "-verbose:jni"; /* print JNI-related messages */
@@ -129,32 +155,81 @@ void NaojiModule::initNaojiModule() {
 	/* Note that in the JDK, there is no longer any need to call
 	 * JNI_GetDefaultJavaVMInitArgs.
 	 */
-	res = JNI_CreateJavaVM(&jvm, (void**) &env, &vm_args);
+	res = JNI_CreateJavaVM(&jvm, (void**) env, &vm_args);
 
 	if (res < 0) {
-		printf("error %d\n", res);
-		isOk = false;
-		return;
+		return res;
 	}
-	/* invoke the Main.test method using the JNI */
-	jclass cls = env->FindClass("jp/ac/fit/asura/naoji/NaojiModule");
-	if (cls == NULL) {
-		printf("cls is null\n");
-		isOk = false;
-		return;
-	}
+	return 0;
+}
 
-	jmethodID mid = env->GetStaticMethodID(cls, "test", "()V");
-	if (mid == NULL) {
-		printf("mid is null\n");
-		isOk = false;
-		return;
-	}
-	env->CallStaticVoidMethod(cls, mid);
-	jvm->DetachCurrentThread();
+int NaojiModule::initJavaModule(JNIEnv *env) {
+	assert(jvm != NULL);
+	// Get class object.
+	jclass cls = env->FindClass("jp/ac/fit/asura/naoji/NaojiModule");
+	assert(cls != NULL);
+
+	// Get constructor method.
+	jmethodID mid = env->GetMethodID(cls, "<init>", "()V");
+	assert(mid != NULL);
+
+	jobject obj = env->NewObject(cls, mid);
+	assert(obj != NULL);
+
+	// Get global reference.
+	naojiObj = env->NewGlobalRef(obj);
+	assert(obj != NULL);
+
+	jmethodID initMid = env->GetMethodID(cls, "init", "()V");
+	assert(initMid != NULL);
+
+	env->CallVoidMethod(obj, initMid);
+
+	return 0;
+}
+
+void NaojiModule::runJavaModule(JNIEnv *env) {
+	assert(jvm != NULL);
+	assert(naojiObj != NULL);
+
+	jclass naojiClass = env->GetObjectClass(naojiObj);
+
+	jmethodID startMid = env->GetMethodID(naojiClass, "start", "()V");
+	assert(startMid != NULL);
+
+	env->CallVoidMethod(naojiObj, startMid);
 }
 
 void NaojiModule::exitNaojiModule() {
 	/* We are done. */
+	exitJavaModule();
+	exitJVM();
+}
+
+void NaojiModule::exitJavaModule() {
+	assert(jvm != NULL);
+	assert(naojiObj != NULL);
+
+	JNIEnv *env; /* pointer to native method interface */
+	int res;
+	res = jvm->AttachCurrentThread((void**) &env, NULL);
+	assert(res >= 0);
+
+	jclass naojiClass = env->GetObjectClass(naojiObj);
+
+	jmethodID exitMid = env->GetMethodID(naojiClass, "exit", "()V");
+	assert(exitMid != NULL);
+
+	env->CallVoidMethod(naojiObj, exitMid);
+
+	env->DeleteGlobalRef(naojiClass);
+	env->DeleteGlobalRef(naojiObj);
+	naojiObj = NULL;
+
+	jvm->DetachCurrentThread();
+}
+
+void NaojiModule::exitJVM() {
 	jvm->DestroyJavaVM();
+	jvm = NULL;
 }

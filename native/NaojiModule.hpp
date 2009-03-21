@@ -83,9 +83,21 @@ protected:
 	JavaVM *jvm;
 
 private:
+	jobject naojiObj;
+
+private:
 	bool isOk;
 	void initNaojiModule();
 	void exitNaojiModule();
+
+	int initJVM(JNIEnv **env);
+	int initJavaModule(JNIEnv *env);
+
+	void runJavaModule(JNIEnv *env);
+
+	void exitJavaModule();
+	void exitJVM();
+
 };
 }
 
