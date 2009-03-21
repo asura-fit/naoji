@@ -43,13 +43,37 @@ public class NaojiModule {
 		}
 	}
 
+	public void start() {
+		for (Naoji naoji : brothers) {
+			start(naoji);
+		}
+	}
+
 	public void exit() {
+		stop();
 		for (Naoji naoji : brothers) {
 			try {
 				naoji.exit();
 			} catch (Exception e) {
 			}
 		}
+	}
+
+	protected void start(final Naoji naoji) {
+		try {
+			naoji.start();
+		} catch (Exception e) {
+		}
+	}
+
+	/**
+	 * すべてのスレッドを停止し、モジュールを終了可能状態にします.
+	 *
+	 * 呼び出しは終了可能状態になるまでブロックされます.
+	 *
+	 */
+	protected void stop() {
+
 	}
 
 	public static void test() {
@@ -59,12 +83,4 @@ public class NaojiModule {
 	public static int testSquare(int i) {
 		return i * i;
 	}
-
-	public void read() {
-
-	}
-
-	private native void _read();
-
-	private native long getProxy(String moduleName);
 }
