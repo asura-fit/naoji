@@ -20,7 +20,7 @@ public interface Naoji {
 	 *
 	 * @param o
 	 */
-	public void init(Object o);
+	public void init(NaojiContext context);
 
 	/**
 	 * モジュールの開始時に呼び出されます.

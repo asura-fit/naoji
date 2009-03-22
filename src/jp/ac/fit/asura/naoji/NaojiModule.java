@@ -6,25 +6,34 @@ package jp.ac.fit.asura.naoji;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.ac.fit.asura.naoji.jal.JALBroker;
+import jp.ac.fit.asura.naoji.jal.JALModule;
+
 /**
  * @author $Author: sey $
  *
  * @version $Id: $
  *
  */
-public class NaojiModule {
+public class NaojiModule extends JALModule {
 	private static List<NaojiFactory> factories = new ArrayList<NaojiFactory>();
 
 	public static void addFactory(NaojiFactory factory) {
 		factories.add(factory);
 	}
 
+	private JALBroker pBroker;
+
+	private NaojiContext context;
 	private List<Naoji> brothers;
 
 	/**
 	 *
 	 */
-	public NaojiModule() {
+	public NaojiModule(long ptr) {
+		objPtr = ptr;
+		long brokerPtr = _createJALBroker(objPtr);
+		pBroker = new JALBroker(brokerPtr);
 		brothers = new ArrayList<Naoji>(factories.size());
 		for (NaojiFactory f : factories) {
 			try {
@@ -35,9 +44,10 @@ public class NaojiModule {
 	}
 
 	public void init() {
+		context = new NaojiContext(this);
 		for (Naoji naoji : brothers) {
 			try {
-				naoji.init(null);
+				naoji.init(context);
 			} catch (Exception e) {
 			}
 		}
@@ -83,4 +93,10 @@ public class NaojiModule {
 	public static int testSquare(int i) {
 		return i * i;
 	}
+
+	public JALBroker getParentBroker() {
+		return pBroker;
+	}
+
+	native private long _createJALBroker(long objPtr);
 }
