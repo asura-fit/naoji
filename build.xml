@@ -1,60 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Naoji" default="all">
-    <property file="build.properties" />
+	<property file="build.properties" />
 
-    <target name="all" depends="javah,compile,jar" />
+	<path id="build.classpath">
+		<pathelement path="${build.home}" />
+		<fileset dir="${basedir}/lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
 
-    <target name="clean">
-        <delete dir="${javadoc.home}" />
-        <delete dir="${build.home}" />
-        <delete file="${build.jar}" />
-        <delete dir="${build.release}" />
-        <mkdir dir="${build.home}" />
-        <mkdir dir="${javadoc.home}" />
-        <mkdir dir="${build.release} " />
-    </target>
+	<target name="all" depends="javah,compile,jar" />
 
-    <target name="jar" depends="compile">
-        <jar destfile="${build.jar}" update="no" duplicate="fail">
-            <fileset dir="${build.home}">
-                <include name="**/*.class" />
-                <include name="**/*.properties" />
-            </fileset>
-        </jar>
-    </target>
+	<target name="clean">
+		<delete dir="${javadoc.home}" />
+		<delete dir="${build.home}" />
+		<delete file="${build.jar}" />
+		<delete dir="${build.release}" />
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${javadoc.home}" />
+		<mkdir dir="${build.release} " />
+	</target>
 
-    <target name="compile">
-        <mkdir dir="${build.home}" />
+	<target name="jar" depends="compile">
+		<jar destfile="${build.jar}" update="no" duplicate="fail">
+			<fileset dir="${build.home}">
+				<include name="**/*.class" />
+				<include name="**/*.properties" />
+			</fileset>
+		</jar>
+	</target>
 
-        <javac srcdir="${build.src}" destdir="${build.home}" debug="${build.debug}" target="${build.target}" source="${build.source}" optimize="${build.optimize}" encoding="${build.encoding}">
-            <include name="**/*.java" />
-            <classpath>
-                <fileset dir="${basedir}/lib">
-                    <include name="**/*.jar" />
-                </fileset>
-            </classpath>
-        </javac>
+	<target name="compile">
+		<mkdir dir="${build.home}" />
 
-        <copy todir="${build.home}">
-            <fileset dir="${build.src}">
-                <include name="**/*.*" />
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="${basedir}">
-                <include name="License*" />
-            </fileset>
-        </copy>
-    </target>
+		<javac srcdir="${build.src}" destdir="${build.home}" debug="${build.debug}" target="${build.target}" source="${build.source}" optimize="${build.optimize}" encoding="${build.encoding}">
+			<include name="**/*.java" />
+			<classpath refid="build.classpath" />
+		</javac>
 
-    <target name="javah" description="create JNI C/C++ header" depends="compile">
-        <mkdir dir="${build.native}/include" />
-        <javah destdir="${build.native}/include" force="yes" verbose="yes">
-            <class name="${native.naoji}" />
-            <classpath refid="classpath" />
-        </javah>
-    </target>
+		<copy todir="${build.home}">
+			<fileset dir="${build.src}">
+				<include name="**/*.*" />
+				<exclude name="**/*.java" />
+			</fileset>
+			<fileset dir="${basedir}">
+				<include name="License*" />
+			</fileset>
+		</copy>
+	</target>
 
-    <target name="javadoc">
-        <javadoc sourcepath="${build.src}" packagenames="${javadoc.packages}" destdir="${javadoc.home}" Encoding="UTF-8" Private="true" charset="UTF-8" />
-    </target>
+	<target name="javah" description="create JNI C/C++ header" depends="compile">
+		<mkdir dir="${build.native}/include" />
+		<javah destdir="${build.native}/include" force="yes" verbose="yes">
+			<class name="${native.naoji1}" />
+			<class name="${native.naoji2}" />
+			<class name="${native.naoji3}" />
+			<class name="${native.naoji4}" />
+			<classpath refid="build.classpath" />
+		</javah>
+	</target>
+
+	<target name="javadoc">
+		<javadoc sourcepath="${build.src}" packagenames="${javadoc.packages}" destdir="${javadoc.home}" Encoding="UTF-8" Private="true" charset="UTF-8" />
+	</target>
 </project>
