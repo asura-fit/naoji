@@ -100,6 +100,7 @@ CXXINCLUDEPATH = \
 -I${SYSROOT}/usr/include/c++/4.3/ \
 -I${SYSROOT}/usr/include/c++/4.3/i486-linux-gnu/
 endif
+JAVA_INC += -I./include/
 JAVA_LIB += -ljava -ljvm -lverify
 
 CXXFLAGS += $(CXXINCLUDEPATH)
@@ -107,13 +108,13 @@ LDFLAGS += -lgcc -lc -lstdc++ -ldl
 
 all : naoji_main libnaoji.so
 
-naoji_main : almain.o NaojiModule.o
+naoji_main : almain.o NaojiModule.o NaojiNatives.o
 	$(CXX) almain.o NaojiModule.o $(LDFLAGS) $(JAVA_LIB) $(AL_LIB) -o $@
 
-libnaoji.so : alboot.o NaojiModule.o
+libnaoji.so : alboot.o NaojiModule.o NaojiNatives.o
 	$(CXX) -shared -fPIC $(LDFLAGS) $(JAVA_LIB) $(AL_LIB) alboot.o NaojiModule.o -o $@
 
-.cpp.o : NaojiModule.hpp
+.cpp.o : NaojiModule.hpp NaojiNatives.hpp
 	$(CXX) $(CXXFLAGS) $(JAVA_INC) $(AL_INC) -c $*.cpp
 
 clean :
