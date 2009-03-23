@@ -18,7 +18,12 @@ import jp.ac.fit.asura.naoji.jal.JALModule;
 public class NaojiModule extends JALModule {
 	private static List<NaojiFactory> factories = new ArrayList<NaojiFactory>();
 
+	static {
+		System.loadLibrary("naojin");
+	}
+
 	public static void addFactory(NaojiFactory factory) {
+		System.err.println("Add factory:" + factory);
 		factories.add(factory);
 	}
 
@@ -44,6 +49,7 @@ public class NaojiModule extends JALModule {
 	}
 
 	public void init() {
+		System.err.println("NaojiModule init called.");
 		context = new NaojiContext(this);
 		for (Naoji naoji : brothers) {
 			try {
@@ -54,12 +60,14 @@ public class NaojiModule extends JALModule {
 	}
 
 	public void start() {
+		System.err.println("NaojiModule start called.");
 		for (Naoji naoji : brothers) {
 			start(naoji);
 		}
 	}
 
 	public void exit() {
+		System.err.println("NaojiModule exit called.");
 		stop();
 		for (Naoji naoji : brothers) {
 			try {
@@ -70,6 +78,7 @@ public class NaojiModule extends JALModule {
 	}
 
 	protected void start(final Naoji naoji) {
+		System.err.println("NaojiModule start " + naoji);
 		try {
 			naoji.start();
 		} catch (Exception e) {

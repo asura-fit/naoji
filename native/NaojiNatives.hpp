@@ -41,17 +41,21 @@ public:
 	JALMemory(JALBroker *jbroker) {
 		try {
 			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
-			memory = broker->getMemoryProxy();
+			proxy = broker->getMemoryProxy();
 		} catch (AL::ALError& e) {
-			std::cout << "Error during initializaion: " + e.toString()
+			std::cout << "Error during initialization: " + e.toString()
 					<< std::endl;
 		}
 
-		AL_ASSERT(memory); // Assure that memoryproxy is not null
+		AL_ASSERT(proxy); // Assure that memoryproxy is not null
+	}
+
+	AL::ALPtr<AL::ALMemoryProxy> getProxy(){
+		return proxy;
 	}
 
 protected:
-	AL::ALPtr<AL::ALMemoryProxy> memory;
+	AL::ALPtr<AL::ALMemoryProxy> proxy;
 };
 
 class JALMotion {
@@ -59,17 +63,21 @@ public:
 	JALMotion(JALBroker *jbroker) {
 		try {
 			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
-			motion = broker->getMotionProxy();
+			proxy = broker->getMotionProxy();
 		} catch (AL::ALError& e) {
-			std::cout << "Error during initializaion: " + e.toString()
+			std::cout << "Error during initialization: " + e.toString()
 					<< std::endl;
 		}
 
-		AL_ASSERT(motion); // Assure that motionproxy is not null
+		AL_ASSERT(proxy); // Assure that motionproxy is not null
+	}
+
+	AL::ALPtr<AL::ALMotionProxy> getProxy(){
+		return proxy;
 	}
 
 protected:
-	AL::ALPtr<AL::ALMotionProxy> motion;
+	AL::ALPtr<AL::ALMotionProxy> proxy;
 };
 
 }

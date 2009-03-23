@@ -14,4 +14,17 @@ public abstract class JALModule {
 
 	protected JALModule() {
 	}
+
+	public void wait(int taskId, int timeout) {
+		_wait(objPtr, taskId, timeout);
+	}
+
+	public boolean isRunning(int taskId) {
+		return _isRunning(objPtr, taskId);
+	}
+
+	native private void _wait(long objPtr, int taskId, int timeout);
+
+	native private boolean _isRunning(long objPtr, int taskId);
+
 }

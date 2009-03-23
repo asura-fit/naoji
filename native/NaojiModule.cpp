@@ -6,7 +6,9 @@
  */
 
 #include <iostream>
+#include <sstream>
 #include <cassert>
+#include <boost/current_function.hpp>
 
 #include "alproxy.h"
 #include "alptr.h"
@@ -19,6 +21,16 @@ using namespace AL;
 using namespace Naoji;
 
 #define NAOJI_AUTORUN 1
+
+void jassertion_failed(JNIEnv *env, char const * expr, char const * function, char const * file, long line){
+	env->ExceptionDescribe();
+	std::ostringstream stream;
+	stream << file << ":" << line << ": " << function << ": Assertion `" << expr << "' failed.";
+	std::string result = stream.str();
+	env->FatalError(result.c_str());
+}
+
+#define jassert( env, expr) ((expr)? ((void)0) : jassertion_failed(env, #expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__))
 
 //______________________________________________
 // constructor
@@ -165,23 +177,28 @@ int NaojiModule::initJVM(JNIEnv **env) {
 
 int NaojiModule::initJavaModule(JNIEnv *env) {
 	assert(jvm != NULL);
+
+	// FIXME クラスをロードしないとstaticが実行されないぽいのでとりあえず.
+	jclass clsTest = env->FindClass("jp/ac/fit/asura/naoji/NaojiTest");
+
 	// Get class object.
 	jclass cls = env->FindClass("jp/ac/fit/asura/naoji/NaojiModule");
-	assert(cls != NULL);
+	jassert(env, cls != NULL);
 
 	// Get constructor method.
-	jmethodID mid = env->GetMethodID(cls, "<init>", "()V");
-	assert(mid != NULL);
+	jmethodID mid = env->GetMethodID(cls, "<init>", "(J)V");
+	jassert(env, mid != NULL);
 
-	jobject obj = env->NewObject(cls, mid);
-	assert(obj != NULL);
+	jlong objPtr = reinterpret_cast<jlong> (this);
+	jobject obj = env->NewObject(cls, mid, objPtr);
+	jassert(env, obj != NULL);
 
 	// Get global reference.
 	naojiObj = env->NewGlobalRef(obj);
-	assert(obj != NULL);
+	jassert(env, obj != NULL);
 
 	jmethodID initMid = env->GetMethodID(cls, "init", "()V");
-	assert(initMid != NULL);
+	jassert(env, initMid != NULL);
 
 	env->CallVoidMethod(obj, initMid);
 
@@ -195,7 +212,7 @@ void NaojiModule::runJavaModule(JNIEnv *env) {
 	jclass naojiClass = env->GetObjectClass(naojiObj);
 
 	jmethodID startMid = env->GetMethodID(naojiClass, "start", "()V");
-	assert(startMid != NULL);
+	jassert(env, startMid != NULL);
 
 	env->CallVoidMethod(naojiObj, startMid);
 }
@@ -218,7 +235,7 @@ void NaojiModule::exitJavaModule() {
 	jclass naojiClass = env->GetObjectClass(naojiObj);
 
 	jmethodID exitMid = env->GetMethodID(naojiClass, "exit", "()V");
-	assert(exitMid != NULL);
+	jassert(env, exitMid != NULL);
 
 	env->CallVoidMethod(naojiObj, exitMid);
 

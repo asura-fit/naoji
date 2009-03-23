@@ -79,6 +79,43 @@ JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1create(
 	return 0;
 }
 
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _getAngle
+ * Signature: (JLjava/lang/String;)F
+ */
+JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getAngle(
+		JNIEnv *env, jobject, jlong objPtr, jstring pJointName) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	// TODO caching JointName.
+	const char *jointChars = env->GetStringUTFChars(pJointName, NULL);
+	jfloat angle = jmotion->getProxy()->getAngle(jointChars);
+	env->ReleaseStringUTFChars(pJointName, jointChars);
+
+	return angle;
+}
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _gotoAngle
+ * Signature: (JLjava/lang/String;FFI)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoAngle(
+		JNIEnv *env, jobject, jlong objPtr, jstring pJointName,
+		jfloat pAngle, jfloat pDuration, jint pInterpolationType) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	// TODO caching JointName.
+	const char *jointChars = env->GetStringUTFChars(pJointName, NULL);
+	jint taskId = jmotion->getProxy()->post.gotoAngle(jointChars, pAngle, pDuration, pInterpolationType);
+	env->ReleaseStringUTFChars(pJointName, jointChars);
+
+	return taskId;
+}
+
 #ifdef __cplusplus
 }
 #endif
