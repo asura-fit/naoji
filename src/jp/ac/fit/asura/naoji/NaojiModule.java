@@ -3,11 +3,20 @@
  */
 package jp.ac.fit.asura.naoji;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import jp.ac.fit.asura.naoji.jal.JALBroker;
 import jp.ac.fit.asura.naoji.jal.JALModule;
+import sun.misc.Service;
+import sun.misc.ServiceConfigurationError;
 
 /**
  * @author $Author: sey $
@@ -16,15 +25,11 @@ import jp.ac.fit.asura.naoji.jal.JALModule;
  *
  */
 public class NaojiModule extends JALModule {
-	private static List<NaojiFactory> factories = new ArrayList<NaojiFactory>();
+	private List<ClassLoader> loaders;
 
 	static {
+		System.err.println("Loading naojin library.");
 		System.loadLibrary("naojin");
-	}
-
-	public static void addFactory(NaojiFactory factory) {
-		System.err.println("Add factory:" + factory);
-		factories.add(factory);
 	}
 
 	private JALBroker pBroker;
@@ -39,22 +44,69 @@ public class NaojiModule extends JALModule {
 		objPtr = ptr;
 		long brokerPtr = _createJALBroker(objPtr);
 		pBroker = new JALBroker(brokerPtr);
-		brothers = new ArrayList<Naoji>(factories.size());
-		for (NaojiFactory f : factories) {
-			try {
-				brothers.add(f.create());
-			} catch (Exception e) {
-			}
-		}
+		loaders = new ArrayList<ClassLoader>();
+		brothers = new ArrayList<Naoji>();
 	}
 
 	public void init() {
 		System.err.println("NaojiModule init called.");
+
+		initClassLoaders();
+		loadNaojiModules();
+
 		context = new NaojiContext(this);
 		for (Naoji naoji : brothers) {
 			try {
 				naoji.init(context);
 			} catch (Exception e) {
+			}
+		}
+	}
+
+	private void initClassLoaders() {
+		// クラスローダーを初期化
+		System.err.println("Loading Classloaders.");
+		URL naojiList = ClassLoader.getSystemResource("naoji.modules");
+
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					naojiList.openStream()));
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				line.trim();
+				if (line.startsWith("#") || line.startsWith("//"))
+					continue;
+				System.err.println("Load " + line);
+				try {
+					URL url = new URL(line);
+					loaders.add(new URLClassLoader(new URL[] { url }));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void loadNaojiModules() {
+		// Naojiインスタンスを読み込み
+		for (ClassLoader cl : loaders) {
+			try {
+				Iterator<NaojiFactory> it = Service.providers(
+						NaojiFactory.class, cl);
+				while (it.hasNext()) {
+					NaojiFactory f = it.next();
+					System.err.println("Loading factory:" + f);
+					try {
+						brothers.add(f.create());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (ServiceConfigurationError e) {
+				e.printStackTrace();
 			}
 		}
 	}
