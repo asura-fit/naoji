@@ -7,7 +7,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* Inaccessible static: factories */
 /*
  * Class:     jp_ac_fit_asura_naoji_NaojiModule
  * Method:    _createJALBroker

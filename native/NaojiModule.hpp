@@ -78,6 +78,8 @@ public:
 	 * jvmTestFunction
 	 */
 	ALValue jvmTestFunction();
+	ALValue restartNaojiModule();
+	ALValue reloadNaojiModule();
 
 protected:
 	JavaVM *jvm;

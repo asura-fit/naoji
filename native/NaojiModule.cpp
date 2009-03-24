@@ -22,10 +22,12 @@ using namespace Naoji;
 
 #define NAOJI_AUTORUN 1
 
-void jassertion_failed(JNIEnv *env, char const * expr, char const * function, char const * file, long line){
+void jassertion_failed(JNIEnv *env, char const * expr, char const * function,
+		char const * file, long line) {
 	env->ExceptionDescribe();
 	std::ostringstream stream;
-	stream << file << ":" << line << ": " << function << ": Assertion `" << expr << "' failed.";
+	stream << file << ":" << line << ": " << function << ": Assertion `"
+			<< expr << "' failed.";
 	std::string result = stream.str();
 	env->FatalError(result.c_str());
 }
@@ -44,7 +46,16 @@ NaojiModule::NaojiModule(ALPtr<ALBroker> pBroker, const std::string& pName) :
 	setReturn("return", "Returns no value.");
 	BIND_METHOD(NaojiModule::jvmTestFunction);
 
+	functionName("Restart", "NaojiModule", "restart JVM and Naoji modules.");
+	setReturn("return", "Returns no value.");
+	BIND_METHOD(NaojiModule::restartNaojiModule);
+
+	functionName("Reload", "NaojiModule", "reload Naoji modules.");
+	setReturn("return", "Returns no value.");
+	BIND_METHOD(NaojiModule::reloadNaojiModule);
+
 	isOk = true;
+	jvm = NULL;
 }
 
 //______________________________________________
@@ -120,6 +131,10 @@ ALValue NaojiModule::jvmTestFunction() {
 }
 
 void NaojiModule::initNaojiModule() {
+	// Already initialized.
+	if (jvm != NULL)
+		return;
+
 	JNIEnv *env;
 	int res = initJVM(&env);
 	if (res < 0) {
@@ -156,12 +171,12 @@ int NaojiModule::initJVM(JNIEnv **env) {
 	 * see http://java.sun.com/javase/ja/6/docs/ja/technotes/guides/jni/spec/invocation.html#wp16334
 	 */
 	options[vm_args.nOptions++].optionString
-			= "-Djava.class.path=/home/root/naoji/classes:."; /* user classes */
+			= "-Djava.class.path=.:naoji.jar:modules/lib:modules/lib/naoji.jar"; /* user classes */
 	options[vm_args.nOptions++].optionString
-			= "-Djava.library.path=/home/root/naoji/lib:."; /* set native library path */
+			= "-Djava.library.path=.:modules/lib"; /* set native library path */
 	options[vm_args.nOptions++].optionString = "-Xms64m";
 	options[vm_args.nOptions++].optionString = "-Xshare:off";
-	//	options[vm_args.nOptions++].optionString = "-verbose:jni"; /* print JNI-related messages */
+	//options[vm_args.nOptions++].optionString = "-verbose:jni"; /* print JNI-related messages */
 	//	options[vm_args.nOptions++].optionString = "-Djava.compiler=NONE"; /* disable JIT */
 
 	/* Note that in the JDK, there is no longer any need to call
@@ -177,9 +192,6 @@ int NaojiModule::initJVM(JNIEnv **env) {
 
 int NaojiModule::initJavaModule(JNIEnv *env) {
 	assert(jvm != NULL);
-
-	// FIXME クラスをロードしないとstaticが実行されないぽいのでとりあえず.
-	jclass clsTest = env->FindClass("jp/ac/fit/asura/naoji/NaojiTest");
 
 	// Get class object.
 	jclass cls = env->FindClass("jp/ac/fit/asura/naoji/NaojiModule");
@@ -219,8 +231,10 @@ void NaojiModule::runJavaModule(JNIEnv *env) {
 
 void NaojiModule::exitNaojiModule() {
 	/* We are done. */
-	exitJavaModule();
-	exitJVM();
+	if (jvm != NULL) {
+		exitJavaModule();
+		exitJVM();
+	}
 }
 
 void NaojiModule::exitJavaModule() {
@@ -249,4 +263,15 @@ void NaojiModule::exitJavaModule() {
 void NaojiModule::exitJVM() {
 	jvm->DestroyJavaVM();
 	jvm = NULL;
+}
+
+ALValue NaojiModule::restartNaojiModule() {
+	exitNaojiModule();
+	initNaojiModule();
+	return ALValue(0);
+}
+
+ALValue NaojiModule::reloadNaojiModule() {
+	// not implemented.
+	return ALValue(0);
 }
