@@ -12,12 +12,10 @@ import jp.ac.fit.asura.naoji.jal.JALMotion;
  *
  */
 public class NaojiTest implements Naoji {
-	static {
-		NaojiModule.addFactory(new NaojiFactory() {
-			public Naoji create() {
-				return new NaojiTest();
-			}
-		});
+	public static class Factory implements NaojiFactory {
+		public Naoji create() {
+			return new NaojiTest();
+		}
 	}
 
 	Thread mainThread;
@@ -68,9 +66,10 @@ public class NaojiTest implements Naoji {
 			try {
 				Thread.sleep(100);
 				float headYaw = motion.getAngle("HeadYaw");
-				System.out.println("HeadYaw:"+headYaw);
+				System.out.println("HeadYaw:" + headYaw);
 
-				motion.gotoAngle("HeadYaw", (float)Math.sin(Math.toRadians(frame)), 0.125f, 1);
+				motion.gotoAngle("HeadYaw", (float) Math.sin(Math
+						.toRadians(frame)), 0.125f, 1);
 				frame++;
 			} catch (InterruptedException e) {
 				isActive = false;

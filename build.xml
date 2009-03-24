@@ -9,23 +9,30 @@
 		</fileset>
 	</path>
 
-	<target name="all" depends="javah,compile,jar" />
+	<target name="all" depends="javah,compile,jar,jar.test" />
 
 	<target name="clean">
 		<delete dir="${javadoc.home}" />
 		<delete dir="${build.home}" />
+		<delete dir="${build.test.home}" />
 		<delete file="${build.jar}" />
-		<delete dir="${build.release}" />
 		<mkdir dir="${build.home}" />
+		<mkdir dir="${build.test.home} " />
 		<mkdir dir="${javadoc.home}" />
-		<mkdir dir="${build.release} " />
 	</target>
 
 	<target name="jar" depends="compile">
 		<jar destfile="${build.jar}" update="no" duplicate="fail">
 			<fileset dir="${build.home}">
-				<include name="**/*.class" />
-				<include name="**/*.properties" />
+				<include name="**/*.*" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="jar.test" depends="compile.test">
+		<jar destfile="${build.test.jar}" update="no" duplicate="fail">
+			<fileset dir="${build.test.home}">
+				<include name="**/*.*" />
 			</fileset>
 		</jar>
 	</target>
@@ -40,6 +47,25 @@
 
 		<copy todir="${build.home}">
 			<fileset dir="${build.src}">
+				<include name="**/*.*" />
+				<exclude name="**/*.java" />
+			</fileset>
+			<fileset dir="${basedir}">
+				<include name="License*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile.test" depends="compile">
+		<mkdir dir="${build.test.home}" />
+
+		<javac srcdir="${build.test.src}" destdir="${build.test.home}" debug="${build.debug}" target="${build.target}" source="${build.source}" optimize="${build.optimize}" encoding="${build.encoding}">
+			<include name="**/*.java" />
+			<classpath refid="build.classpath" />
+		</javac>
+
+		<copy todir="${build.test.home}">
+			<fileset dir="${build.test.src}">
 				<include name="**/*.*" />
 				<exclude name="**/*.java" />
 			</fileset>
