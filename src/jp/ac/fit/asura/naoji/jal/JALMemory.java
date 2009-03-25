@@ -3,6 +3,7 @@
  */
 package jp.ac.fit.asura.naoji.jal;
 
+
 /**
  * @author $Author: sey $
  *
@@ -15,4 +16,13 @@ public class JALMemory extends JALModule {
 	}
 
 	native private long _create(long jalBrokerPtr);
+
+	native public void defineKey(int id, String key);
+
+	native public void undefineKey(int id);
+
+	// ALModule methods.
+	native protected boolean _wait(long objPtr, int taskId, int timeout);
+
+	native protected boolean _isRunning(long objPtr, int taskId);
 }

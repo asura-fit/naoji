@@ -23,8 +23,7 @@ public abstract class JALModule {
 		return _isRunning(objPtr, taskId);
 	}
 
-	native private void _wait(long objPtr, int taskId, int timeout);
+	abstract protected boolean _isRunning(long objPtr, int taskId);
 
-	native private boolean _isRunning(long objPtr, int taskId);
-
+	abstract protected boolean _wait(long objPtr, int taskId, int timeout);
 }

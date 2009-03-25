@@ -77,11 +77,12 @@
 
 	<target name="javah" description="create JNI C/C++ header" depends="compile">
 		<mkdir dir="${build.native}/include" />
-		<javah destdir="${build.native}/include" force="yes" verbose="yes">
+		<javah destdir="${build.native}/include" verbose="yes">
 			<class name="${native.naoji1}" />
 			<class name="${native.naoji2}" />
 			<class name="${native.naoji3}" />
 			<class name="${native.naoji4}" />
+			<class name="${native.naoji5}" />
 			<classpath refid="build.classpath" />
 		</javah>
 	</target>

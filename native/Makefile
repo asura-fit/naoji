@@ -45,6 +45,10 @@ endif
 LDFLAGS =
 CXXFLAGS =
 
+# debug or non-debug build.
+CXXFLAGS += -D__DEBUG__
+# CXXFLAGS += -DNDEBUG
+
 AL_INC = \
  -I${SYSROOT}/usr/include/python2.5 \
  -I$(AL_DIR)/modules/proxies \
@@ -117,7 +121,7 @@ libnaoji.so : alboot.o NaojiModule.o
 libnaojin.so : NaojiNatives.o
 	$(CXX) -shared -fPIC $(LDFLAGS) $(JAVA_LIB) $(AL_LIB) NaojiNatives.o -o $@
 
-.cpp.o : NaojiModule.hpp NaojiNatives.hpp
+.cpp.o : NaojiModule.hpp NaojiNatives.hpp jni_utils.hpp
 	$(CXX) $(CXXFLAGS) $(JAVA_INC) $(AL_INC) -c $*.cpp
 
 clean :

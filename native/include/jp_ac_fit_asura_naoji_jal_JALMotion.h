@@ -7,6 +7,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* Inaccessible static: _00024assertionsDisabled */
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _create
@@ -17,35 +18,75 @@ JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1create
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _isDefinedJoint
+ * Signature: (JI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1isDefinedJoint
+  (JNIEnv *, jobject, jlong, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _defineJoint
+ * Signature: (JILjava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1defineJoint
+  (JNIEnv *, jobject, jlong, jint, jstring);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _removeJoint
+ * Signature: (JI)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1removeJoint
+  (JNIEnv *, jobject, jlong, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _isRunning
+ * Signature: (JI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1isRunning
+  (JNIEnv *, jobject, jlong, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _wait
+ * Signature: (JII)Z
+ */
+JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1wait
+  (JNIEnv *, jobject, jlong, jint, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _clearFootsteps
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1clearFootsteps
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _doMove
- * Signature: (J[Ljava/lang/String;[[F[[FI)I
+ * Signature: (J[I[F[FI)I
  */
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMove
-  (JNIEnv *, jobject, jlong, jobjectArray, jobjectArray, jobjectArray, jint);
+  (JNIEnv *, jobject, jlong, jintArray, jfloatArray, jfloatArray, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _doMoveAll
+ * Signature: (J[F[FI)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMoveAll
+  (JNIEnv *, jobject, jlong, jfloatArray, jfloatArray, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _getAngle
- * Signature: (JLjava/lang/String;)F
+ * Signature: (JI)F
  */
 JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getAngle
-  (JNIEnv *, jobject, jlong, jstring);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
- * Method:    _getJointStiffness
- * Signature: (JLjava/lang/String;)F
- */
-JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getJointStiffness
-  (JNIEnv *, jobject, jlong, jstring);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
- * Method:    _gotoAngle
- * Signature: (JLjava/lang/String;FFI)I
- */
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoAngle
-  (JNIEnv *, jobject, jlong, jstring, jfloat, jfloat, jint);
+  (JNIEnv *, jobject, jlong, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
@@ -57,6 +98,30 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyAngles
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _getBodyJointNames
+ * Signature: (J)[Ljava/lang/String;
+ */
+JNIEXPORT jobjectArray JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyJointNames
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _getJointStiffness
+ * Signature: (JI)F
+ */
+JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getJointStiffness
+  (JNIEnv *, jobject, jlong, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _gotoAngle
+ * Signature: (JIFFI)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoAngle
+  (JNIEnv *, jobject, jlong, jint, jfloat, jfloat, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _gotoBodyAngles
  * Signature: (J[FFI)I
  */
@@ -65,27 +130,59 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoBodyAngles
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
- * Method:    _setBodyAngles
- * Signature: (J[F)V
+ * Method:    _gotoBodyStiffness
+ * Signature: (JFFI)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setBodyAngles
-  (JNIEnv *, jobject, jlong, jfloatArray);
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoBodyStiffness
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _gotoJointStiffness
+ * Signature: (JIFFI)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoJointStiffness
+  (JNIEnv *, jobject, jlong, jint, jfloat, jfloat, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _setBodyStiffness
- * Signature: (JF)I
+ * Signature: (JF)V
  */
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setBodyStiffness
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setBodyStiffness
   (JNIEnv *, jobject, jlong, jfloat);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _setJointStiffness
- * Signature: (JLjava/lang/String;F)V
+ * Signature: (JIF)V
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setJointStiffness
-  (JNIEnv *, jobject, jlong, jstring, jfloat);
+  (JNIEnv *, jobject, jlong, jint, jfloat);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _setWalkConfig
+ * Signature: (JFFFFFF)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkConfig
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _setWalkExtraConfig
+ * Signature: (JFFFF)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkExtraConfig
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _stop
+ * Signature: (JI)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1stop
+  (JNIEnv *, jobject, jlong, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
@@ -105,6 +202,14 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkArc
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _walkIsActive
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkIsActive
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _walkStraight
  * Signature: (JFI)I
  */
@@ -118,22 +223,6 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkStraight
  */
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkSideways
   (JNIEnv *, jobject, jlong, jfloat, jint);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
- * Method:    _setWalkConfig
- * Signature: (JFFFFFF)V
- */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkConfig
-  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
- * Method:    _setWalkExtraConfig
- * Signature: (JFFFF)V
- */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkExtraConfig
-  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat);
 
 #ifdef __cplusplus
 }

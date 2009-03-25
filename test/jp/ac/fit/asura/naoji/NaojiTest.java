@@ -4,6 +4,8 @@
 package jp.ac.fit.asura.naoji;
 
 import jp.ac.fit.asura.naoji.jal.JALMotion;
+import jp.ac.fit.asura.naoji.robots.NaoV3RoboCupEdition;
+import jp.ac.fit.asura.naoji.robots.NaoV3RoboCupEdition.Joint;
 
 /**
  * @author $Author: sey $
@@ -65,10 +67,10 @@ public class NaojiTest implements Naoji {
 		while (isActive) {
 			try {
 				Thread.sleep(100);
-				float headYaw = motion.getAngle("HeadYaw");
+				float headYaw = motion.getAngle(Joint.HeadYaw.getId());
 				System.out.println("HeadYaw:" + headYaw);
 
-				motion.gotoAngle("HeadYaw", (float) Math.sin(Math
+				motion.gotoAngle(Joint.HeadYaw.getId(), (float) Math.sin(Math
 						.toRadians(frame)), 0.125f, 1);
 				frame++;
 			} catch (InterruptedException e) {

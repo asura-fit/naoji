@@ -6,6 +6,11 @@
 
 #ifndef NaojiNatives_H
 #define NaojiNatives_H
+
+#include <algorithm>
+#include <string>
+#include <vector>
+
 #include "alptr.h"
 #include "albroker.h"
 
@@ -50,7 +55,7 @@ public:
 		AL_ASSERT(proxy); // Assure that memoryproxy is not null
 	}
 
-	AL::ALPtr<AL::ALMemoryProxy> getProxy(){
+	AL::ALPtr<AL::ALMemoryProxy> getProxy() {
 		return proxy;
 	}
 
@@ -60,7 +65,8 @@ protected:
 
 class JALMotion {
 public:
-	JALMotion(JALBroker *jbroker) {
+	JALMotion(JALBroker *jbroker) :
+		jointNames(32) {
 		try {
 			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
 			proxy = broker->getMotionProxy();
@@ -72,12 +78,38 @@ public:
 		AL_ASSERT(proxy); // Assure that motionproxy is not null
 	}
 
-	AL::ALPtr<AL::ALMotionProxy> getProxy(){
+	AL::ALPtr<AL::ALMotionProxy> getProxy() {
 		return proxy;
+	}
+
+	bool isDefinedJoint(int id) {
+		if (jointNames.size() <= id)
+			return false;
+		return jointNames[id].size() > 0;
+	}
+
+	std::string getJointName(int id) {
+		assert(isDefinedJoint(id));
+		return jointNames[id];
+	}
+
+	void defineJoint(int id, std::string jointName) {
+		assert(jointName.size() > 0);
+		if (jointNames.size() <= id)
+			jointNames.resize(id, std::string());
+		jointNames[id] = jointName;
+	}
+
+	void removeJoint(int id) {
+		assert(isDefinedJoint(id));
+		jointNames[id] = std::string();
 	}
 
 protected:
 	AL::ALPtr<AL::ALMotionProxy> proxy;
+
+private:
+	std::vector<std::string> jointNames;
 };
 
 }

@@ -160,4 +160,9 @@ public class NaojiModule extends JALModule {
 	}
 
 	native private long _createJALBroker(long objPtr);
+
+	// ALModule methods.
+	native protected boolean _isRunning(long objPtr, int taskId);
+
+	native protected boolean _wait(long objPtr, int taskId, int timeout);
 }

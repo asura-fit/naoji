@@ -17,22 +17,12 @@
 #include <jni.h>       /* where everything is defined */
 #include "NaojiModule.hpp"
 
+#include "jni_utils.hpp"
+
 using namespace AL;
 using namespace Naoji;
 
 #define NAOJI_AUTORUN 1
-
-void jassertion_failed(JNIEnv *env, char const * expr, char const * function,
-		char const * file, long line) {
-	env->ExceptionDescribe();
-	std::ostringstream stream;
-	stream << file << ":" << line << ": " << function << ": Assertion `"
-			<< expr << "' failed.";
-	std::string result = stream.str();
-	env->FatalError(result.c_str());
-}
-
-#define jassert( env, expr) ((expr)? ((void)0) : jassertion_failed(env, #expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__))
 
 //______________________________________________
 // constructor
@@ -156,7 +146,7 @@ void NaojiModule::initNaojiModule() {
 
 int NaojiModule::initJVM(JNIEnv **env) {
 	JavaVMInitArgs vm_args;
-	JavaVMOption options[4];
+	JavaVMOption options[16];
 
 	int res;
 
@@ -174,7 +164,11 @@ int NaojiModule::initJVM(JNIEnv **env) {
 			= "-Djava.class.path=.:naoji.jar:modules/lib:modules/lib/naoji.jar"; /* user classes */
 	options[vm_args.nOptions++].optionString
 			= "-Djava.library.path=.:modules/lib"; /* set native library path */
+#ifdef __DEBUG__
+	options[vm_args.nOptions++].optionString = "-ea";
+#endif
 	options[vm_args.nOptions++].optionString = "-Xms64m";
+	options[vm_args.nOptions++].optionString = "-Xmx192m";
 	options[vm_args.nOptions++].optionString = "-Xshare:off";
 	//options[vm_args.nOptions++].optionString = "-verbose:jni"; /* print JNI-related messages */
 	//	options[vm_args.nOptions++].optionString = "-Djava.compiler=NONE"; /* disable JIT */
