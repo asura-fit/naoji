@@ -113,13 +113,13 @@ LDFLAGS += -lgcc -lc -lstdc++ -ldl
 all : naoji_main libnaoji.so libnaojin.so
 
 naoji_main : almain.o NaojiModule.o
-	$(CXX) $(LDFLAGS) $(JAVA_LIB) $(AL_LIB) almain.o NaojiModule.o -o $@
+	$(CXX) $(LDFLAGS) almain.o NaojiModule.o $(JAVA_LIB) $(AL_LIB) -o $@
 
 libnaoji.so : alboot.o NaojiModule.o
-	$(CXX) -shared -fPIC $(LDFLAGS) $(JAVA_LIB) $(AL_LIB) alboot.o NaojiModule.o -o $@
+	$(CXX) -shared -fPIC $(LDFLAGS) alboot.o NaojiModule.o $(JAVA_LIB) $(AL_LIB) -o $@
 
 libnaojin.so : NaojiNatives.o
-	$(CXX) -shared -fPIC $(LDFLAGS) $(JAVA_LIB) $(AL_LIB) NaojiNatives.o -o $@
+	$(CXX) -shared -fPIC $(LDFLAGS) NaojiNatives.o $(JAVA_LIB) $(AL_LIB)  -o $@
 
 .cpp.o : NaojiModule.hpp NaojiNatives.hpp jni_utils.hpp
 	$(CXX) $(CXXFLAGS) $(JAVA_INC) $(AL_INC) -c $*.cpp
