@@ -128,6 +128,31 @@ JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1wait(
 	return jmotion->getProxy()->wait(taskId, timeout);
 }
 
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1clearFootsteps(
+		JNIEnv *, jobject, jlong objPtr) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	jmotion->getProxy()->clearFootsteps();
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMove(
+		JNIEnv *env, jobject, jlong objPtr, jintArray, jfloatArray,
+		jfloatArray, jint) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	// TODO implement.
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMoveAll(
+		JNIEnv *env, jobject, jlong objPtr, jfloatArray, jfloatArray, jint) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	// TODO implement.
+}
+
 JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getAngle(
 		JNIEnv *, jobject, jlong objPtr, jint pJointId) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
@@ -238,6 +263,83 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setJointStiffn
 
 	string jointName = jmotion->getJointName(pJointId);
 	jmotion->getProxy()->setJointStiffness(jointName, pStiffness);
+}
+
+JNIEXPORT void
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkConfig(JNIEnv *,
+		jobject, jlong objPtr, jfloat pMaxStepLength, jfloat pMaxStepHeight,
+		jfloat pMaxStepSide, jfloat pMaxStepTurn, jfloat pZmpOffsetX,
+		jfloat pZmpOffsetY) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	jmotion->getProxy()->setWalkConfig(pMaxStepLength, pMaxStepHeight,
+			pMaxStepSide, pMaxStepTurn, pZmpOffsetX, pZmpOffsetY);
+}
+
+JNIEXPORT void
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkExtraConfig(JNIEnv *,
+		jobject, jlong objPtr, jfloat pLHipRollBacklashCompensator,
+		jfloat pRHipRollBacklashCompensator, jfloat pHipHeight,
+		jfloat pTorsoYOrientation) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	jmotion->getProxy()->setWalkExtraConfig(pLHipRollBacklashCompensator,
+			pRHipRollBacklashCompensator, pHipHeight, pTorsoYOrientation);
+}
+
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1stop(
+		JNIEnv *, jobject, jlong objPtr, jint taskId) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	jmotion->getProxy()->stop(taskId);
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1turn(
+		JNIEnv *, jobject, jlong objPtr, jfloat pAngle, jint pNumSamplesPerStep) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->post.turn(pAngle, pNumSamplesPerStep);
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkArc(
+		JNIEnv *, jobject, jlong objPtr, jfloat pAngle, jfloat pRadius,
+		jint pNumSamplesPerStep) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->post.walkArc(pAngle, pRadius,
+			pNumSamplesPerStep);
+}
+
+JNIEXPORT jboolean
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkIsActive(JNIEnv *,
+		jobject, jlong objPtr) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->walkIsActive();
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkStraight(
+		JNIEnv *, jobject, jlong objPtr, jfloat pDistance,
+		jint pNumSamplesPerStep) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->post.walkStraight(pDistance, pNumSamplesPerStep);
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkSideways(
+		JNIEnv *env, jobject, jlong objPtr, jfloat pDistance,
+		jint pNumSamplesPerStep) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->post.walkSideways(pDistance, pNumSamplesPerStep);
 }
 
 #ifdef __cplusplus
