@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Naoji" default="all">
 	<property file="build.properties" />
+	<property file="user.properties" />
 
 	<path id="build.classpath">
 		<pathelement path="${build.home}" />
@@ -16,13 +17,14 @@
 		<delete dir="${build.home}" />
 		<delete dir="${build.test.home}" />
 		<delete file="${build.jar}" />
+		<delete file="${build.test.jar}" />
 		<mkdir dir="${build.home}" />
 		<mkdir dir="${build.test.home} " />
 		<mkdir dir="${javadoc.home}" />
 	</target>
 
 	<target name="jar" depends="compile">
-		<jar destfile="${build.jar}" update="no" duplicate="fail">
+		<jar destfile="${build.jar}" duplicate="fail">
 			<fileset dir="${build.home}">
 				<include name="**/*.*" />
 			</fileset>
@@ -30,7 +32,7 @@
 	</target>
 
 	<target name="jar.test" depends="compile.test">
-		<jar destfile="${build.test.jar}" update="no" duplicate="fail">
+		<jar destfile="${build.test.jar}">
 			<fileset dir="${build.test.home}">
 				<include name="**/*.*" />
 			</fileset>
@@ -54,6 +56,16 @@
 				<include name="License*" />
 			</fileset>
 		</copy>
+	</target>
+
+	<!-- Linux host only. -->
+	<target name="compile.native" depends="javah">
+		<exec executable="make" dir="${build.native}" failonerror="true">
+			<arg value="USE_CROSS=1" />
+			<arg value="clean" />
+			<arg value="libnaoji.so" />
+			<arg value="libnaojin.so" />
+		</exec>
 	</target>
 
 	<target name="compile.test" depends="compile">
@@ -89,5 +101,33 @@
 
 	<target name="javadoc">
 		<javadoc sourcepath="${build.src}" packagenames="${javadoc.packages}" destdir="${javadoc.home}" Encoding="UTF-8" Private="true" charset="UTF-8" />
+	</target>
+
+	<target name="deploy" depends="deploy.jar, deploy.native" if="target.ip" />
+
+	<target name="deploy.jar" depends="jar" if="target.ip">
+		<exec executable="scp">
+			<arg line="${build.jar}" />
+			<arg value="root@${target.ip}:${target.libdir}" />
+		</exec>
+	</target>
+
+	<target name="deploy.native" depends="compile.native" if="target.ip">
+		<exec executable="scp" dir="${build.native}">
+			<arg line="${build.native.files}" />
+			<arg value="root@${target.ip}:${target.libdir}" />
+		</exec>
+	</target>
+
+	<target name="deploy.test" depends="jar.test" if="target.ip">
+		<exec executable="scp">
+			<arg value="${build.test.jar}" />
+			<arg value="root@${target.ip}:${target.libdir}" />
+		</exec>
+		<exec executable="rsync">
+			<arg value="--ignore-existing" />
+			<arg value="naoji.modules" />
+			<arg value="root@${target.ip}:${target.libdir}" />
+		</exec>
 	</target>
 </project>
