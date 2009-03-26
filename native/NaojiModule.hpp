@@ -18,8 +18,8 @@ class ALBroker;
 /**
  * DESCRIBE YOUR CLASS HERE
  */
-#define NaojiModule_VERSION_MAJOR "0"
-#define NaojiModule_VERSION_MINOR "1"
+#define NaojiModule_VERSION_MAJOR "1"
+#define NaojiModule_VERSION_MINOR "2"
 
 namespace Naoji {
 
