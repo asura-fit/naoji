@@ -3,7 +3,6 @@
  */
 package jp.ac.fit.asura.naoji.robots;
 
-import jp.ac.fit.asura.naoji.jal.JALMotion;
 
 /**
  * @author sey
@@ -68,6 +67,20 @@ public class NaoV3RoboCupEdition {
 
 		public String getName() {
 			return this.name();
+		}
+	}
+
+	public enum InterpolationType {
+		LINEAR(0), INTERPOLATION_SMOOTH(1);
+
+		private int id;
+
+		private InterpolationType(int id) {
+			this.id = id;
+		}
+
+		public int getId() {
+			return id;
 		}
 	}
 
