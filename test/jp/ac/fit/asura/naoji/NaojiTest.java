@@ -5,6 +5,7 @@ package jp.ac.fit.asura.naoji;
 
 import jp.ac.fit.asura.naoji.jal.JALMotion;
 import jp.ac.fit.asura.naoji.robots.NaoV3RoboCupEdition;
+import jp.ac.fit.asura.naoji.robots.NaoV3RoboCupEdition.InterpolationType;
 import jp.ac.fit.asura.naoji.robots.NaoV3RoboCupEdition.Joint;
 
 /**
@@ -44,8 +45,7 @@ public class NaojiTest implements Naoji {
 		assert !isActive;
 		assert !mainThread.isAlive();
 		isActive = true;
-		mainThread.run();
-
+		mainThread.start();
 	}
 
 	public void stop() {
@@ -64,19 +64,29 @@ public class NaojiTest implements Naoji {
 	protected void run() {
 		System.err.println("NaojiTest run called.");
 		int frame = 0;
+
+		int taskId = motion.gotoBodyStiffness(1.0f, 0.5f,
+				InterpolationType.LINEAR.getId());
+		motion.wait(taskId, 10000);
+
 		while (isActive) {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1);
 				float headYaw = motion.getAngle(Joint.HeadYaw.getId());
-				System.out.println("HeadYaw:" + headYaw);
 
-				motion.gotoAngle(Joint.HeadYaw.getId(), (float) Math.sin(Math
-						.toRadians(frame)), 0.125f, 1);
+				if (frame % 100 == 0)
+					System.out
+							.println("frame " + frame + " HeadYaw:" + headYaw);
+
+				taskId = motion.gotoAngle(Joint.HeadYaw.getId(), (float) Math
+						.sin(Math.toRadians(frame)), 0.125f, 1);
+				motion.wait(taskId, 10000);
 				frame++;
 			} catch (InterruptedException e) {
 				isActive = false;
 				assert false;
 			}
 		}
+		motion.gotoBodyStiffness(0.0f, 0.5f, InterpolationType.LINEAR.getId());
 	}
 }

@@ -125,6 +125,7 @@ public class NaojiModule extends JALModule {
 			try {
 				naoji.exit();
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -134,6 +135,7 @@ public class NaojiModule extends JALModule {
 		try {
 			naoji.start();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -144,7 +146,13 @@ public class NaojiModule extends JALModule {
 	 *
 	 */
 	protected void stop() {
-
+		for (Naoji naoji : brothers) {
+			try {
+				naoji.stop();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void test() {
