@@ -4,9 +4,9 @@
 package jp.ac.fit.asura.naoji;
 
 import jp.ac.fit.asura.naoji.jal.JALMotion;
-import jp.ac.fit.asura.naoji.robots.NaoV3RoboCupEdition;
-import jp.ac.fit.asura.naoji.robots.NaoV3RoboCupEdition.InterpolationType;
-import jp.ac.fit.asura.naoji.robots.NaoV3RoboCupEdition.Joint;
+import jp.ac.fit.asura.naoji.robots.NaoV3R;
+import jp.ac.fit.asura.naoji.robots.NaoV3R.InterpolationType;
+import jp.ac.fit.asura.naoji.robots.NaoV3R.Joint;
 
 /**
  * @author $Author: sey $
