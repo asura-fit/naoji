@@ -25,6 +25,14 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory_defineKey
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
+ * Method:    _dispose
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1dispose
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
  * Method:    undefineKey
  * Signature: (I)V
  */

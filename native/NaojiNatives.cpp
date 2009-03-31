@@ -34,12 +34,6 @@ using namespace Naoji;
 extern "C" {
 #endif
 
-/* Inaccessible static: factories */
-/*
- * Class:     jp_ac_fit_asura_naoji_NaojiModule
- * Method:    _createJALBroker
- * Signature: (J)J
- */
 JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_NaojiModule__1createJALBroker(
 		JNIEnv *, jclass, jlong naojiPtr) {
 	NaojiModule *naoji = reinterpret_cast<NaojiModule*> (naojiPtr);
@@ -49,11 +43,14 @@ JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_NaojiModule__1createJALBroker
 	return reinterpret_cast<jlong> (jbroker);
 }
 
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
- * Method:    _create
- * Signature: (J)J
- */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALBroker__1dispose(
+		JNIEnv *, jclass, jlong objPtr) {
+	JALBroker *jbroker = reinterpret_cast<JALBroker*> (objPtr);
+	assert(jbroker != NULL);
+
+	delete jbroker;
+}
+
 JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1create(
 		JNIEnv *, jclass, jlong jbrokerPtr) {
 	JALBroker *jbroker = reinterpret_cast<JALBroker*> (jbrokerPtr);
@@ -62,11 +59,14 @@ JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1create(
 	return reinterpret_cast<jlong> (jmemory);
 }
 
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
- * Method:    _create
- * Signature: (J)J
- */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1dispose(
+		JNIEnv *, jclass, jlong objPtr) {
+	JALMemory *jmemory = reinterpret_cast<JALMemory*> (objPtr);
+	assert(jmemory != NULL);
+
+	delete jmemory;
+}
+
 JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1create(
 		JNIEnv *, jclass, jlong jbrokerPtr) {
 	JALBroker *jbroker = reinterpret_cast<JALBroker*> (jbrokerPtr);
@@ -75,17 +75,25 @@ JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1create(
 	return reinterpret_cast<jlong> (jmotion);
 }
 
-/* Inaccessible static: _00024assertionsDisabled */
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALProxy
- * Method:    _create
- * Signature: (J)J
- */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1dispose(
+		JNIEnv *, jclass, jlong objPtr) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	delete jmotion;
+}
+
 JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1create(
 		JNIEnv *, jclass, jlong) {
 	// not implemented.
 	assert(false);
 	return 0;
+}
+
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1dispose(
+		JNIEnv *, jclass, jlong objPtr) {
+	// not implemented.
+	assert(false);
 }
 
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1defineJoint(
@@ -137,8 +145,8 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1clearFootsteps
 }
 
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMove(
-		JNIEnv *env, jclass, jlong objPtr, jintArray, jfloatArray,
-		jfloatArray, jint) {
+		JNIEnv *env, jclass, jlong objPtr, jintArray, jfloatArray, jfloatArray,
+		jint) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 

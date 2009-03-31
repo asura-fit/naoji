@@ -23,6 +23,10 @@ public class JALMotion extends JALModule {
 		jointNum = jointNames.length;
 	}
 
+	public void dispose() {
+		_dispose(objPtr);
+	}
+
 	public boolean isDefinedJoint(int id) {
 		return _isDefinedJoint(objPtr, id);
 	}
@@ -177,6 +181,8 @@ public class JALMotion extends JALModule {
 
 	native static private void _defineJoint(long objPtr, int id,
 			String jointName);
+
+	native static private void _dispose(long objPtr);
 
 	native static private void _removeJoint(long objPtr, int id);
 

@@ -18,6 +18,14 @@ JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1create
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALProxy
+ * Method:    _dispose
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1dispose
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALProxy
  * Method:    _isRunning
  * Signature: (JI)Z
  */

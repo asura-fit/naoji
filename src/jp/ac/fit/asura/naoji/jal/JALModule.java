@@ -15,4 +15,6 @@ public abstract class JALModule {
 	protected JALModule() {
 	}
 
+	public abstract void dispose();
+
 }

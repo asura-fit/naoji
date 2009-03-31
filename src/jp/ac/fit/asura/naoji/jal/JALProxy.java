@@ -17,15 +17,21 @@ public class JALProxy extends JALModule {
 		throw new UnsupportedOperationException();
 	}
 
-	public void wait(int taskId, int timeout) {
-		_wait(objPtr, taskId, timeout);
+	public void dispose() {
+		_dispose(objPtr);
 	}
 
 	public boolean isRunning(int taskId) {
 		return _isRunning(objPtr, taskId);
 	}
 
+	public void wait(int taskId, int timeout) {
+		_wait(objPtr, taskId, timeout);
+	}
+
 	native static private long _create(long jalBrokerPtr);
+
+	native static private void _dispose(long objPtr);
 
 	// ALModule methods.
 	native static protected boolean _isRunning(long objPtr, int taskId);

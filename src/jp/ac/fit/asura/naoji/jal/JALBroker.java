@@ -26,7 +26,13 @@ public class JALBroker {
 		return mot;
 	}
 
+	public void dispose() {
+		_dispose(objPtr);
+	}
+
 	protected long getPtr() {
 		return objPtr;
 	}
+
+	native static private void _dispose(long objPtr);
 }

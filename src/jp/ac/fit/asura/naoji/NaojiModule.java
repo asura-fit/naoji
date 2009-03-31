@@ -128,6 +128,7 @@ public class NaojiModule extends JALModule {
 				e.printStackTrace();
 			}
 		}
+		dispose();
 	}
 
 	protected void start(final Naoji naoji) {
@@ -165,6 +166,9 @@ public class NaojiModule extends JALModule {
 
 	public JALBroker getParentBroker() {
 		return pBroker;
+	}
+
+	public void dispose() {
 	}
 
 	native static private long _createJALBroker(long objPtr);

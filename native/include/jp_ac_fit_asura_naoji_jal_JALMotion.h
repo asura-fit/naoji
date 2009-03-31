@@ -34,6 +34,14 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1defineJoint
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _dispose
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1dispose
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _removeJoint
  * Signature: (JI)V
  */
