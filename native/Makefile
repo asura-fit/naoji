@@ -118,10 +118,10 @@ naoji_main : almain.o NaojiModule.o
 libnaoji.so : alboot.o NaojiModule.o
 	$(CXX) -shared -fPIC $(LDFLAGS) alboot.o NaojiModule.o $(JAVA_LIB) $(AL_LIB) -o $@
 
-libnaojin.so : NaojiNatives.o
-	$(CXX) -shared -fPIC $(LDFLAGS) NaojiNatives.o $(JAVA_LIB) $(AL_LIB)  -o $@
+libnaojin.so : NaojiNatives.o NaojiV4L2.o
+	$(CXX) -shared -fPIC $(LDFLAGS) NaojiNatives.o NaojiV4L2.o $(JAVA_LIB) $(AL_LIB)  -o $@
 
-.cpp.o : NaojiModule.hpp NaojiNatives.hpp jni_utils.hpp
+.cpp.o : NaojiModule.hpp NaojiNatives.hpp NaojiV4L2.hpp jni_utils.hpp
 	$(CXX) $(CXXFLAGS) $(JAVA_INC) $(AL_INC) -c $*.cpp
 
 clean :
