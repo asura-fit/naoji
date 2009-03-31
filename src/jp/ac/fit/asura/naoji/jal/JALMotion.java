@@ -115,6 +115,10 @@ public class JALMotion extends JALModule {
 				pInterpolationType);
 	}
 
+	public boolean isRunning(int taskId) {
+		return _isRunning(objPtr, taskId);
+	}
+
 	public void setBodyStiffness(float pStiffness) {
 		_setBodyStiffness(objPtr, pStiffness);
 	}
@@ -162,14 +166,19 @@ public class JALMotion extends JALModule {
 				pRHipRollBacklashCompensator, pHipHeight, pTorsoYOrientation);
 	}
 
-	native private long _create(long jalBrokerPtr);
+	public void wait(int taskId, int timeout) {
+		_wait(objPtr, taskId, timeout);
+	}
+
+	native static private long _create(long jalBrokerPtr);
 
 	// Joint definitions.
-	native private boolean _isDefinedJoint(long objPtr, int id);
+	native static private boolean _isDefinedJoint(long objPtr, int id);
 
-	native private void _defineJoint(long objPtr, int id, String jointName);
+	native static private void _defineJoint(long objPtr, int id,
+			String jointName);
 
-	native private void _removeJoint(long objPtr, int id);
+	native static private void _removeJoint(long objPtr, int id);
 
 	// Chain definitions, not implemented.
 	private boolean _isDefinedChain(int id) {
@@ -189,66 +198,67 @@ public class JALMotion extends JALModule {
 	}
 
 	// ALModule methods.
-	native protected boolean _isRunning(long objPtr, int taskId);
+	native static protected boolean _isRunning(long objPtr, int taskId);
 
-	native protected boolean _wait(long objPtr, int taskId, int timeout);
+	native static protected boolean _wait(long objPtr, int taskId, int timeout);
 
 	// ALMotion methods.
-	native private void _clearFootsteps(long objPtr);
+	native static private void _clearFootsteps(long objPtr);
 
-	native private int _doMove(long objPtr, int[] pJointIds, float[] pAngles,
+	native static private int _doMove(long objPtr, int[] pJointIds,
+			float[] pAngles, float[] pDurations, int pInterpolationType);
+
+	native static private int _doMoveAll(long objPtr, float[] pAngles,
 			float[] pDurations, int pInterpolationType);
 
-	native private int _doMoveAll(long objPtr, float[] pAngles,
-			float[] pDurations, int pInterpolationType);
+	native static private float _getAngle(long objPtr, int pJointId);
 
-	native private float _getAngle(long objPtr, int pJointId);
+	native static private void _getBodyAngles(long objPtr, float[] pAngles);
 
-	native private void _getBodyAngles(long objPtr, float[] pAngles);
+	native static private String[] _getBodyJointNames(long objPtr);
 
-	native private String[] _getBodyJointNames(long objPtr);
+	native static private float _getJointStiffness(long objPtr, int pJointId);
 
-	native private float _getJointStiffness(long objPtr, int pJointId);
+	native static private int _gotoAngle(long objPtr, int pJointId,
+			float pAngle, float pDuration, int pInterpolationType);
 
-	native private int _gotoAngle(long objPtr, int pJointId, float pAngle,
+	native static private int _gotoBodyAngles(long objPtr, float[] pAngles,
 			float pDuration, int pInterpolationType);
 
-	native private int _gotoBodyAngles(long objPtr, float[] pAngles,
+	native static private int _gotoBodyStiffness(long objPtr, float pStiffness,
 			float pDuration, int pInterpolationType);
 
-	native private int _gotoBodyStiffness(long objPtr, float pStiffness,
-			float pDuration, int pInterpolationType);
-
-	native private int _gotoJointStiffness(long objPtr, int pJointId,
+	native static private int _gotoJointStiffness(long objPtr, int pJointId,
 			float pStiffness, float pDuration, int pInterpolationType);
 
-	native private void _setBodyStiffness(long objPtr, float pStiffness);
+	native static private void _setBodyStiffness(long objPtr, float pStiffness);
 
-	native private void _setJointStiffness(long objPtr, int pJointId,
+	native static private void _setJointStiffness(long objPtr, int pJointId,
 			float pStiffness);
 
-	native private void _setWalkConfig(long objPtr, float pMaxStepLength,
-			float pMaxStepHeight, float pMaxStepSide, float pMaxStepTurn,
-			float pZmpOffsetX, float pZmpOffsetY);
+	native static private void _setWalkConfig(long objPtr,
+			float pMaxStepLength, float pMaxStepHeight, float pMaxStepSide,
+			float pMaxStepTurn, float pZmpOffsetX, float pZmpOffsetY);
 
-	native private void _setWalkExtraConfig(long objPtr,
+	native static private void _setWalkExtraConfig(long objPtr,
 			float pLHipRollBacklashCompensator,
 			float pRHipRollBacklashCompensator, float pHipHeight,
 			float pTorsoYOrientation);
 
-	native void _stop(long objPtr, int pBrokerTaskID);
+	native static void _stop(long objPtr, int pBrokerTaskID);
 
 	// Walking commands
-	native private int _turn(long objPtr, float pAngle, int pNumSamplesPerStep);
-
-	native private int _walkArc(long objPtr, float pAngle, float pRadius,
+	native static private int _turn(long objPtr, float pAngle,
 			int pNumSamplesPerStep);
 
-	native private boolean _walkIsActive(long objPtr);
+	native static private int _walkArc(long objPtr, float pAngle,
+			float pRadius, int pNumSamplesPerStep);
 
-	native private int _walkStraight(long objPtr, float pDistance,
+	native static private boolean _walkIsActive(long objPtr);
+
+	native static private int _walkStraight(long objPtr, float pDistance,
 			int pNumSamplesPerStep);
 
-	native private int _walkSideways(long objPtr, float pDistance,
+	native static private int _walkSideways(long objPtr, float pDistance,
 			int pNumSamplesPerStep);
 }

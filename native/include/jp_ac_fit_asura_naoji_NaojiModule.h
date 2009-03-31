@@ -13,23 +13,7 @@ extern "C" {
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_NaojiModule__1createJALBroker
-  (JNIEnv *, jobject, jlong);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_NaojiModule
- * Method:    _isRunning
- * Signature: (JI)Z
- */
-JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_NaojiModule__1isRunning
-  (JNIEnv *, jobject, jlong, jint);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_NaojiModule
- * Method:    _wait
- * Signature: (JII)Z
- */
-JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_NaojiModule__1wait
-  (JNIEnv *, jobject, jlong, jint, jint);
+  (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus
 }

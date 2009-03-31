@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1create
-  (JNIEnv *, jobject, jlong);
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
@@ -21,7 +21,7 @@ JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1create
  * Signature: (ILjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory_defineKey
-  (JNIEnv *, jobject, jint, jstring);
+  (JNIEnv *, jclass, jint, jstring);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
@@ -29,7 +29,7 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory_defineKey
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory_undefineKey
-  (JNIEnv *, jobject, jint);
+  (JNIEnv *, jclass, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory_undefineKey
  * Signature: (JII)Z
  */
 JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1wait
-  (JNIEnv *, jobject, jlong, jint, jint);
+  (JNIEnv *, jclass, jlong, jint, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
@@ -45,7 +45,7 @@ JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1wait
  * Signature: (JI)Z
  */
 JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1isRunning
-  (JNIEnv *, jobject, jlong, jint);
+  (JNIEnv *, jclass, jlong, jint);
 
 #ifdef __cplusplus
 }

@@ -14,7 +14,7 @@ extern "C" {
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1create
-  (JNIEnv *, jobject, jlong);
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALProxy
@@ -22,7 +22,7 @@ JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1create
  * Signature: (JI)Z
  */
 JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1isRunning
-  (JNIEnv *, jobject, jlong, jint);
+  (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALProxy
@@ -30,7 +30,7 @@ JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1isRunning
  * Signature: (JII)Z
  */
 JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1wait
-  (JNIEnv *, jobject, jlong, jint, jint);
+  (JNIEnv *, jclass, jlong, jint, jint);
 
 #ifdef __cplusplus
 }
