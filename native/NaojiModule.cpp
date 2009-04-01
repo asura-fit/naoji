@@ -241,6 +241,7 @@ void NaojiModule::exitJavaModule() {
 	assert(res >= 0);
 
 	jclass naojiClass = env->GetObjectClass(naojiObj);
+	jassert(env, naojiClass != NULL);
 
 	jmethodID exitMid = env->GetMethodID(naojiClass, "exit", "()V");
 	jassert(env, exitMid != NULL);

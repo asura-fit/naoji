@@ -5,8 +5,10 @@
 
 #include <jni.h>       /* where everything is defined */
 #include <string>
+#include <iostream>
+#include <sstream>
 
-void jassertion_failed(JNIEnv *env, char const * expr, char const * function,
+inline void jassertion_failed(JNIEnv *env, char const * expr, char const * function,
 		char const * file, long line) {
 	env->ExceptionDescribe();
 	std::ostringstream stream;
@@ -22,7 +24,7 @@ void jassertion_failed(JNIEnv *env, char const * expr, char const * function,
 #define jassert( env, expr)
 #endif
 
-std::string toString(JNIEnv* env, jstring jStr) {
+inline std::string toString(JNIEnv* env, jstring jStr) {
 	const char *chars = env->GetStringUTFChars(jStr, NULL);
 	std::string str(chars);
 	env->ReleaseStringUTFChars(jStr, chars);

@@ -110,7 +110,7 @@ JAVA_LIB += -ljava -ljvm -lverify
 CXXFLAGS += $(CXXINCLUDEPATH)
 LDFLAGS += -lgcc -lc -lstdc++ -ldl
 
-all : naoji_main libnaoji.so libnaojin.so
+all : naoji_main libnaoji.so libnaojin.so libnaojiv4l2.so
 
 naoji_main : almain.o NaojiModule.o
 	$(CXX) $(LDFLAGS) almain.o NaojiModule.o $(JAVA_LIB) $(AL_LIB) -o $@
@@ -118,11 +118,14 @@ naoji_main : almain.o NaojiModule.o
 libnaoji.so : alboot.o NaojiModule.o
 	$(CXX) -shared -fPIC $(LDFLAGS) alboot.o NaojiModule.o $(JAVA_LIB) $(AL_LIB) -o $@
 
-libnaojin.so : NaojiNatives.o NaojiV4L2.o
-	$(CXX) -shared -fPIC $(LDFLAGS) NaojiNatives.o NaojiV4L2.o $(JAVA_LIB) $(AL_LIB)  -o $@
+libnaojin.so : NaojiNatives.o
+	$(CXX) -shared -fPIC $(LDFLAGS) NaojiNatives.o $(JAVA_LIB) $(AL_LIB)  -o $@
+
+libnaojiv4l2.so : NaojiV4L2.o
+	$(CXX) -shared -fPIC $(LDFLAGS) NaojiV4L2.o $(JAVA_LIB)  -o $@
 
 .cpp.o : NaojiModule.hpp NaojiNatives.hpp NaojiV4L2.hpp jni_utils.hpp
 	$(CXX) $(CXXFLAGS) $(JAVA_INC) $(AL_INC) -c $*.cpp
 
 clean :
-	rm -f *.o naoji_main libnaoji.so libnaojin.so
+	rm -f *.o naoji_main libnaoji.so libnaojin.so libnaojiv4l2.so
