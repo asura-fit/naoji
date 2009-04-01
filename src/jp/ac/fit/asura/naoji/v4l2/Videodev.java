@@ -47,6 +47,7 @@ public class Videodev {
 			if (buffers[i] == null)
 				return -255;
 			buffers[i] = buffers[i].asReadOnlyBuffer();
+			_enqueueBuffer(dev, i);
 		}
 		return count;
 	}

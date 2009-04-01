@@ -36,7 +36,7 @@ public class V4L2Buffer {
 		return timestamp;
 	}
 
-	protected void setBuffer(ByteBuffer buffer) {
+	void setBuffer(ByteBuffer buffer) {
 		this.buffer = buffer;
 	}
 }

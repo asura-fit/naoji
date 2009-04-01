@@ -4,6 +4,9 @@
 package jp.ac.fit.asura.naoji.v4l2;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Calendar;
+import java.util.Date;
 
 import junit.framework.TestCase;
 
@@ -36,7 +39,7 @@ public class VideodevTest extends TestCase {
 		assertEquals(0, res);
 
 		//
-		res = dev.setFPS(10);
+		res = dev.setFPS(30);
 		assertEquals(0, res);
 
 		res = dev.init();
@@ -45,12 +48,35 @@ public class VideodevTest extends TestCase {
 		res = dev.start();
 		assertEquals(0, res);
 
-		// retrieves
+		for (int i = 0; i < 10; i++) {
+			// retrieves
+			V4L2Buffer buffer = new V4L2Buffer();
+			res = dev.retrieveImage(buffer);
+			assertEquals(0, res);
+
+			assertTrue("invalid length:" + buffer.getLength(), buffer
+					.getLength() > 0);
+			assertTrue("invalid timestamp:" + buffer.getTimestamp(), buffer
+					.getTimestamp() > 0);
+
+			ByteBuffer bb = buffer.getBuffer();
+			assertNotNull(bb);
+			assertTrue(bb.isDirect());
+			assertEquals(0, bb.position());
+			assertEquals(buffer.getLength(), bb.remaining());
+
+			System.out.println("Retrieve image.");
+			System.out.println("  index:" + buffer.getIndex());
+			System.out.println("  length:" + buffer.getLength());
+			System.out.println("  timestamp:" + buffer.getTimestamp());
+
+			assertEquals(System.currentTimeMillis() * 1000, buffer
+					.getTimestamp(), 10 * 1e3);
+			dev.disposeImage(buffer);
+		}
 
 		res = dev.stop();
 		assertEquals(0, res);
-
-		dev.dispose();
 	}
 
 	public void testFormat() throws Exception {
@@ -85,8 +111,6 @@ public class VideodevTest extends TestCase {
 				.getFourccCode();
 		res = dev.setFormat(format);
 		assertEquals(0, res);
-
-		dev.dispose();
 	}
 
 	public void testFPS() throws Exception {
@@ -97,8 +121,6 @@ public class VideodevTest extends TestCase {
 		assertEquals(0, res);
 		res = dev.setFPS(30);
 		assertEquals(0, res);
-
-		dev.dispose();
 	}
 
 	protected void setUp() throws Exception {

@@ -8,6 +8,7 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <linux/videodev.h>
+#include <linux/i2c-dev.h>
 
 #include <jni.h>       /* where everything is defined */
 
@@ -33,7 +34,65 @@ using namespace Naoji;
 extern "C" {
 #endif
 
-JNIEXPORT jint
+#define DSPIC_I2C_ADDR 0x8
+#define DSPIC_VERSION_REG 170
+#define DSPIC_SWITCH_REG 220
+#define I2C_DEVICE "/dev/i2c-0"
+#define I2C_SLAVE 0x0703
+
+JNIEXPORT
+jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1createI2Cdev(JNIEnv *env,
+		jclass, jstring deviceName) {
+	const char *chars = env->GetStringUTFChars(deviceName, NULL);
+	jint dev = open(chars, O_RDWR);
+	env->ReleaseStringUTFChars(deviceName, chars);
+	return dev;
+}
+
+JNIEXPORT
+void JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1destroy(JNIEnv *, jclass,
+		jint dev) {
+	close(dev);
+}
+
+JNIEXPORT
+jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1init(JNIEnv *, jclass,
+		jint dev) {
+
+	jint res;
+	res = ioctl(dev, I2C_SLAVE, DSPIC_I2C_ADDR);
+
+	int val = i2c_smbus_read_byte_data(dev, DSPIC_VERSION_REG);
+	if (val == -1) {
+		return -1;
+	}
+	if (val < 2) {
+		return -2;
+	}
+}
+
+JNIEXPORT
+jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1getSelectedCamera(
+		JNIEnv *, jclass, jint dev) {
+	jint res = i2c_smbus_read_byte_data(dev, DSPIC_SWITCH_REG);
+	return res;
+}
+
+JNIEXPORT
+jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1selectCamera(JNIEnv *,
+		jclass, jint dev, jint id) {
+	unsigned char cmd[2];
+	// select camera
+	cmd[0] = (unsigned char) id;
+	cmd[1] = 0;
+	int res = i2c_smbus_write_block_data(dev, DSPIC_SWITCH_REG, 1, cmd);
+	if (res == -1)
+		return -1;
+	return 0;
+}
+
+JNIEXPORT
+jint
 JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1createVideodev(JNIEnv *env,
 		jclass, jstring deviceName) {
 	const char *chars = env->GetStringUTFChars(deviceName, NULL);
@@ -42,28 +101,50 @@ JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1createVideodev(JNIEnv *env,
 	return dev;
 }
 
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1destroy(
-		JNIEnv *, jclass, jint dev) {
+JNIEXPORT
+void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1destroy(JNIEnv *,
+		jclass, jint dev) {
 	close(dev);
 }
 
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1dequeueBuffer(
-		JNIEnv *, jclass, jint dev, jobject buffer) {
-	//	struct v4l2_buffer buffer;
-	//	memset(&buffer, 0, sizeof(buffer));
-	//	buffer.index = index;
-	//	buffer.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-	//	buffer.memory = V4L2_MEMORY_MMAP;
-	//
-	//	jint res = ioctl(dev, VIDIOC_DQBUF, &buffer);
-	//	if (res < 0) {
-	//		return res;
-	//	}
+JNIEXPORT
+jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1dequeueBuffer(
+		JNIEnv *env, jclass, jint dev, jobject bufferObj) {
+
+	struct v4l2_buffer buffer;
+	memset(&buffer, 0, sizeof(buffer));
+	buffer.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	buffer.memory = V4L2_MEMORY_MMAP;
+
+	jint res = ioctl(dev, VIDIOC_DQBUF, &buffer);
+	if (res < 0) {
+		return res;
+	}
+
+	// TODO fieldIDをキャッシュする.
+	jassert(env, bufferObj != NULL);
+
+	jclass bufferClass = env->GetObjectClass(bufferObj);
+	jassert(env, bufferClass != NULL);
+
+	jfieldID timestampField = env->GetFieldID(bufferClass, "timestamp", "J");
+	jassert(env, timestampField != NULL);
+
+	jfieldID lengthField = env->GetFieldID(bufferClass, "length", "I");
+	jassert(env, lengthField != NULL);
+
+	jlong timestamp = (jlong) buffer.timestamp.tv_sec * 1000000
+			+ buffer.timestamp.tv_usec;
+
+	env->SetLongField(bufferObj, timestampField, timestamp);
+	env->SetIntField(bufferObj, lengthField, buffer.bytesused);
+
 	return 0;
 }
 
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1enqueueBuffer(
-		JNIEnv *, jclass, jint dev, jint index) {
+JNIEXPORT
+jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1enqueueBuffer(JNIEnv *,
+		jclass, jint dev, jint index) {
 	struct v4l2_buffer buffer;
 	memset(&buffer, 0, sizeof(buffer));
 	buffer.index = index;
@@ -81,16 +162,45 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1enqueueBuffer(
 }
 
 JNIEXPORT
-jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getSelectedCamera(
-		JNIEnv *, jclass, jint);
-
-JNIEXPORT
 jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getControl(JNIEnv *,
-		jclass, jint, jint);
+		jclass, jint dev, jint control) {
+	struct v4l2_control control_s;
+	control_s.id = control;
+	jint res = ioctl(dev, VIDIOC_G_CTRL, &control_s);
+	return control_s.value;
+}
 
 JNIEXPORT
-jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getFormat(JNIEnv *,
-		jclass, jint, jobject);
+jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getFormat(JNIEnv *env,
+		jclass, jint dev, jobject formatObj) {
+	struct v4l2_format format;
+	memset(&format, 0, sizeof(format));
+	format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	jint res = ioctl(dev, VIDIOC_G_FMT, &format);
+
+	if (res != 0) {
+		return errno;
+	}
+
+	jassert(env, formatObj != NULL);
+
+	jclass formatClass = env->GetObjectClass(formatObj);
+	jassert(env, formatClass != NULL);
+
+	jfieldID widthField = env->GetFieldID(formatClass, "width", "I");
+	jassert(env, widthField != NULL);
+	env->SetIntField(formatObj, widthField, format.fmt.pix.width);
+
+	jfieldID heightField = env->GetFieldID(formatClass, "height", "I");
+	jassert(env, heightField != NULL);
+	env->SetIntField(formatObj, heightField, format.fmt.pix.height);
+
+	jfieldID pixelformatField =
+			env->GetFieldID(formatClass, "pixelFormat", "I");
+	jassert(env, pixelformatField != NULL);
+	env->SetIntField(formatObj, pixelformatField, format.fmt.pix.pixelformat);
+	return 0;
+}
 
 JNIEXPORT
 jboolean JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1isSupportedControl(
@@ -211,10 +321,6 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1requestBuffers(
 	}
 	return request.count;
 }
-
-JNIEXPORT
-jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1selectCamera(JNIEnv *,
-		jclass, jint, jint);
 
 JNIEXPORT
 jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setControl(JNIEnv *,

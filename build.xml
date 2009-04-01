@@ -96,6 +96,7 @@
 			<class name="${native.naoji4}" />
 			<class name="${native.naoji5}" />
 			<class name="${native.naoji.v4l2}" />
+			<class name="${native.naoji.i2c}" />
 			<classpath refid="build.classpath" />
 		</javah>
 	</target>
