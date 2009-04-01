@@ -12,9 +12,9 @@ import java.nio.ByteBuffer;
  *
  */
 public class V4L2Buffer {
-	protected int index;
-	protected int length;
-	protected long timestamp;
+	int index;
+	int length;
+	long timestamp;
 	private ByteBuffer buffer;
 
 	public V4L2Buffer() {

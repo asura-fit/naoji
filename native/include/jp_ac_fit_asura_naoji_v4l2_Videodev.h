@@ -18,6 +18,14 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1createVideodev
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
+ * Method:    _dequeueBuffer
+ * Signature: (ILjp/ac/fit/asura/naoji/v4l2/V4L2Buffer;)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1dequeueBuffer
+  (JNIEnv *, jclass, jint, jobject);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _destroy
  * Signature: (I)V
  */
@@ -26,18 +34,10 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1destroy
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
- * Method:    _disposeBuffers
- * Signature: (I)V
+ * Method:    _enqueueBuffer
+ * Signature: (II)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1disposeBuffers
-  (JNIEnv *, jclass, jint);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
- * Method:    _disposeImage
- * Signature: (II)V
- */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1disposeImage
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1enqueueBuffer
   (JNIEnv *, jclass, jint, jint);
 
 /*
@@ -75,18 +75,10 @@ JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1isSupporte
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _isSupportedFormat
- * Signature: (IIII)Z
+ * Signature: (ILjp/ac/fit/asura/naoji/v4l2/V4L2PixelFormat;)Z
  */
 JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1isSupportedFormat
-  (JNIEnv *, jclass, jint, jint, jint, jint);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
- * Method:    _isSupportedFPS
- * Signature: (II)Z
- */
-JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1isSupportedFPS
-  (JNIEnv *, jclass, jint, jint);
+  (JNIEnv *, jclass, jint, jobject);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
@@ -98,67 +90,67 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1requestBuffers
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
- * Method:    _queryBuffer
+ * Method:    _mmapBuffer
  * Signature: (II)Ljava/nio/ByteBuffer;
  */
-JNIEXPORT jobject JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1queryBuffer
+JNIEXPORT jobject JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1mmapBuffer
   (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
- * Method:    _selectCamera
- * Signature: (II)V
+ * Method:    _munmapBuffer
+ * Signature: (ILjava/nio/ByteBuffer;)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1selectCamera
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1munmapBuffer
+  (JNIEnv *, jclass, jint, jobject);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
+ * Method:    _selectCamera
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1selectCamera
   (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _setControl
- * Signature: (III)V
+ * Signature: (III)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setControl
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setControl
   (JNIEnv *, jclass, jint, jint, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _setFormat
- * Signature: (ILjp/ac/fit/asura/naoji/v4l2/V4L2PixelFormat;)V
+ * Signature: (ILjp/ac/fit/asura/naoji/v4l2/V4L2PixelFormat;)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFormat
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFormat
   (JNIEnv *, jclass, jint, jobject);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _setFPS
- * Signature: (II)V
+ * Signature: (II)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFPS
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFPS
   (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _start
- * Signature: (I)V
+ * Signature: (I)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1start
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1start
   (JNIEnv *, jclass, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _stop
- * Signature: (I)V
+ * Signature: (I)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1stop
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1stop
   (JNIEnv *, jclass, jint);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
- * Method:    _retrieveImage
- * Signature: (ILjp/ac/fit/asura/naoji/v4l2/V4L2Buffer;)I
- */
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1retrieveImage
-  (JNIEnv *, jclass, jint, jobject);
 
 #ifdef __cplusplus
 }
