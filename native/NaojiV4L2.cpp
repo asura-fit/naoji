@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include <map>
 
 #include <string.h>
 #include <errno.h>
@@ -113,6 +114,45 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1selectCamera(JNIEnv *,
 	data.block[1] = static_cast<__u8 > (id);
 	jint res = I2Cdev_write(dev, DSPIC_SWITCH_REG, I2C_SMBUS_BLOCK_DATA, &data);
 	return res;
+}
+
+static std::map<std::string, jint> sV4L2IntConst;
+
+JNIEXPORT
+void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1init(JNIEnv *, jclass) {
+	sV4L2IntConst["V4L2_CID_BRIGHTNESS"] = V4L2_CID_BRIGHTNESS;
+	sV4L2IntConst["V4L2_CID_CONTRAST"] = V4L2_CID_CONTRAST;
+	sV4L2IntConst["V4L2_CID_SATURATION"] = V4L2_CID_SATURATION;
+	sV4L2IntConst["V4L2_CID_HUE"] = V4L2_CID_HUE;
+	sV4L2IntConst["V4L2_CID_VFLIP"] = V4L2_CID_VFLIP;
+	sV4L2IntConst["V4L2_CID_HFLIP"] = V4L2_CID_HFLIP;
+	sV4L2IntConst["V4L2_CID_RED_BALANCE"] = V4L2_CID_RED_BALANCE;
+	sV4L2IntConst["V4L2_CID_BLUE_BALANCE"] = V4L2_CID_BLUE_BALANCE;
+	sV4L2IntConst["V4L2_CID_GAIN"] = V4L2_CID_GAIN;
+	sV4L2IntConst["V4L2_CID_HCENTER"] = V4L2_CID_HCENTER;
+	sV4L2IntConst["V4L2_CID_VCENTER"] = V4L2_CID_VCENTER;
+	sV4L2IntConst["V4L2_CID_AUTOGAIN"] = V4L2_CID_AUTOGAIN;
+	sV4L2IntConst["V4L2_CID_AUTO_WHITE_BALANCE"] = V4L2_CID_AUTO_WHITE_BALANCE;
+	// In lxv4l2/ov7670.c, V4L2_CID_AUDIO_MUTE means AEC Enable
+	//	sV4L2IntConst["V4L2_CID_EXPOSURE_AUTO"] = V4L2_CID_AUDIO_MUTE;
+	sV4L2IntConst["V4L2_CID_AUDIO_MUTE"] = V4L2_CID_AUDIO_MUTE;
+	sV4L2IntConst["V4L2_CID_EXPOSURE"] = V4L2_CID_EXPOSURE;
+// Aldebaran's non-standard header.
+#ifdef V4L2_CID_CAM_INIT
+	sV4L2IntConst["V4L2_CID_CAM_INIT"] = V4L2_CID_CAM_INIT;
+#else
+	sV4L2IntConst["V4L2_CID_CAM_INIT"] = V4L2_CID_PRIVATE_BASE + 0;
+#endif
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1getIntConst(
+		JNIEnv *env, jclass, jstring jstr) {
+	// TODO Use String.hashCode() instead of strcmp().
+	const char *chars = env->GetStringUTFChars(jstr, NULL);
+	jassert(env, sV4L2IntConst.count(chars) > 0);
+	jint id = sV4L2IntConst[chars];
+	env->ReleaseStringUTFChars(jstr, chars);
+	return id;
 }
 
 JNIEXPORT
@@ -389,22 +429,22 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFormat(JNIEnv *env,
 
 	jint res;
 
-//	v4l2_std_id esid0;
-//	res = ioctl(dev, VIDIOC_G_STD, &esid0);
-//	if (res != 0) {
-//		return res;
-//	}
-//
-//	// SET video device STANDARD
-//	if (width == 640 && height == 480) {
-//		esid0 = 0x08000000UL; /*VGA*/
-//	} else if (width == 320 && height == 240) {
-//		esid0 = 0x04000000UL; /*QVGA*/
-//	}
-//	res = ioctl(dev, VIDIOC_S_STD, &esid0);
-//	if (res != 0) {
-//		return res;
-//	}
+	//	v4l2_std_id esid0;
+	//	res = ioctl(dev, VIDIOC_G_STD, &esid0);
+	//	if (res != 0) {
+	//		return res;
+	//	}
+	//
+	//	// SET video device STANDARD
+	//	if (width == 640 && height == 480) {
+	//		esid0 = 0x08000000UL; /*VGA*/
+	//	} else if (width == 320 && height == 240) {
+	//		esid0 = 0x04000000UL; /*QVGA*/
+	//	}
+	//	res = ioctl(dev, VIDIOC_S_STD, &esid0);
+	//	if (res != 0) {
+	//		return res;
+	//	}
 
 	struct v4l2_format format;
 	memset(&format, 0, sizeof(format));

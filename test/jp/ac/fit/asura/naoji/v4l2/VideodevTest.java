@@ -31,8 +31,8 @@ public class VideodevTest extends TestCase {
 
 		// set format
 		V4L2PixelFormat format = new V4L2PixelFormat();
-		format.width = 176;
-		format.height = 144;
+		format.width = 640;
+		format.height = 480;
 		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
 				.getFourccCode();
 		res = dev.setFormat(format);

@@ -16,9 +16,17 @@ import java.util.List;
  *
  */
 public class Videodev {
+	private static int[] controlIdMap;
 	static {
 		System.err.println("Loading naojiv4l2 library.");
 		System.loadLibrary("naojiv4l2");
+
+		__init();
+
+		V4L2Control[] ctrls = V4L2Control.values();
+		controlIdMap = new int[ctrls.length];
+		for (V4L2Control c : ctrls)
+			controlIdMap[c.ordinal()] = __getIntConst(c.name());
 	}
 
 	private int dev;
@@ -95,6 +103,10 @@ public class Videodev {
 		buffers = null;
 	}
 
+	public int getControl(V4L2Control control) {
+		return getControl(controlIdMap[control.ordinal()]);
+	}
+
 	public int getControl(int id) {
 		return _getControl(dev, id);
 	}
@@ -107,6 +119,10 @@ public class Videodev {
 		List<V4L2PixelFormat> list = new ArrayList<V4L2PixelFormat>();
 		_getSupportedFormats(dev, list);
 		return list;
+	}
+
+	public boolean isSupportedControl(V4L2Control control) {
+		return isSupportedControl(controlIdMap[control.ordinal()]);
 	}
 
 	public boolean isSupportedControl(int id) {
@@ -125,10 +141,18 @@ public class Videodev {
 		return _setFPS(dev, fps);
 	}
 
+	public int setControl(V4L2Control control, int value) {
+		return setControl(controlIdMap[control.ordinal()], value);
+	}
+
 	public int setControl(int id, int value) {
 		assert isSupportedControl(id);
 		return _setControl(dev, id, value);
 	}
+
+	private static native void __init();
+
+	private static native int __getIntConst(String str);
 
 	private static native int _createVideodev(String device);
 
@@ -138,7 +162,7 @@ public class Videodev {
 
 	private static native int _enqueueBuffer(int dev, int index);
 
-	private static native int _getControl(int dev, int key);
+	private static native int _getControl(int dev, int id);
 
 	private static native int _getFormat(int dev, V4L2PixelFormat format);
 

@@ -7,7 +7,24 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* Inaccessible static: controlIdMap */
 /* Inaccessible static: _00024assertionsDisabled */
+/*
+ * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
+ * Method:    __init
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1init
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
+ * Method:    __getIntConst
+ * Signature: (Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1getIntConst
+  (JNIEnv *, jclass, jstring);
+
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _createVideodev
@@ -58,14 +75,6 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getFormat
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
- * Method:    _getSelectedCamera
- * Signature: (I)I
- */
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getSelectedCamera
-  (JNIEnv *, jclass, jint);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _getSupportedFormats
  * Signature: (ILjava/util/Collection;)I
  */
@@ -111,14 +120,6 @@ JNIEXPORT jobject JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1mmapBuffer
  */
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1munmapBuffer
   (JNIEnv *, jclass, jint, jobject);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
- * Method:    _selectCamera
- * Signature: (II)I
- */
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1selectCamera
-  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
