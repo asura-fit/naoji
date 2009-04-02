@@ -8,6 +8,7 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <linux/videodev.h>
+#include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 
 #include <jni.h>       /* where everything is defined */
@@ -38,7 +39,6 @@ extern "C" {
 #define DSPIC_VERSION_REG 170
 #define DSPIC_SWITCH_REG 220
 #define I2C_DEVICE "/dev/i2c-0"
-#define I2C_SLAVE 0x0703
 
 JNIEXPORT
 jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1createI2Cdev(JNIEnv *env,
@@ -55,6 +55,31 @@ void JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1destroy(JNIEnv *, jclass,
 	close(dev);
 }
 
+inline jint I2Cdev_read_byte(int dev, __u8 command) {
+	union i2c_smbus_data data;
+	struct i2c_smbus_ioctl_data arg;
+	arg.read_write = I2C_SMBUS_READ;
+	arg.command = command;
+	arg.size = I2C_SMBUS_BYTE;
+	arg.data = &data;
+
+	jint res = ioctl(dev, I2C_SMBUS, &arg);
+	if (res == 0)
+		return data.byte;
+	return res;
+}
+
+inline jint I2Cdev_write(int dev, __u8 command, int size, i2c_smbus_data *data) {
+	struct i2c_smbus_ioctl_data arg;
+	arg.read_write = I2C_SMBUS_WRITE;
+	arg.command = command;
+	arg.size = size;
+	arg.data = data;
+
+	jint res = ioctl(dev, I2C_SMBUS, &arg);
+	return res;
+}
+
 JNIEXPORT
 jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1init(JNIEnv *, jclass,
 		jint dev) {
@@ -62,7 +87,7 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1init(JNIEnv *, jclass,
 	jint res;
 	res = ioctl(dev, I2C_SLAVE, DSPIC_I2C_ADDR);
 
-	int val = i2c_smbus_read_byte_data(dev, DSPIC_VERSION_REG);
+	jint val = I2Cdev_read_byte(dev, DSPIC_VERSION_REG);
 	if (val == -1) {
 		return -1;
 	}
@@ -74,21 +99,19 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1init(JNIEnv *, jclass,
 JNIEXPORT
 jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1getSelectedCamera(
 		JNIEnv *, jclass, jint dev) {
-	jint res = i2c_smbus_read_byte_data(dev, DSPIC_SWITCH_REG);
+	jint res = I2Cdev_read_byte(dev, DSPIC_SWITCH_REG);
 	return res;
 }
 
 JNIEXPORT
 jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1selectCamera(JNIEnv *,
 		jclass, jint dev, jint id) {
-	unsigned char cmd[2];
 	// select camera
-	cmd[0] = (unsigned char) id;
-	cmd[1] = 0;
-	int res = i2c_smbus_write_block_data(dev, DSPIC_SWITCH_REG, 1, cmd);
-	if (res == -1)
-		return -1;
-	return 0;
+	union i2c_smbus_data data;
+	data.block[0] = 1;
+	data.block[1] = static_cast<__u8 > (id);
+	jint res = I2Cdev_write(dev, DSPIC_SWITCH_REG, I2C_SMBUS_BLOCK_DATA, &data);
+	return res;
 }
 
 JNIEXPORT
