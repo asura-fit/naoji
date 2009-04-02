@@ -5,6 +5,9 @@ package jp.ac.fit.asura.naoji.v4l2;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author $Author: sey $
@@ -100,8 +103,10 @@ public class Videodev {
 		return _getFormat(dev, format);
 	}
 
-	public int getSelectedCamera() {
-		return _getSelectedCamera(dev);
+	public Collection<V4L2PixelFormat> getSupportedFormats() {
+		List<V4L2PixelFormat> list = new ArrayList<V4L2PixelFormat>();
+		_getSupportedFormats(dev, list);
+		return list;
 	}
 
 	public boolean isSupportedControl(int id) {
@@ -110,10 +115,6 @@ public class Videodev {
 
 	public boolean isSupportedFormat(V4L2PixelFormat format) {
 		return _isSupportedFormat(dev, format);
-	}
-
-	public void selectCamera(int id) {
-		_selectCamera(dev, id);
 	}
 
 	public int setFormat(V4L2PixelFormat format) {
@@ -137,11 +138,12 @@ public class Videodev {
 
 	private static native int _enqueueBuffer(int dev, int index);
 
-	private static native int _getSelectedCamera(int dev);
-
 	private static native int _getControl(int dev, int key);
 
 	private static native int _getFormat(int dev, V4L2PixelFormat format);
+
+	private static native int _getSupportedFormats(int dev,
+			Collection<V4L2PixelFormat> list);
 
 	private static native boolean _isSupportedControl(int dev, int id);
 
@@ -153,8 +155,6 @@ public class Videodev {
 	private static native ByteBuffer _mmapBuffer(int dev, int index);
 
 	private static native int _munmapBuffer(int dev, ByteBuffer buf);
-
-	private static native int _selectCamera(int dev, int id);
 
 	private static native int _setControl(int dev, int key, int value);
 

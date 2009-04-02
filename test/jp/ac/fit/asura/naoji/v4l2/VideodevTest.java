@@ -31,9 +31,9 @@ public class VideodevTest extends TestCase {
 
 		// set format
 		V4L2PixelFormat format = new V4L2PixelFormat();
-		format.width = 160;
-		format.height = 120;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
+		format.width = 176;
+		format.height = 144;
+		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
 				.getFourccCode();
 		res = dev.setFormat(format);
 		assertEquals(0, res);
@@ -71,7 +71,7 @@ public class VideodevTest extends TestCase {
 			System.out.println("  timestamp:" + buffer.getTimestamp());
 
 			assertEquals(System.currentTimeMillis() * 1000, buffer
-					.getTimestamp(), 10 * 1e3);
+					.getTimestamp(), 100 * 1e3);
 			dev.disposeImage(buffer);
 		}
 
@@ -81,14 +81,17 @@ public class VideodevTest extends TestCase {
 
 	public void testFormat() throws Exception {
 		int res;
+
+		// Test QVGA
 		V4L2PixelFormat format = new V4L2PixelFormat();
-		format.width = 160;
-		format.height = 120;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
+		format.width = 320;
+		format.height = 240;
+		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
 				.getFourccCode();
 		res = dev.setFormat(format);
 		assertEquals(0, res);
 
+		// Test get format
 		V4L2PixelFormat format2 = new V4L2PixelFormat();
 		res = dev.getFormat(format2);
 		assertEquals(0, res);
@@ -96,18 +99,29 @@ public class VideodevTest extends TestCase {
 		assertEquals(format.height, format2.height);
 		assertEquals(format.pixelFormat, format2.pixelFormat);
 
+		// Test VGA
 		format = new V4L2PixelFormat();
-		format.width = 320;
-		format.height = 240;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
+		format.width = 640;
+		format.height = 480;
+		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
 				.getFourccCode();
 		res = dev.setFormat(format);
 		assertEquals(0, res);
 
+		// Test QCIF
 		format = new V4L2PixelFormat();
-		format.width = 640;
-		format.height = 480;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
+		format.width = 176;
+		format.height = 144;
+		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode();
+		res = dev.setFormat(format);
+		assertEquals(0, res);
+
+		// Test CIF
+		format = new V4L2PixelFormat();
+		format.width = 352;
+		format.height = 288;
+		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
 				.getFourccCode();
 		res = dev.setFormat(format);
 		assertEquals(0, res);

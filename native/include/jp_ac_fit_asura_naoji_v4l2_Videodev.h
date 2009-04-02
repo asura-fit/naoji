@@ -42,14 +42,6 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1enqueueBuffer
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
- * Method:    _getSelectedCamera
- * Signature: (I)I
- */
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getSelectedCamera
-  (JNIEnv *, jclass, jint);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _getControl
  * Signature: (II)I
  */
@@ -62,6 +54,22 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getControl
  * Signature: (ILjp/ac/fit/asura/naoji/v4l2/V4L2PixelFormat;)I
  */
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getFormat
+  (JNIEnv *, jclass, jint, jobject);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
+ * Method:    _getSelectedCamera
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getSelectedCamera
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
+ * Method:    _getSupportedFormats
+ * Signature: (ILjava/util/Collection;)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getSupportedFormats
   (JNIEnv *, jclass, jint, jobject);
 
 /*

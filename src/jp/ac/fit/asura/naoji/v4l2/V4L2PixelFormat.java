@@ -11,7 +11,8 @@ package jp.ac.fit.asura.naoji.v4l2;
  */
 public class V4L2PixelFormat {
 	public enum PixelFormat {
-		V4L2_PIX_FMT_UYVY('Y', 'U', 'Y', 'V');
+		V4L2_PIX_FMT_YUYV('Y', 'U', 'Y', 'V'), V4L2_PIX_FMT_UYVY('U', 'Y', 'V',
+				'Y'), V4L2_PIX_FMT_YUV422P('4', '2', '2', 'P');
 
 		private int fourcc;
 

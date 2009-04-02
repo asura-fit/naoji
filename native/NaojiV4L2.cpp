@@ -39,6 +39,7 @@ extern "C" {
 #define DSPIC_VERSION_REG 170
 #define DSPIC_SWITCH_REG 220
 #define I2C_DEVICE "/dev/i2c-0"
+#define I2C_SLAVE 0x0703
 
 JNIEXPORT
 jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1createI2Cdev(JNIEnv *env,
@@ -83,7 +84,6 @@ inline jint I2Cdev_write(int dev, __u8 command, int size, i2c_smbus_data *data) 
 JNIEXPORT
 jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1init(JNIEnv *, jclass,
 		jint dev) {
-
 	jint res;
 	res = ioctl(dev, I2C_SLAVE, DSPIC_I2C_ADDR);
 
@@ -92,8 +92,9 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1init(JNIEnv *, jclass,
 		return -1;
 	}
 	if (val < 2) {
-		return -2;
+		return 1000 + val;
 	}
+	return 0;
 }
 
 JNIEXPORT
@@ -150,6 +151,9 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1dequeueBuffer(
 	jclass bufferClass = env->GetObjectClass(bufferObj);
 	jassert(env, bufferClass != NULL);
 
+	jfieldID indexField = env->GetFieldID(bufferClass, "index", "I");
+	jassert(env, indexField != NULL);
+
 	jfieldID timestampField = env->GetFieldID(bufferClass, "timestamp", "J");
 	jassert(env, timestampField != NULL);
 
@@ -161,6 +165,7 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1dequeueBuffer(
 
 	env->SetLongField(bufferObj, timestampField, timestamp);
 	env->SetIntField(bufferObj, lengthField, buffer.bytesused);
+	env->SetIntField(bufferObj, indexField, buffer.index);
 
 	return 0;
 }
@@ -223,6 +228,12 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getFormat(JNIEnv *env,
 	jassert(env, pixelformatField != NULL);
 	env->SetIntField(formatObj, pixelformatField, format.fmt.pix.pixelformat);
 	return 0;
+}
+
+JNIEXPORT
+jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getSupportedFormats(
+		JNIEnv *env, jclass, jint dev, jobject collectionObj) {
+	// TODO implement.
 }
 
 JNIEXPORT
@@ -376,6 +387,25 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFormat(JNIEnv *env,
 	jassert(env, pixelformatField != NULL);
 	jint pixelformat = env->GetIntField(formatObj, pixelformatField);
 
+	jint res;
+
+//	v4l2_std_id esid0;
+//	res = ioctl(dev, VIDIOC_G_STD, &esid0);
+//	if (res != 0) {
+//		return res;
+//	}
+//
+//	// SET video device STANDARD
+//	if (width == 640 && height == 480) {
+//		esid0 = 0x08000000UL; /*VGA*/
+//	} else if (width == 320 && height == 240) {
+//		esid0 = 0x04000000UL; /*QVGA*/
+//	}
+//	res = ioctl(dev, VIDIOC_S_STD, &esid0);
+//	if (res != 0) {
+//		return res;
+//	}
+
 	struct v4l2_format format;
 	memset(&format, 0, sizeof(format));
 	format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -383,7 +413,7 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFormat(JNIEnv *env,
 	format.fmt.pix.width = width;
 	format.fmt.pix.height = height;
 	format.fmt.pix.pixelformat = pixelformat;
-	jint res = ioctl(dev, VIDIOC_S_FMT, &format);
+	res = ioctl(dev, VIDIOC_S_FMT, &format);
 	return res;
 }
 
