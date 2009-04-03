@@ -117,6 +117,7 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_i2c_I2Cdev__1selectCamera(JNIEnv *,
 }
 
 static std::map<std::string, jint> sV4L2IntConst;
+static std::map<std::string, jlong> sV4L2LongConst;
 
 JNIEXPORT
 void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1init(JNIEnv *, jclass) {
@@ -137,12 +138,18 @@ void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1init(JNIEnv *, jclass)
 	//	sV4L2IntConst["V4L2_CID_EXPOSURE_AUTO"] = V4L2_CID_AUDIO_MUTE;
 	sV4L2IntConst["V4L2_CID_AUDIO_MUTE"] = V4L2_CID_AUDIO_MUTE;
 	sV4L2IntConst["V4L2_CID_EXPOSURE"] = V4L2_CID_EXPOSURE;
-// Aldebaran's non-standard header.
+	// Aldebaran's non-standard header.
 #ifdef V4L2_CID_CAM_INIT
 	sV4L2IntConst["V4L2_CID_CAM_INIT"] = V4L2_CID_CAM_INIT;
 #else
 	sV4L2IntConst["V4L2_CID_CAM_INIT"] = V4L2_CID_PRIVATE_BASE + 0;
 #endif
+	sV4L2LongConst["V4L2_STD_UNK101"] = 0x10000000UL; /* HD_480P */
+	sV4L2LongConst["V4L2_STD_UNK102"] = 0x20000000UL;/* HD_525P */
+	sV4L2LongConst["V4L2_STD_UNK103"] = 0x40000000UL;/* HD_720P */
+	sV4L2LongConst["V4L2_STD_UNK104"] = 0x80000000UL;/* HD_1080I */
+	sV4L2LongConst["V4L2_STD_UNK105"] = 0x08000000UL;/* HD_VGA */
+	sV4L2LongConst["V4L2_STD_UNK106"] = 0x04000000UL; /* HD_QVGA */
 }
 
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1getIntConst(
@@ -268,6 +275,15 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getFormat(JNIEnv *env,
 	jassert(env, pixelformatField != NULL);
 	env->SetIntField(formatObj, pixelformatField, format.fmt.pix.pixelformat);
 	return 0;
+}
+
+JNIEXPORT
+jlong JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getStandard(JNIEnv *,
+		jclass, jint dev) {
+	v4l2_std_id value;
+	jint res = ioctl(dev, VIDIOC_G_STD, &value);
+	assert(res == 0);
+	return value;
 }
 
 JNIEXPORT
@@ -429,22 +445,23 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFormat(JNIEnv *env,
 
 	jint res;
 
-	//	v4l2_std_id esid0;
-	//	res = ioctl(dev, VIDIOC_G_STD, &esid0);
-	//	if (res != 0) {
-	//		return res;
-	//	}
-	//
-	//	// SET video device STANDARD
-	//	if (width == 640 && height == 480) {
-	//		esid0 = 0x08000000UL; /*VGA*/
-	//	} else if (width == 320 && height == 240) {
-	//		esid0 = 0x04000000UL; /*QVGA*/
-	//	}
-	//	res = ioctl(dev, VIDIOC_S_STD, &esid0);
-	//	if (res != 0) {
-	//		return res;
-	//	}
+	// Aldebaran's custom operation.
+	v4l2_std_id esid0;
+	res = ioctl(dev, VIDIOC_G_STD, &esid0);
+	if (res != 0) {
+		return res;
+	}
+
+	// SET video device STANDARD
+	if (width == 640 && height == 480) {
+		esid0 = 0x08000000UL; /*VGA*/
+	} else if (width == 320 && height == 240) {
+		esid0 = 0x04000000UL; /*QVGA*/
+	}
+	res = ioctl(dev, VIDIOC_S_STD, &esid0);
+	if (res != 0) {
+		return res;
+	}
 
 	struct v4l2_format format;
 	memset(&format, 0, sizeof(format));
@@ -467,6 +484,14 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFPS(JNIEnv *,
 	parm.parm.capture.timeperframe.denominator = fps;
 	parm.parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
 	jint res = ioctl(dev, VIDIOC_S_PARM, &parm);
+	return res;
+}
+
+JNIEXPORT
+jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setStandard(JNIEnv *,
+		jclass, jint dev, jlong jvalue) {
+	v4l2_std_id value = jvalue;
+	jint res = ioctl(dev, VIDIOC_S_STD, &value);
 	return res;
 }
 

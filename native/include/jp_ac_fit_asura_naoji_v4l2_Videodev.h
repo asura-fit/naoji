@@ -75,6 +75,14 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getFormat
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
+ * Method:    _getStandard
+ * Signature: (I)J
+ */
+JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1getStandard
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
  * Method:    _getSupportedFormats
  * Signature: (ILjava/util/Collection;)I
  */
@@ -144,6 +152,14 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFormat
  */
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setFPS
   (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev
+ * Method:    _setStandard
+ * Signature: (IJ)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1setStandard
+  (JNIEnv *, jclass, jint, jlong);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_v4l2_Videodev

@@ -5,8 +5,6 @@ package jp.ac.fit.asura.naoji.v4l2;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Calendar;
-import java.util.Date;
 
 import junit.framework.TestCase;
 
@@ -79,7 +77,7 @@ public class VideodevTest extends TestCase {
 		assertEquals(0, res);
 	}
 
-	public void testFormat() throws Exception {
+	public void testSizeFormat() throws Exception {
 		int res;
 
 		// Test QVGA
@@ -122,6 +120,35 @@ public class VideodevTest extends TestCase {
 		format.width = 352;
 		format.height = 288;
 		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode();
+		res = dev.setFormat(format);
+		assertEquals(0, res);
+	}
+
+	public void testPixelFormat() throws Exception {
+		int res;
+
+		V4L2PixelFormat format;
+		format = new V4L2PixelFormat();
+		format.width = 640;
+		format.height = 480;
+		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode();
+		res = dev.setFormat(format);
+		assertEquals(0, res);
+
+		format = new V4L2PixelFormat();
+		format.width = 640;
+		format.height = 480;
+		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
+				.getFourccCode();
+		res = dev.setFormat(format);
+		assertEquals(0, res);
+
+		format = new V4L2PixelFormat();
+		format.width = 640;
+		format.height = 480;
+		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUV422P
 				.getFourccCode();
 		res = dev.setFormat(format);
 		assertEquals(0, res);

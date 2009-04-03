@@ -115,6 +115,10 @@ public class Videodev {
 		return _getFormat(dev, format);
 	}
 
+	public long getStandard() {
+		return _getStandard(dev);
+	}
+
 	public Collection<V4L2PixelFormat> getSupportedFormats() {
 		List<V4L2PixelFormat> list = new ArrayList<V4L2PixelFormat>();
 		_getSupportedFormats(dev, list);
@@ -133,6 +137,15 @@ public class Videodev {
 		return _isSupportedFormat(dev, format);
 	}
 
+	public int setControl(V4L2Control control, int value) {
+		return setControl(controlIdMap[control.ordinal()], value);
+	}
+
+	public int setControl(int id, int value) {
+		assert isSupportedControl(id);
+		return _setControl(dev, id, value);
+	}
+
 	public int setFormat(V4L2PixelFormat format) {
 		return _setFormat(dev, format);
 	}
@@ -141,13 +154,8 @@ public class Videodev {
 		return _setFPS(dev, fps);
 	}
 
-	public int setControl(V4L2Control control, int value) {
-		return setControl(controlIdMap[control.ordinal()], value);
-	}
-
-	public int setControl(int id, int value) {
-		assert isSupportedControl(id);
-		return _setControl(dev, id, value);
+	public int setStandard(long value) {
+		return _setStandard(dev, value);
 	}
 
 	private static native void __init();
@@ -166,6 +174,8 @@ public class Videodev {
 
 	private static native int _getFormat(int dev, V4L2PixelFormat format);
 
+	private static native long _getStandard(int dev);
+
 	private static native int _getSupportedFormats(int dev,
 			Collection<V4L2PixelFormat> list);
 
@@ -180,11 +190,13 @@ public class Videodev {
 
 	private static native int _munmapBuffer(int dev, ByteBuffer buf);
 
-	private static native int _setControl(int dev, int key, int value);
+	private static native int _setControl(int dev, int id, int value);
 
 	private static native int _setFormat(int dev, V4L2PixelFormat format);
 
 	private static native int _setFPS(int dev, int fps);
+
+	private static native int _setStandard(int dev, long value);
 
 	private static native int _start(int dev);
 
