@@ -43,7 +43,8 @@ private:
 
 class JALMemory {
 public:
-	JALMemory(JALBroker *jbroker) {
+	JALMemory(JALBroker *jbroker) :
+		keys(32) {
 		try {
 			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
 			proxy = broker->getMemoryProxy();
@@ -59,8 +60,33 @@ public:
 		return proxy;
 	}
 
+	bool isDefinedKey(int id) {
+		if (keys.size() <= id)
+			return false;
+		return keys[id].size() > 0;
+	}
+
+	std::string getKey(int id) {
+		assert(isDefinedKey(id));
+		return keys[id];
+	}
+
+	int defineKey(std::string key) {
+		assert(key.size() > 0);
+		// TODO reuse disposed entry.
+		int id = keys.size();
+		keys.resize(id + 1, key);
+		return id;
+	}
+
+	void removeKey(int id) {
+		assert(isDefinedKey(id));
+		keys[id] = std::string();
+	}
+
 protected:
 	AL::ALPtr<AL::ALMemoryProxy> proxy;
+	std::vector<std::string> keys;
 };
 
 class JALMotion {
@@ -112,6 +138,25 @@ private:
 	std::vector<std::string> jointNames;
 };
 
+class Query {
+public:
+	Query(JALMemory *jmemory) {
+		this->jmemory = jmemory;
+	}
+
+	void setNames(jobjectArray names) {
+		// TODO implements.
+	}
+
+protected:
+	JALMemory *jmemory;
+	int length;
+	ALValue names;
+	union {
+		jbyte *b;
+		jobjectArray s;
+	} data;
+};
 }
 
 #endif // NaojiNatives_H
