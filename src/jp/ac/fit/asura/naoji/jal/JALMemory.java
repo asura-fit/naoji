@@ -32,7 +32,7 @@ public class JALMemory extends JALModule {
 		ByteBuffer allocateBuffer(int capacity) {
 			ByteBuffer bb = ByteBuffer.allocateDirect(capacity);
 			bb.order(ByteOrder.nativeOrder());
-			_setBuffer(queryPtr, bb);
+			_setQueryBuffer(queryPtr, bb);
 			return bb;
 		}
 
@@ -54,7 +54,7 @@ public class JALMemory extends JALModule {
 		}
 
 		public void update() {
-			_updateFloat(queryPtr);
+			_updateFloatQuery(queryPtr);
 		}
 	}
 
@@ -73,7 +73,7 @@ public class JALMemory extends JALModule {
 		}
 
 		public void update() {
-			_updateInt(queryPtr);
+			_updateIntQuery(queryPtr);
 		}
 	}
 
@@ -83,7 +83,7 @@ public class JALMemory extends JALModule {
 		StringQuery(long jmemoryPtr, List<String> keys) {
 			super(jmemoryPtr, keys);
 			buffer = new String[keys.size()];
-			_setBufferString(queryPtr, buffer);
+			_setQueryBufferString(queryPtr, buffer);
 		}
 
 		public String[] getBuffer() {
@@ -91,7 +91,7 @@ public class JALMemory extends JALModule {
 		}
 
 		public void update() {
-			_updateString(queryPtr);
+			_updateStringQuery(queryPtr);
 		}
 	}
 
@@ -122,11 +122,11 @@ public class JALMemory extends JALModule {
 	}
 
 	public int defineKey(String key) {
-		return _defineKey(key);
+		return _defineKey(objPtr, key);
 	}
 
 	public void removeKey(int id) {
-		_removeKey(id);
+		_removeKey(objPtr, id);
 	}
 
 	public int getDataInt(String key) {
@@ -157,9 +157,9 @@ public class JALMemory extends JALModule {
 
 	native static private void _dispose(long objPtr);
 
-	native static private int _defineKey(String key);
+	native static private int _defineKey(long objPtr, String key);
 
-	native static private void _removeKey(int id);
+	native static private void _removeKey(long objPtr, int id);
 
 	// ALModule methods.
 	native static protected boolean _wait(long objPtr, int taskId, int timeout);
@@ -184,13 +184,13 @@ public class JALMemory extends JALModule {
 
 	native static private void _disposeQuery(long queryPtr);
 
-	native static private void _setBuffer(long queryPtr, ByteBuffer buffer);
+	native static private void _setQueryBuffer(long queryPtr, ByteBuffer buffer);
 
-	native static private void _setBufferString(long queryPtr, String[] buffer);
+	native static private void _setQueryBufferString(long queryPtr, String[] buffer);
 
-	native static private void _updateFloat(long queryPtr);
+	native static private void _updateFloatQuery(long queryPtr);
 
-	native static private void _updateInt(long queryPtr);
+	native static private void _updateIntQuery(long queryPtr);
 
-	native static private void _updateString(long queryPtr);
+	native static private void _updateStringQuery(long queryPtr);
 }

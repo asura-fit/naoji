@@ -148,14 +148,15 @@ public:
 		// TODO implements.
 	}
 
-protected:
+public:
 	JALMemory *jmemory;
-	int length;
 	ALValue names;
+	jsize size;
+	jlong bufferLength;
 	union {
 		jbyte *b;
 		jobjectArray s;
-	} data;
+	} buffer;
 };
 }
 

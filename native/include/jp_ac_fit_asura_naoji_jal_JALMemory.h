@@ -26,18 +26,18 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1dispose
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
  * Method:    _defineKey
- * Signature: (Ljava/lang/String;)I
+ * Signature: (JLjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1defineKey
-  (JNIEnv *, jclass, jstring);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
  * Method:    _removeKey
- * Signature: (I)V
+ * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1removeKey
-  (JNIEnv *, jclass, jint);
+  (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
@@ -121,42 +121,42 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1disposeQuery
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
- * Method:    _setBuffer
+ * Method:    _setQueryBuffer
  * Signature: (JLjava/nio/ByteBuffer;)V
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1setBuffer
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1setQueryBuffer
   (JNIEnv *, jclass, jlong, jobject);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
- * Method:    _setBufferString
+ * Method:    _setQueryBufferString
  * Signature: (J[Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1setBufferString
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1setQueryBufferString
   (JNIEnv *, jclass, jlong, jobjectArray);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
- * Method:    _updateFloat
+ * Method:    _updateFloatQuery
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateFloat
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateFloatQuery
   (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
- * Method:    _updateInt
+ * Method:    _updateIntQuery
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateInt
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateIntQuery
   (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
- * Method:    _updateString
+ * Method:    _updateStringQuery
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateString
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateStringQuery
   (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus
