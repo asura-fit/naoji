@@ -3,6 +3,7 @@
  */
 package jp.ac.fit.asura.naoji.jal;
 
+
 /**
  * @author $Author: sey $
  *
@@ -24,6 +25,11 @@ public class JALBroker {
 	public JALMotion createJALMotion() {
 		JALMotion mot = new JALMotion(this);
 		return mot;
+	}
+
+	public JDCM createJDCM() {
+		JDCM dcm = new JDCM(this);
+		return dcm;
 	}
 
 	public void dispose() {
