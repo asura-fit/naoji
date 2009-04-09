@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,10 +60,22 @@ public class NaojiModule extends JALModule {
 			try {
 				naoji.init(context);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
+		System.err.println("NaojiModule initilized.");
 	}
 
+	/**
+	 * モジュールのクラスローダーを初期化します.
+	 *
+	 * モジュールはnaoji.modulesファイルから読み込まれます.
+	 *
+	 * このファイルは一行ごとにURLClassLoaderの引数を記述します.
+	 *
+	 * 引数は空白文字で区切られたURLのリストです.
+	 *
+	 */
 	private void initClassLoaders() {
 		// クラスローダーを初期化
 		System.err.println("Loading Classloaders.");
@@ -74,15 +87,28 @@ public class NaojiModule extends JALModule {
 
 			String line;
 			while ((line = br.readLine()) != null) {
-				line.trim();
+				line = line.trim();
+				if (line.isEmpty())
+					continue;
 				if (line.startsWith("#") || line.startsWith("//"))
 					continue;
 				System.err.println("Load " + line);
+				String[] cpStrings = line.split("\\s+");
+				URLClassLoader loader = null;
 				try {
-					URL url = new URL(line);
-					loaders.add(new URLClassLoader(new URL[] { url }));
+					URL[] urls = new URL[cpStrings.length];
+					for (int i = 0; i < cpStrings.length; i++)
+						urls[i] = new URL(cpStrings[i]);
+					loader = new URLClassLoader(urls);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
+				}
+				if (loader != null) {
+					loaders.add(loader);
+					System.err.println("Add Classloader:" + loader.toString()
+							+ " " + Arrays.toString(loader.getURLs()));
+				} else {
+					System.err.println("Add Classloader failed. line:" + line);
 				}
 			}
 		} catch (IOException e) {
@@ -116,6 +142,7 @@ public class NaojiModule extends JALModule {
 		for (Naoji naoji : brothers) {
 			start(naoji);
 		}
+		System.err.println("NaojiModule started.");
 	}
 
 	public void exit() {

@@ -54,7 +54,9 @@ public class JALMemory extends JALModule {
 		}
 
 		public void update() {
+			buffer.position(0);
 			_updateFloatQuery(queryPtr);
+			buffer.limit(buffer.capacity());
 		}
 	}
 

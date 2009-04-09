@@ -88,6 +88,10 @@ public class JALMotion extends JALModule {
 		_getBodyAngles(objPtr, pAngles);
 	}
 
+	public String[] getBodyJointNames() {
+		return _getBodyJointNames(objPtr);
+	}
+
 	public float getJointStiffness(int pJointId) {
 		assert isDefinedJoint(pJointId);
 		return _getJointStiffness(objPtr, pJointId);
