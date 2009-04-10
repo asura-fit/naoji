@@ -139,11 +139,9 @@ void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1init(JNIEnv *, jclass)
 	sV4L2IntConst["V4L2_CID_AUDIO_MUTE"] = V4L2_CID_AUDIO_MUTE;
 	sV4L2IntConst["V4L2_CID_EXPOSURE"] = V4L2_CID_EXPOSURE;
 	// Aldebaran's non-standard header.
-#ifdef V4L2_CID_CAM_INIT
-	sV4L2IntConst["V4L2_CID_CAM_INIT"] = V4L2_CID_CAM_INIT;
-#else
-	sV4L2IntConst["V4L2_CID_CAM_INIT"] = V4L2_CID_PRIVATE_BASE + 0;
-#endif
+	sV4L2IntConst["V4L2_CID_CAM_INIT"] = (V4L2_CID_BASE+25);
+	//	sV4L2IntConst["V4L2_CID_CAM_INIT"] = V4L2_CID_CAM_INIT;
+
 	sV4L2LongConst["V4L2_STD_UNK101"] = 0x10000000UL; /* HD_480P */
 	sV4L2LongConst["V4L2_STD_UNK102"] = 0x20000000UL;/* HD_525P */
 	sV4L2LongConst["V4L2_STD_UNK103"] = 0x40000000UL;/* HD_720P */

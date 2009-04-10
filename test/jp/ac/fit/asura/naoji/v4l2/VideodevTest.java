@@ -125,27 +125,37 @@ public class VideodevTest extends TestCase {
 		assertEquals(0, res);
 	}
 
-	public void testPixelFormat() throws Exception {
+	public void testPixelFormatYUYV() throws Exception {
 		int res;
 
-		V4L2PixelFormat format;
-		format = new V4L2PixelFormat();
+		// Nao実機で使用できる.
+		V4L2PixelFormat format = new V4L2PixelFormat();
 		format.width = 640;
 		format.height = 480;
 		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
 				.getFourccCode();
 		res = dev.setFormat(format);
 		assertEquals(0, res);
+	}
 
-		format = new V4L2PixelFormat();
+	public void testPixelFormatUYVY() throws Exception {
+		int res;
+
+		// Nao実機では使えない.
+		V4L2PixelFormat format = new V4L2PixelFormat();
 		format.width = 640;
 		format.height = 480;
 		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
 				.getFourccCode();
 		res = dev.setFormat(format);
 		assertEquals(0, res);
+	}
 
-		format = new V4L2PixelFormat();
+	public void testPixelFormatYUV422P() throws Exception {
+		int res;
+
+		// Nao実機では使えない.
+		V4L2PixelFormat format = new V4L2PixelFormat();
 		format.width = 640;
 		format.height = 480;
 		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUV422P

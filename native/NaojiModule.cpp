@@ -8,6 +8,8 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
+#include <exception>
+#include <stdexcept>
 #include <boost/current_function.hpp>
 
 #include "alproxy.h"
@@ -46,6 +48,7 @@ NaojiModule::NaojiModule(ALPtr<ALBroker> pBroker, const std::string& pName) :
 
 	isOk = true;
 	jvm = NULL;
+	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
 }
 
 //______________________________________________

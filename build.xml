@@ -66,6 +66,7 @@
 			<arg value="libnaoji.so" />
 			<arg value="libnaojin.so" />
 			<arg value="libnaojiv4l2.so" />
+			<arg value="naoji_main" />
 		</exec>
 	</target>
 

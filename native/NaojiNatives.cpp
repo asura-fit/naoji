@@ -226,19 +226,25 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1setQueryBufferString(
 }
 
 JNIEXPORT
-void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateFloatQueryt(
+void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateFloatQuery(
 		JNIEnv *, jclass, jlong queryPtr) {
 	Query *query = reinterpret_cast<Query*> (queryPtr);
 	assert(query != NULL);
 
-	ALValue data = query->jmemory->getProxy()->getListData(query->names);
-	int size = data.getSize();
-	assert(query->size == size);
+	try {
+		ALValue data = query->jmemory->getProxy()->getListData(query->names);
+		int size = data.getSize();
+		assert(query->size == size);
 
-	jfloat* buf = reinterpret_cast<jfloat*> (query->buffer.b);
-	for (int i = 0; i < size; i++) {
-		buf[i] = data[i];
+		jfloat* buf = reinterpret_cast<jfloat*> (query->buffer.b);
+		for (int i = 0; i < size; i++) {
+			buf[i] = data[i];
+		}
+	} catch (AL::ALError err) {
+		std::cerr << err.toString() << std::endl;
+		assert(false);
 	}
+
 }
 
 JNIEXPORT
@@ -247,13 +253,18 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateIntQuery(
 	Query *query = reinterpret_cast<Query*> (queryPtr);
 	assert(query != NULL);
 
-	ALValue data = query->jmemory->getProxy()->getListData(query->names);
-	int size = data.getSize();
-	assert(query->size == size);
+	try {
+		ALValue data = query->jmemory->getProxy()->getListData(query->names);
+		int size = data.getSize();
+		assert(query->size == size);
 
-	jint* buf = reinterpret_cast<jint*> (query->buffer.b);
-	for (int i = 0; i < size; i++) {
-		buf[i] = data[i];
+		jint* buf = reinterpret_cast<jint*> (query->buffer.b);
+		for (int i = 0; i < size; i++) {
+			buf[i] = data[i];
+		}
+	} catch (AL::ALError err) {
+		std::cerr << err.toString() << std::endl;
+		assert(false);
 	}
 }
 
@@ -364,7 +375,6 @@ JNIEXPORT jobjectArray JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBod
 		jstring name = env->NewStringUTF(names[i].c_str());
 		env->SetObjectArrayElement(nameArray, i, name);
 		env->DeleteLocalRef(name);
-
 	}
 	return nameArray;
 }

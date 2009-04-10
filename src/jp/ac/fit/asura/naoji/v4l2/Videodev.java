@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class Videodev {
 	private static int[] controlIdMap;
+
 	static {
 		System.err.println("Loading naojiv4l2 library.");
 		System.loadLibrary("naojiv4l2");
@@ -104,7 +105,7 @@ public class Videodev {
 	}
 
 	public int getControl(V4L2Control control) {
-		return getControl(controlIdMap[control.ordinal()]);
+		return getControl(toControlId(control));
 	}
 
 	public int getControl(int id) {
@@ -126,7 +127,7 @@ public class Videodev {
 	}
 
 	public boolean isSupportedControl(V4L2Control control) {
-		return isSupportedControl(controlIdMap[control.ordinal()]);
+		return isSupportedControl(toControlId(control));
 	}
 
 	public boolean isSupportedControl(int id) {
@@ -138,11 +139,11 @@ public class Videodev {
 	}
 
 	public int setControl(V4L2Control control, int value) {
-		return setControl(controlIdMap[control.ordinal()], value);
+		return setControl(toControlId(control), value);
 	}
 
 	public int setControl(int id, int value) {
-		assert isSupportedControl(id);
+		assert isSupportedControl(id) : toControl(id);
 		return _setControl(dev, id, value);
 	}
 
@@ -156,6 +157,17 @@ public class Videodev {
 
 	public int setStandard(long value) {
 		return _setStandard(dev, value);
+	}
+
+	private int toControlId(V4L2Control control) {
+		return controlIdMap[control.ordinal()];
+	}
+
+	private V4L2Control toControl(int controlId) {
+		for (int i = 0; i < controlIdMap.length; i++)
+			if (controlId == controlIdMap[i])
+				return V4L2Control.values()[i];
+		return null;
 	}
 
 	private static native void __init();
