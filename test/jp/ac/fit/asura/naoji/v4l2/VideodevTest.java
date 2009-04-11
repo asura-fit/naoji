@@ -148,7 +148,7 @@ public class VideodevTest extends TestCase {
 		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
 				.getFourccCode();
 		res = dev.setFormat(format);
-		assertEquals(0, res);
+		assertEquals("This test will fail on NaoV3R.", 0, res);
 	}
 
 	public void testPixelFormatYUV422P() throws Exception {
@@ -161,7 +161,7 @@ public class VideodevTest extends TestCase {
 		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUV422P
 				.getFourccCode();
 		res = dev.setFormat(format);
-		assertEquals(0, res);
+		assertEquals("This test will fail on NaoV3R.", 0, res);
 	}
 
 	public void testFPS() throws Exception {
@@ -172,6 +172,31 @@ public class VideodevTest extends TestCase {
 		assertEquals(0, res);
 		res = dev.setFPS(30);
 		assertEquals(0, res);
+	}
+
+	public void testToControlId() throws Exception {
+		assertEquals(0x00980900, dev
+				.toControlId(V4L2Control.V4L2_CID_BRIGHTNESS));
+	}
+
+	public void testControls() {
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_AUDIO_MUTE));
+		assertTrue(dev
+				.isSupportedControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_AUTOGAIN));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_BLUE_BALANCE));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_BRIGHTNESS));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_CAM_INIT));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_CONTRAST));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_EXPOSURE));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_GAIN));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_HCENTER));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_HFLIP));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_HUE));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_RED_BALANCE));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_SATURATION));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_VCENTER));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_VFLIP));
 	}
 
 	protected void setUp() throws Exception {

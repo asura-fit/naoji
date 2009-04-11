@@ -139,7 +139,7 @@ void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1init(JNIEnv *, jclass)
 	sV4L2IntConst["V4L2_CID_AUDIO_MUTE"] = V4L2_CID_AUDIO_MUTE;
 	sV4L2IntConst["V4L2_CID_EXPOSURE"] = V4L2_CID_EXPOSURE;
 	// Aldebaran's non-standard header.
-	sV4L2IntConst["V4L2_CID_CAM_INIT"] = (V4L2_CID_BASE+25);
+	sV4L2IntConst["V4L2_CID_CAM_INIT"] = 0x980919;
 	//	sV4L2IntConst["V4L2_CID_CAM_INIT"] = V4L2_CID_CAM_INIT;
 
 	sV4L2LongConst["V4L2_STD_UNK101"] = 0x10000000UL; /* HD_480P */
@@ -228,9 +228,6 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1enqueueBuffer(JNIEnv *,
 	if (res != 0) {
 		return errno;
 	}
-#ifdef __DEBUG__
-	fprintf(stderr, "Buffer %d queued\n", index);
-#endif
 	return 0;
 }
 
@@ -305,7 +302,7 @@ jboolean JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1isSupportedControl(
 		return false;
 	}
 
-	if (queryctrl.flags & V4L2_CTRL_TYPE_BOOLEAN) {
+	if (queryctrl.type & V4L2_CTRL_TYPE_BOOLEAN) {
 		return true;
 	}
 
