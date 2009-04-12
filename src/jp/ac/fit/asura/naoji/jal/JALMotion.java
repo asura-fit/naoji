@@ -153,7 +153,7 @@ public class JALMotion extends JALModule {
 	}
 
 	public int walkStraight(float pDistance, int pNumSamplesPerStep) {
-		return _walkStraight(pNumSamplesPerStep, pDistance, pNumSamplesPerStep);
+		return _walkStraight(objPtr, pDistance, pNumSamplesPerStep);
 	}
 
 	public int walkSideways(float pDistance, int pNumSamplesPerStep) {
