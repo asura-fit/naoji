@@ -163,7 +163,7 @@ public:
 class JDCM {
 public:
 	JDCM(JALBroker *jbroker) :
-		aliases(32), aliasLengths(32) {
+		aliases(0) {
 		try {
 			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
 			proxy = broker->getDcmProxy();
@@ -179,42 +179,10 @@ public:
 		return proxy;
 	}
 
-	bool isDefinedAlias(int id) {
-		if (aliasLengths.size() <= id)
-			return false;
-		return aliasLengths[id] > 0;
-	}
-
-	AL::ALValue getAlias(int id) {
-		assert(isDefinedAlias(id));
-		return aliases[id];
-	}
-
-	int getAliasLength(int id) {
-		assert(isDefinedAlias(id));
-		return aliasLengths[id];
-	}
-
-	int defineAlias(AL::ALValue alias, int length) {
-		assert(aliases.size() > 0);
-		assert(length > 0);
-		// TODO reuse disposed entry.
-		int id = aliases.size();
-		aliases.resize(id + 1, alias);
-		aliasLengths.resize(id + 1, length);
-		return id;
-	}
-
-	void removeAlias(int id) {
-		assert(isDefinedAlias(id));
-		aliases[id] = ALValue();
-		aliasLengths[id] = 0;
-	}
+	int aliases;
 
 protected:
 	AL::ALPtr<AL::DCMProxy> proxy;
-	std::vector<AL::ALValue> aliases;
-	std::vector<int> aliasLengths;
 };
 
 }
