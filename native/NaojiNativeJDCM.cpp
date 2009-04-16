@@ -29,6 +29,10 @@ using namespace Naoji;
 #define JNICALL
 #endif
 
+#ifndef AL_CATCH_ERR
+#define AL_CATCH_ERR(CALLBACK) catch (AL::ALError err) { CALLBACK }
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -85,7 +89,9 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1createAlias(JNIEnv *env,
 		alias[1][i] = toString(env, jstr);
 		env->DeleteLocalRef(jstr);
 	}
-	jdcm->getProxy()->createAlias(alias);
+	try {
+		jdcm->getProxy()->createAlias(alias);
+	}AL_CATCH_ERR(assert(false);)
 	return id;
 }
 
@@ -98,8 +104,38 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1getTime(JNIEnv *, jclass,
 	return jdcm->getProxy()->getTime(0);
 }
 
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1set(JNIEnv *,
-		jclass, jlong jdcmPtr, jstring, jint, jfloatArray, jintArray);
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1set(JNIEnv *env,
+		jclass, jlong jdcmPtr, jstring key, jint mergeType,
+		jfloatArray jvalues, jintArray jdurations) {
+	JDCM *jdcm = reinterpret_cast<JDCM*> (jdcmPtr);
+	assert(jdcm != NULL);
+
+	jsize valueSize = env->GetArrayLength(jvalues);
+	jsize durationsSize = env->GetArrayLength(jdurations);
+	assert(valueSize == durationsSize);
+
+	try {
+		ALValue commands;
+
+		commands.arraySetSize(3);
+		commands[0] = toString(env, key);
+		commands[1] = jdcm->getMergeType(mergeType);
+		commands[2].arraySetSize(valueSize);
+
+		jfloat* values =
+				(jfloat*) env->GetPrimitiveArrayCritical(jvalues, NULL);
+		jint* durations = (jint*) env->GetPrimitiveArrayCritical(jdurations,
+				NULL);
+
+		for (int i = 0; i < valueSize; i++) {
+			commands[2][i].arraySetSize(2);
+			commands[2][i][0] = values[i];
+			commands[2][i][1] = jdcm->getProxy()->getTime(durations[i]);
+		}
+
+		jdcm->getProxy()->set(commands);
+	}AL_CATCH_ERR(assert(false);)
+}
 
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeMixed(
 		JNIEnv *, jclass, jlong jdcmPtr, jint, jint, jfloatArray, jintArray);
@@ -119,20 +155,7 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeSeparate(JNIEnv *env,
 	ALValue commands;
 	commands.arraySetSize(6);
 	commands[0] = boost::lexical_cast<string>(aliasId);
-	switch (mergeType) {
-	case 0:
-		commands[1] = string("Merge");
-		break;
-	case 1:
-		commands[1] = string("ClearAll");
-		break;
-	case 2:
-		commands[1] = string("ClearAfter");
-		break;
-	case 3:
-		commands[1] = string("ClearBefore");
-		break;
-	}
+	commands[1] = jdcm->getMergeType(mergeType);
 	commands[2] = string("time-separate");
 	commands[3] = 0;
 
@@ -153,7 +176,9 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeSeparate(JNIEnv *env,
 		}
 	}
 	env->ReleasePrimitiveArrayCritical(jvalueMatrix, valueMatrix, JNI_ABORT);
-	jdcm->getProxy()->setAlias(commands);
+	try {
+		jdcm->getProxy()->setAlias(commands);
+	}AL_CATCH_ERR(assert(false);)
 }
 
 }

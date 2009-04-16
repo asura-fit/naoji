@@ -179,6 +179,21 @@ public:
 		return proxy;
 	}
 
+	std::string getMergeType(jint ordinal) {
+		switch (ordinal) {
+		case 0:
+			return string("Merge");
+		case 1:
+			return string("ClearAll");
+		case 2:
+			return string("ClearAfter");
+		case 3:
+			return string("ClearBefore");
+		default:
+			return string("ClearAll");
+		}
+	}
+
 	int aliases;
 
 protected:
