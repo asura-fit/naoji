@@ -1,5 +1,6 @@
 
 USE_CROSS=
+USE_DEBUG=
 
 CTC_DIR=/home/nao/ctc-robocup-1.2.1
 AL_DIR=/home/nao/NaoQiRobocup-1.2.0-Linux
@@ -46,8 +47,11 @@ LDFLAGS =
 CXXFLAGS =
 
 # debug or non-debug build.
+ifneq ($(USE_DEBUG),)
 CXXFLAGS += -D__DEBUG__
-# CXXFLAGS += -DNDEBUG
+else
+CXXFLAGS += -DNDEBUG
+endif
 
 AL_INC = \
  -I${SYSROOT}/usr/include/python2.5 \

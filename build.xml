@@ -61,7 +61,8 @@
 	<!-- Linux host only. -->
 	<target name="compile.native" depends="javah">
 		<exec executable="make" dir="${build.native}" failonerror="true">
-			<arg value="USE_CROSS=1" />
+			<arg value="${build.native.cross}" />
+			<arg value="${build.native.debug}" />
 			<arg value="clean" />
 			<arg value="libnaoji.so" />
 			<arg value="libnaojin.so" />
