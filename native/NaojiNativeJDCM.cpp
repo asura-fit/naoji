@@ -33,6 +33,8 @@ using namespace Naoji;
 #define AL_CATCH_ERR(CALLBACK) catch (AL::ALError err) { CALLBACK }
 #endif
 
+const int cDCMCommandDelay = 40;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -101,7 +103,7 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1getTime(JNIEnv *, jclass,
 	JDCM *jdcm = reinterpret_cast<JDCM*> (jdcmPtr);
 	assert(jdcm != NULL);
 
-	return jdcm->getProxy()->getTime(0);
+	return jdcm->getProxy()->getTime(cDCMCommandDelay);
 }
 
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1set(JNIEnv *env,
@@ -127,10 +129,11 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1set(JNIEnv *env,
 		jint* durations = (jint*) env->GetPrimitiveArrayCritical(jdurations,
 				NULL);
 
+		int baseTime = jdcm->getProxy()->getTime(cDCMCommandDelay);
 		for (int i = 0; i < valueSize; i++) {
 			commands[2][i].arraySetSize(2);
 			commands[2][i][0] = values[i];
-			commands[2][i][1] = jdcm->getProxy()->getTime(durations[i]);
+			commands[2][i][1] = durations[i];
 		}
 
 		jdcm->getProxy()->set(commands);
@@ -162,14 +165,17 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeSeparate(JNIEnv *env,
 	commands[4].arraySetSize(durationsSize);
 
 	jint* durations = (jint*) env->GetPrimitiveArrayCritical(jdurations, NULL);
+	int baseTime = jdcm->getProxy()->getTime(cDCMCommandDelay);
 	for (int i = 0; i < durationsSize; i++) {
-		commands[4][i] = jdcm->getProxy()->getTime(durations[i]);
+		commands[4][i] = baseTime + durations[i];
 	}
 	env->ReleasePrimitiveArrayCritical(jdurations, durations, JNI_ABORT);
 
+	commands[5].arraySetSize(jointNum);
+
 	jfloat* valueMatrix = (jfloat*) env->GetPrimitiveArrayCritical(
 			jvalueMatrix, NULL);
-	for (int i = 0; i < valueMatrixSize; i++) {
+	for (int i = 0; i < jointNum; i++) {
 		commands[5][i].arraySetSize(durationsSize);
 		for (int j = 0; j < durationsSize; j++) {
 			commands[5][i][j] = valueMatrix[i * durationsSize + j];
