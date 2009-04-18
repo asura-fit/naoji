@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Naoji" default="all">
-	<property file="build.properties" />
 	<property file="user.properties" />
+	<property file="build.properties" />
 
 	<path id="build.classpath">
 		<pathelement path="${build.home}" />
