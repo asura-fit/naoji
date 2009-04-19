@@ -13,9 +13,6 @@
 
 #include <jni.h>       /* where everything is defined */
 
-/**
- * DESCRIBE YOUR CLASS HERE
- */
 namespace Naoji {
 
 }

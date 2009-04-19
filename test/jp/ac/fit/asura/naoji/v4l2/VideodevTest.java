@@ -3,7 +3,9 @@
  */
 package jp.ac.fit.asura.naoji.v4l2;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
@@ -17,7 +19,7 @@ import junit.framework.TestCase;
 public class VideodevTest extends TestCase {
 	private Videodev dev;
 
-	private Videodev createDevice() throws IOException {
+	public static Videodev createDevice() throws IOException {
 		String device = System.getProperty("jp.ac.fit.asura.naoji.v4l2.DEVICE");
 		if (device == null)
 			device = "/dev/video0";
@@ -48,29 +50,7 @@ public class VideodevTest extends TestCase {
 
 		for (int i = 0; i < 10; i++) {
 			// retrieves
-			V4L2Buffer buffer = new V4L2Buffer();
-			res = dev.retrieveImage(buffer);
-			assertEquals(0, res);
-
-			assertTrue("invalid length:" + buffer.getLength(), buffer
-					.getLength() > 0);
-			assertTrue("invalid timestamp:" + buffer.getTimestamp(), buffer
-					.getTimestamp() > 0);
-
-			ByteBuffer bb = buffer.getBuffer();
-			assertNotNull(bb);
-			assertTrue(bb.isDirect());
-			assertEquals(0, bb.position());
-			assertEquals(buffer.getLength(), bb.remaining());
-
-			System.out.println("Retrieve image.");
-			System.out.println("  index:" + buffer.getIndex());
-			System.out.println("  length:" + buffer.getLength());
-			System.out.println("  timestamp:" + buffer.getTimestamp());
-
-			assertEquals(System.currentTimeMillis() * 1000, buffer
-					.getTimestamp(), 100 * 1e3);
-			dev.disposeImage(buffer);
+			_testRetrieveImage(dev, false);
 		}
 
 		res = dev.stop();
@@ -197,6 +177,49 @@ public class VideodevTest extends TestCase {
 		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_SATURATION));
 		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_VCENTER));
 		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_VFLIP));
+	}
+
+	public static void _testRetrieveImage(Videodev video, boolean doSaveImage)
+			throws IOException {
+		V4L2Buffer buffer = new V4L2Buffer();
+		long current = System.currentTimeMillis();
+		int res = video.retrieveImage(buffer);
+		assertEquals(0, res);
+
+		assertTrue("invalid length:" + buffer.getLength(),
+				buffer.getLength() > 0);
+		assertTrue("invalid timestamp:" + buffer.getTimestamp(), buffer
+				.getTimestamp() > 0);
+
+		ByteBuffer bb = buffer.getBuffer();
+		assertNotNull(bb);
+		assertTrue(bb.isDirect());
+		assertEquals(0, bb.position());
+		assertEquals(buffer.getLength(), bb.remaining());
+
+		System.out.println("Retrieve image.");
+		System.out.println("  length:" + buffer.getLength());
+		System.out.println("  timestamp:" + buffer.getTimestamp());
+		System.out.println("  used time:"
+				+ (current - buffer.getTimestamp() / 1e3));
+
+		assertEquals(current, buffer.getTimestamp() / 1e3, 1000);
+
+		if (doSaveImage) {
+			OutputStream os = new FileOutputStream("image"
+					+ buffer.getTimestamp() + ".raw");
+			byte[] buf = new byte[4096];
+			while (bb.hasRemaining()) {
+				int len = buf.length;
+				if (bb.remaining() < buf.length)
+					len = bb.remaining();
+				buffer.getBuffer().get(buf, 0, len);
+				os.write(buf, 0, len);
+			}
+			os.close();
+		}
+
+		video.disposeImage(buffer);
 	}
 
 	protected void setUp() throws Exception {

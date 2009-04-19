@@ -3,7 +3,6 @@
  */
 package jp.ac.fit.asura.naoji.robots;
 
-
 /**
  * @author sey
  *
@@ -81,6 +80,30 @@ public class NaoV3R {
 
 		public int getId() {
 			return id;
+		}
+	}
+
+	public enum Camera {
+		TOP(1), BOTTOM(2);
+
+		private int id;
+
+		private Camera(int id) {
+			this.id = id;
+		}
+
+		/**
+		 * I2Cdevで使用するカメラIDを返します.
+		 *
+		 * @return id
+		 */
+		public int getId() {
+			return id;
+		}
+
+		@Override
+		public String toString() {
+			return "NaoV3R Camera id:" + getId() + " name:" + name();
 		}
 	}
 

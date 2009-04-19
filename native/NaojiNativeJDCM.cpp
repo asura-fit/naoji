@@ -133,7 +133,7 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1set(JNIEnv *env,
 		for (int i = 0; i < valueSize; i++) {
 			commands[2][i].arraySetSize(2);
 			commands[2][i][0] = values[i];
-			commands[2][i][1] = durations[i];
+			commands[2][i][1] = baseTime + durations[i];
 		}
 
 		jdcm->getProxy()->set(commands);

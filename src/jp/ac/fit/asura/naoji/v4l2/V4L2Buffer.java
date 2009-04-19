@@ -32,6 +32,11 @@ public class V4L2Buffer {
 		return index;
 	}
 
+	/**
+	 * この画像を取得した時刻を返します.
+	 *
+	 * @return 取得した時刻(マイクロ秒)
+	 */
 	public long getTimestamp() {
 		return timestamp;
 	}
