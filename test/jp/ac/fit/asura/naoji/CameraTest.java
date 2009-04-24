@@ -63,7 +63,14 @@ public class CameraTest extends TestCase {
 			VideodevTest._testRetrieveImage(video, true);
 		}
 
-		_testSwitchCamera2(Camera.BOTTOM);
+		res = video.stop();
+		assertEquals(0, res);
+
+		i2c.selectCamera(Camera.BOTTOM.getId());
+		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
+		res = video.setFormat(format);
+		assertEquals(0, res);
+		res = video.start();
 
 		for (int i = 0; i < 3; i++) {
 			VideodevTest._testRetrieveImage(video, true);
