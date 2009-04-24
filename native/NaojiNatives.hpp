@@ -85,9 +85,18 @@ public:
 		keys[id] = std::string();
 	}
 
+	int getLastTime() {
+		return lastTime;
+	}
+
+	void setLastTime(int time) {
+		lastTime = time;
+	}
+
 protected:
 	AL::ALPtr<AL::ALMemoryProxy> proxy;
 	std::vector<std::string> keys;
+	int lastTime;
 };
 
 class JALMotion {

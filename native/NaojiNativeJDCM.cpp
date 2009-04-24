@@ -178,7 +178,7 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeSeparate(JNIEnv *env,
 	for (int i = 0; i < jointNum; i++) {
 		commands[5][i].arraySetSize(durationsSize);
 		for (int j = 0; j < durationsSize; j++) {
-			commands[5][i][j] = valueMatrix[i * durationsSize + j];
+			commands[5][i][j] = valueMatrix[j * jointNum + i];
 		}
 	}
 	env->ReleasePrimitiveArrayCritical(jvalueMatrix, valueMatrix, JNI_ABORT);

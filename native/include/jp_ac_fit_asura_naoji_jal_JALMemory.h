@@ -57,6 +57,14 @@ JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1isRunning
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
+ * Method:    _waitNextCycle
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1waitNextCycle
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMemory
  * Method:    _getDataInt
  * Signature: (JLjava/lang/String;)I
  */

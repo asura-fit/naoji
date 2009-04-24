@@ -109,23 +109,26 @@
 		<javadoc sourcepath="${build.src}" packagenames="${javadoc.packages}" destdir="${javadoc.home}" Encoding="UTF-8" Private="true" charset="UTF-8" />
 	</target>
 
-	<target name="deploy" depends="deploy.jar, deploy.native" if="target.ip" />
+	<target name="deploy" depends="deploy.jar, deploy.native" />
 
-	<target name="deploy.jar" depends="jar" if="target.ip">
+	<target name="deploy.jar" depends="jar">
+		<fail message="target.ip is required." unless="target.ip" />
 		<exec executable="scp">
 			<arg line="${build.jar}" />
 			<arg value="root@${target.ip}:${target.libdir}" />
 		</exec>
 	</target>
 
-	<target name="deploy.native" depends="compile.native" if="target.ip">
+	<target name="deploy.native" depends="compile.native">
+		<fail message="target.ip is required." unless="target.ip" />
 		<exec executable="scp" dir="${build.native}">
 			<arg line="${build.native.files}" />
 			<arg value="root@${target.ip}:${target.libdir}" />
 		</exec>
 	</target>
 
-	<target name="deploy.test" depends="jar.test" if="target.ip">
+	<target name="deploy.test" depends="jar.test">
+		<fail message="target.ip is required." unless="target.ip" />
 		<exec executable="scp">
 			<arg value="${build.test.jar}" />
 			<arg value="root@${target.ip}:${target.libdir}" />

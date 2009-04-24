@@ -155,6 +155,10 @@ public class JALMemory extends JALModule {
 		return _getDataString(objPtr, id);
 	}
 
+	public void waitNextCycle() {
+		_waitNextCycle(objPtr);
+	}
+
 	native static private long _create(long jalBrokerPtr);
 
 	native static private void _dispose(long objPtr);
@@ -167,6 +171,8 @@ public class JALMemory extends JALModule {
 	native static protected boolean _wait(long objPtr, int taskId, int timeout);
 
 	native static protected boolean _isRunning(long objPtr, int taskId);
+
+	native static private void _waitNextCycle(long objPtr);
 
 	// getData methods.
 	native static private int _getDataInt(long objPtr, String key);
@@ -188,7 +194,8 @@ public class JALMemory extends JALModule {
 
 	native static private void _setQueryBuffer(long queryPtr, ByteBuffer buffer);
 
-	native static private void _setQueryBufferString(long queryPtr, String[] buffer);
+	native static private void _setQueryBufferString(long queryPtr,
+			String[] buffer);
 
 	native static private void _updateFloatQuery(long queryPtr);
 

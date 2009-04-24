@@ -119,6 +119,18 @@ JNIEXPORT jboolean
 		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1isRunning(JNIEnv *,
 				jclass, jlong, jint);
 
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1waitNextCycle(
+		JNIEnv *, jclass, jlong objPtr) {
+	JALMemory *jmemory = reinterpret_cast<JALMemory*> (objPtr);
+	assert(jmemory != NULL);
+
+	int value = jmemory->getProxy()->getData(string("DCM/Time"), 0);
+	if (value > jmemory->getLastTime()) {
+		value = jmemory->getProxy()->getDataOnChange(string("DCM/Time"), 0);
+		jmemory->setLastTime(value);
+	}
+}
+
 JNIEXPORT jint
 JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1getDataInt__JLjava_lang_String_2(
 		JNIEnv *env, jclass, jlong objPtr, jstring key) {
