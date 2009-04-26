@@ -34,7 +34,12 @@ public class Videodev {
 	private ByteBuffer[] buffers;
 
 	/**
+	 * Open V4L2 device.
 	 *
+	 * @param device
+	 *            V4L2 Device to open. ex. "/dev/video0"
+	 * @throws IOException
+	 *             if open() system call is failed.
 	 */
 	public Videodev(String device) throws IOException {
 		dev = _createVideodev(device);
@@ -43,13 +48,28 @@ public class Videodev {
 		buffers = null;
 	}
 
+	/**
+	 * Dispose all buffers and close V4L2 device.
+	 *
+	 * @see http://v4l2spec.bytesex.org/spec/r14037.htm
+	 * @see
+	 */
 	public void dispose() {
 		disposeBuffers();
 		_destroy(dev);
 	}
 
-	public int init() {
-		int count = _requestBuffers(dev, 5);
+	/**
+	 * do request V4L2 buffers and mmap().
+	 *
+	 * @param bufferNum
+	 *            mmaped buffer size.
+	 * @return > 0 allocated buffer size. <= 0 on error
+	 * @see http://v4l2spec.bytesex.org/spec/r13696.htm
+	 * @see http://v4l2spec.bytesex.org/spec/r13889.htm
+	 */
+	public int init(int bufferNum) {
+		int count = _requestBuffers(dev, bufferNum);
 		if (count < 0)
 			return count;
 
@@ -64,16 +84,37 @@ public class Videodev {
 		return count;
 	}
 
+	/**
+	 * start video stream. do call VIDIOC_STREAMON.
+	 *
+	 * @see http://v4l2spec.bytesex.org/spec/r13817.htm
+	 * @return 0 if succeeded. < 0 on error
+	 */
 	public int start() {
 		int res = _start(dev);
 		return res;
 	}
 
+	/**
+	 * stop video stream. do call VIDIOC_STREAMOFF.
+	 *
+	 * @see http://v4l2spec.bytesex.org/spec/r13817.htm
+	 * @return 0 if succeeded. < 0 on error
+	 */
 	public int stop() {
 		int res = _stop(dev);
 		return res;
 	}
 
+	/**
+	 * retrieve one buffer and store in V4L2Buffer.
+	 *
+	 * It calls VIDIOC_DQBUF.
+	 *
+	 * @param buffer
+	 * @return 0 if succeeded. < 0 on error
+	 * @see http://v4l2spec.bytesex.org/spec/r12878.htm
+	 */
 	public int retrieveImage(V4L2Buffer buffer) {
 		int res = _dequeueBuffer(dev, buffer);
 		if (res < 0)
@@ -86,11 +127,27 @@ public class Videodev {
 		return res;
 	}
 
+	/**
+	 * Dispose buffer that described by V4L2Buffer.
+	 *
+	 * It calls VIDIOC_QBUF.
+	 *
+	 * @param buffer
+	 * @return
+	 * @see http://v4l2spec.bytesex.org/spec/r12878.htm
+	 */
 	public int disposeImage(V4L2Buffer buffer) {
 		int res = _enqueueBuffer(dev, buffer.getIndex());
 		return res;
 	}
 
+	/**
+	 * Dispose all buffers.
+	 *
+	 * It calls munmap for all buffers.
+	 *
+	 * @see http://v4l2spec.bytesex.org/spec/r14037.htm
+	 */
 	private void disposeBuffers() {
 		if (buffers == null)
 			return;

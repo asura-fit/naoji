@@ -38,6 +38,9 @@ public class CameraTest extends TestCase {
 		assertEquals(0, res);
 
 		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUDIO_MUTE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0);
 		video.setControl(V4L2Control.V4L2_CID_HFLIP, 1);
 		video.setControl(V4L2Control.V4L2_CID_VFLIP, 1);
 
@@ -54,27 +57,26 @@ public class CameraTest extends TestCase {
 		res = video.setFPS(30);
 		assertEquals(0, res);
 
-		res = video.init();
+		res = video.init(2);
 		assertTrue("Result:" + res, res > 0);
 
 		res = video.start();
 		assertEquals(0, res);
-		for (int i = 0; i < 3; i++) {
-			VideodevTest._testRetrieveImage(video, true);
-		}
+		VideodevTest._testRetrieveImage(video, true);
 
 		res = video.stop();
 		assertEquals(0, res);
 
 		i2c.selectCamera(Camera.BOTTOM.getId());
 		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUDIO_MUTE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0);
 		res = video.setFormat(format);
 		assertEquals(0, res);
 		res = video.start();
 
-		for (int i = 0; i < 3; i++) {
-			VideodevTest._testRetrieveImage(video, true);
-		}
+		VideodevTest._testRetrieveImage(video, true);
 
 		_testSwitchCamera1(Camera.TOP);
 		for (int i = 0; i < 10; i++)
@@ -132,7 +134,7 @@ public class CameraTest extends TestCase {
 		res = video.setFPS(30);
 		assertEquals(0, res);
 
-		res = video.init();
+		res = video.init(2);
 		assertTrue("Result:" + res, res > 0);
 
 		res = video.start();

@@ -42,7 +42,7 @@ public class VideodevTest extends TestCase {
 		res = dev.setFPS(30);
 		assertEquals(0, res);
 
-		res = dev.init();
+		res = dev.init(2);
 		assertTrue("Result:" + res, res > 0);
 
 		res = dev.start();
