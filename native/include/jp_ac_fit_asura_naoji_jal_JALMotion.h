@@ -154,6 +154,14 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoJointStiff
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _getWalkArmsEnable
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getWalkArmsEnable
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _setBodyStiffness
  * Signature: (JF)V
  */
@@ -167,6 +175,14 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setBodyStiffne
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setJointStiffness
   (JNIEnv *, jclass, jlong, jint, jfloat);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _setWalkArmsEnable
+ * Signature: (JZ)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkArmsEnable
+  (JNIEnv *, jclass, jlong, jboolean);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion

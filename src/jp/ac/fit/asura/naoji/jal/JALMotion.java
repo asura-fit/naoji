@@ -97,6 +97,10 @@ public class JALMotion extends JALModule {
 		return _getJointStiffness(objPtr, pJointId);
 	}
 
+	public boolean getWalkArmsEnable() {
+		return _getWalkArmsEnable(objPtr);
+	}
+
 	public int gotoAngle(int pJointId, float pAngle, float pDuration,
 			int pInterpolationType) {
 		assert isDefinedJoint(pJointId);
@@ -158,6 +162,10 @@ public class JALMotion extends JALModule {
 
 	public int walkSideways(float pDistance, int pNumSamplesPerStep) {
 		return _walkSideways(objPtr, pDistance, pNumSamplesPerStep);
+	}
+
+	public void setWalkArmsEnable(boolean pArmsEnable) {
+		_setWalkArmsEnable(objPtr, pArmsEnable);
 	}
 
 	public void setWalkConfig(float pMaxStepLength, float pMaxStepHeight,
@@ -241,10 +249,15 @@ public class JALMotion extends JALModule {
 	native static private int _gotoJointStiffness(long objPtr, int pJointId,
 			float pStiffness, float pDuration, int pInterpolationType);
 
+	native static private boolean _getWalkArmsEnable(long objPtr);
+
 	native static private void _setBodyStiffness(long objPtr, float pStiffness);
 
 	native static private void _setJointStiffness(long objPtr, int pJointId,
 			float pStiffness);
+
+	native static private void _setWalkArmsEnable(long objPtr,
+			boolean pArmsEnable);
 
 	native static private void _setWalkConfig(long objPtr,
 			float pMaxStepLength, float pMaxStepHeight, float pMaxStepSide,

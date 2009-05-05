@@ -401,6 +401,14 @@ JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getJointStif
 	return stiffness;
 }
 
+JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getWalkArmsEnable(
+		JNIEnv *, jclass, jlong objPtr) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->getWalkArmsEnable();
+}
+
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoAngle(
 		JNIEnv *, jclass, jlong objPtr, jint pJointId, jfloat pAngle,
 		jfloat pDuration, jint pInterpolationType) {
@@ -487,6 +495,15 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkExtraConfig(JNIEnv *,
 
 	jmotion->getProxy()->setWalkExtraConfig(pLHipRollBacklashCompensator,
 			pRHipRollBacklashCompensator, pHipHeight, pTorsoYOrientation);
+}
+
+JNIEXPORT void
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkArmsEnable(JNIEnv *,
+		jclass, jlong objPtr, jboolean pArmsEnable) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	jmotion->getProxy()->setWalkArmsEnable(pArmsEnable);
 }
 
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1stop(
