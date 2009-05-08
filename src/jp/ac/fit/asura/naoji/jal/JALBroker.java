@@ -3,7 +3,6 @@
  */
 package jp.ac.fit.asura.naoji.jal;
 
-
 /**
  * @author $Author: sey $
  *
@@ -30,6 +29,11 @@ public class JALBroker {
 	public JDCM createJDCM() {
 		JDCM dcm = new JDCM(this);
 		return dcm;
+	}
+
+	public JALTextToSpeech createJALTextToSpeech() {
+		JALTextToSpeech tts = new JALTextToSpeech(this);
+		return tts;
 	}
 
 	public void dispose() {

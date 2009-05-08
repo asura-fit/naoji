@@ -19,6 +19,7 @@
 #include "almotionproxy.h"
 #include "almemoryproxy.h"
 #include "dcmproxy.h"
+#include "altexttospeechproxy.h"
 
 #include <jni.h>       /* where everything is defined */
 #include "NaojiModule.hpp"
@@ -207,6 +208,29 @@ public:
 
 protected:
 	AL::ALPtr<AL::DCMProxy> proxy;
+};
+
+class JALTextToSpeech {
+public:
+	JALTextToSpeech(JALBroker *jbroker) {
+		try {
+			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
+			proxy = AL::ALPtr<AL::ALTextToSpeechProxy>(new AL::ALTextToSpeechProxy(
+					broker));
+		} catch (AL::ALError& e) {
+			std::cout << "Error during initialization: " + e.toString()
+					<< std::endl;
+		}
+
+		AL_ASSERT(proxy); // Assure that memoryproxy is not null
+	}
+
+	AL::ALPtr<AL::ALTextToSpeechProxy> getProxy() {
+		return proxy;
+	}
+
+protected:
+	AL::ALPtr<AL::ALTextToSpeechProxy> proxy;
 };
 
 }

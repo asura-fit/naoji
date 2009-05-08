@@ -96,6 +96,22 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1dispose(
 	assert(false);
 }
 
+JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALTextToSpeech__1create(
+		JNIEnv *, jclass, jlong jbrokerPtr) {
+	JALBroker *jbroker = reinterpret_cast<JALBroker*> (jbrokerPtr);
+	assert(jbroker != NULL);
+	JALTextToSpeech *jtts = new JALTextToSpeech(jbroker);
+	return reinterpret_cast<jlong> (jtts);
+}
+
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALTextToSpeech__1dispose(
+		JNIEnv *, jclass, jlong objPtr) {
+	JALTextToSpeech *jtts = reinterpret_cast<JALTextToSpeech*> (objPtr);
+	assert(jtts != NULL);
+
+	delete jtts;
+}
+
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1defineKey(
 		JNIEnv *env, jclass, jlong objPtr, jstring jstr) {
 	JALMemory *jmemory = reinterpret_cast<JALMemory*> (objPtr);
@@ -557,6 +573,31 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkSideways(
 	assert(jmotion != NULL);
 
 	return jmotion->getProxy()->post.walkSideways(pDistance, pNumSamplesPerStep);
+}
+
+JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALTextToSpeech__1isRunning(
+		JNIEnv *, jclass, jlong objPtr, jint taskId) {
+	JALTextToSpeech *jtts = reinterpret_cast<JALTextToSpeech*> (objPtr);
+	assert(jtts != NULL);
+
+	// return jtts->getProxy()->isRunning(taskId);
+	return jtts->getProxy()->call<bool> ("isRunning", taskId);
+}
+
+JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALTextToSpeech__1wait(
+		JNIEnv *, jclass, jlong objPtr, jint taskId, jint timeout) {
+	JALTextToSpeech *jtts = reinterpret_cast<JALTextToSpeech*> (objPtr);
+	assert(jtts != NULL);
+
+	return jtts->getProxy()->wait(taskId, timeout);
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALTextToSpeech__1say(
+		JNIEnv *env, jclass, jlong objPtr, jstring pStringToSay) {
+	JALTextToSpeech *jtts = reinterpret_cast<JALTextToSpeech*> (objPtr);
+	assert(jtts != NULL);
+
+	return jtts->getProxy()->post.say(toString(env, pStringToSay));
 }
 
 #ifdef __cplusplus
