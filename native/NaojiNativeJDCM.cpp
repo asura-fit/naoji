@@ -135,6 +135,8 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1set(JNIEnv *env,
 			commands[2][i][0] = values[i];
 			commands[2][i][1] = baseTime + durations[i];
 		}
+		env->ReleasePrimitiveArrayCritical(jdurations, durations, JNI_ABORT);
+		env->ReleasePrimitiveArrayCritical(jvalues, values, JNI_ABORT);
 
 		jdcm->getProxy()->set(commands);
 	}AL_CATCH_ERR(assert(false);)

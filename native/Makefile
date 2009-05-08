@@ -79,6 +79,7 @@ JAVA_INC = \
 JAVA_LIB = \
  -L$(JAVA_HOME_STAGING)/jre/lib/i386 \
  -L$(JAVA_HOME_STAGING)/jre/lib/i386/server \
+ -L$(SYSROOT)/usr/lib \
  -L$(JAVA_BUILDROOT)/usr/lib \
  -Wl,-rpath -Wl,$(JAVA_HOME)/jre/lib/i386 \
  -Wl,-rpath -Wl,$(JAVA_HOME)/jre/lib/i386/server
