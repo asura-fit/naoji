@@ -47,7 +47,7 @@ LDFLAGS =
 CXXFLAGS =
 
 # debug or non-debug build.
-ifneq ($(USE_DEBUG),)
+ifeq ($(USE_DEBUG),1)
 CXXFLAGS += -D__DEBUG__
 else
 CXXFLAGS += -DNDEBUG
