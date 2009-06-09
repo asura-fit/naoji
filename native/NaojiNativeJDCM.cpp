@@ -143,7 +143,47 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1set(JNIEnv *env,
 }
 
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeMixed(
-		JNIEnv *, jclass, jlong jdcmPtr, jint, jint, jfloatArray, jintArray);
+		JNIEnv *env, jclass, jlong jdcmPtr, jint aliasId, jint mergeType,
+		jobjectArray jvalueArray2d, jobjectArray jtimeArray2d) {
+	JDCM *jdcm = reinterpret_cast<JDCM*> (jdcmPtr);
+	assert(jdcm != NULL);
+
+	jsize keyNum = env->GetArrayLength(jvalueArray2d);
+	assert(keyNum == env->GetArrayLength(jtimeArray2d));
+
+	ALValue commands;
+	commands.arraySetSize(4);
+	commands[0] = boost::lexical_cast<string>(aliasId);
+	commands[1] = jdcm->getMergeType(mergeType);
+	commands[2] = string("time-mixed");
+	commands[3].arraySetSize(keyNum);
+
+	int baseTime = jdcm->getProxy()->getTime(cDCMCommandDelay);
+	for (int i = 0; i < keyNum; i++) {
+		jfloatArray jvalues = (jfloatArray) env->GetObjectArrayElement(
+				jvalueArray2d, i);
+		jintArray jtimeArray = (jintArray) env->GetObjectArrayElement(
+				jtimeArray2d, i);
+
+		jfloat* values =
+				(jfloat*) env->GetPrimitiveArrayCritical(jvalues, NULL);
+		jint* timeArray = (jint*) env->GetPrimitiveArrayCritical(jtimeArray,
+				NULL);
+
+		int commandNum = env->GetArrayLength(jvalues);
+		commands[3][i].arraySetSize(commandNum);
+		for (int j = 0; j < commandNum; j++) {
+			commands[3][i][j].arraySetSize(2);
+			commands[3][i][j][0] = values[j];
+			commands[3][i][j][1] = baseTime + timeArray[j];
+		}
+		env->ReleasePrimitiveArrayCritical(jvalues, values, JNI_ABORT);
+		env->ReleasePrimitiveArrayCritical(jtimeArray, timeArray, JNI_ABORT);
+	}
+	try {
+		jdcm->getProxy()->setAlias(commands);
+	}AL_CATCH_ERR(assert(false);)
+}
 
 JNIEXPORT
 void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeSeparate(JNIEnv *env,
@@ -155,7 +195,7 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeSeparate(JNIEnv *env,
 	jsize valueMatrixSize = env->GetArrayLength(jvalueMatrix);
 	jsize durationsSize = env->GetArrayLength(jdurations);
 	assert(valueMatrixSize % durationsSize == 0);
-	jint jointNum = valueMatrixSize / durationsSize;
+	jint keyNum = valueMatrixSize / durationsSize;
 
 	ALValue commands;
 	commands.arraySetSize(6);
@@ -173,14 +213,14 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeSeparate(JNIEnv *env,
 	}
 	env->ReleasePrimitiveArrayCritical(jdurations, durations, JNI_ABORT);
 
-	commands[5].arraySetSize(jointNum);
+	commands[5].arraySetSize(keyNum);
 
 	jfloat* valueMatrix = (jfloat*) env->GetPrimitiveArrayCritical(
 			jvalueMatrix, NULL);
-	for (int i = 0; i < jointNum; i++) {
+	for (int i = 0; i < keyNum; i++) {
 		commands[5][i].arraySetSize(durationsSize);
 		for (int j = 0; j < durationsSize; j++) {
-			commands[5][i][j] = valueMatrix[j * jointNum + i];
+			commands[5][i][j] = valueMatrix[j * keyNum + i];
 		}
 	}
 	env->ReleasePrimitiveArrayCritical(jvalueMatrix, valueMatrix, JNI_ABORT);

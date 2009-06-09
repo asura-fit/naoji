@@ -67,10 +67,10 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1set
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JDCM
  * Method:    _setTimeMixed
- * Signature: (JII[F[I)V
+ * Signature: (JII[[F[[I)V
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JDCM__1setTimeMixed
-  (JNIEnv *, jclass, jlong, jint, jint, jfloatArray, jintArray);
+  (JNIEnv *, jclass, jlong, jint, jint, jobjectArray, jobjectArray);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JDCM

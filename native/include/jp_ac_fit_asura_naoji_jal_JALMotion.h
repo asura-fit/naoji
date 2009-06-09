@@ -26,27 +26,11 @@ JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1isDefinedJ
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
- * Method:    _defineJoint
- * Signature: (JILjava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1defineJoint
-  (JNIEnv *, jclass, jlong, jint, jstring);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _dispose
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1dispose
   (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
- * Method:    _removeJoint
- * Signature: (JI)V
- */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1removeJoint
-  (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
@@ -75,18 +59,18 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1clearFootsteps
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _doMove
- * Signature: (J[I[F[FI)I
+ * Signature: (J[I[[F[[FI)I
  */
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMove
-  (JNIEnv *, jclass, jlong, jintArray, jfloatArray, jfloatArray, jint);
+  (JNIEnv *, jclass, jlong, jintArray, jobjectArray, jobjectArray, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _doMoveAll
- * Signature: (J[F[FI)I
+ * Signature: (J[[F[[FI)I
  */
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMoveAll
-  (JNIEnv *, jclass, jlong, jfloatArray, jfloatArray, jint);
+  (JNIEnv *, jclass, jlong, jobjectArray, jobjectArray, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
@@ -175,6 +159,14 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setBodyStiffne
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setJointStiffness
   (JNIEnv *, jclass, jlong, jint, jfloat);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _setTimeSeparate
+ * Signature: (J[F[II)I
+ */
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setTimeSeparate
+  (JNIEnv *, jclass, jlong, jfloatArray, jintArray, jint);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion

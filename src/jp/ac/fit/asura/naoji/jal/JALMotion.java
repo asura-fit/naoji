@@ -10,16 +10,12 @@ package jp.ac.fit.asura.naoji.jal;
  *
  */
 public class JALMotion extends JALModule {
-	private String[] jointNames;
 	private int jointNum;
 
 	protected JALMotion(JALBroker broker) {
 		objPtr = _create(broker.getPtr());
-		jointNames = _getBodyJointNames(objPtr);
+		String[] jointNames = _getBodyJointNames(objPtr);
 		assert jointNames != null;
-		for (int i = 0; i < jointNames.length; i++) {
-			_defineJoint(objPtr, i, jointNames[i]);
-		}
 		jointNum = jointNames.length;
 	}
 
@@ -54,7 +50,7 @@ public class JALMotion extends JALModule {
 	 * @param pInterpolationType
 	 * @return taskId
 	 */
-	public int doMove(int[] pJointIds, float[] pAngles, float[] pDurations,
+	public int doMove(int[] pJointIds, float[][] pAngles, float[][] pDurations,
 			int pInterpolationType) {
 		assert pJointIds.length <= jointNum;
 		for (int id : pJointIds)
@@ -73,7 +69,7 @@ public class JALMotion extends JALModule {
 	 * @param pInterpolationType
 	 * @return taskId
 	 */
-	public int doMoveAll(float[] pAngles, float[] pDurations,
+	public int doMoveAll(float[][] pAngles, float[][] pDurations,
 			int pInterpolationType) {
 		return _doMoveAll(objPtr, pAngles, pDurations, pInterpolationType);
 	}
@@ -139,6 +135,22 @@ public class JALMotion extends JALModule {
 		_setJointStiffness(objPtr, pJointId, pStiffness);
 	}
 
+	/**
+	 * {@link JDCM#setTimeSeparate(int, jp.ac.fit.asura.naoji.jal.JDCM.MergeType, float[], int[])}
+	 * と 互換性のあるvalueMatrix, timeで関節の時系列指令を実行です.
+	 *
+	 * この命令は{@link #doMoveAll(float[], float[], int)}を介して実行されます.
+	 *
+	 * @param valueMatrix
+	 * @param time
+	 * @param pInterpolationType
+	 * @return
+	 */
+	public int setTimeSeparate(float[] valueMatrix, int[] time,
+			int pInterpolationType) {
+		return _setTimeSeparate(objPtr, valueMatrix, time, pInterpolationType);
+	}
+
 	public void stop(int pBrokerTaskID) {
 		_stop(objPtr, pBrokerTaskID);
 	}
@@ -191,12 +203,7 @@ public class JALMotion extends JALModule {
 	// Joint definitions.
 	native static private boolean _isDefinedJoint(long objPtr, int id);
 
-	native static private void _defineJoint(long objPtr, int id,
-			String jointName);
-
 	native static private void _dispose(long objPtr);
-
-	native static private void _removeJoint(long objPtr, int id);
 
 	// Chain definitions, not implemented.
 	private boolean _isDefinedChain(int id) {
@@ -224,10 +231,10 @@ public class JALMotion extends JALModule {
 	native static private void _clearFootsteps(long objPtr);
 
 	native static private int _doMove(long objPtr, int[] pJointIds,
-			float[] pAngles, float[] pDurations, int pInterpolationType);
+			float[][] pAngles, float[][] pDurations, int pInterpolationType);
 
-	native static private int _doMoveAll(long objPtr, float[] pAngles,
-			float[] pDurations, int pInterpolationType);
+	native static private int _doMoveAll(long objPtr, float[][] pAngles,
+			float[][] pDurations, int pInterpolationType);
 
 	native static private float _getAngle(long objPtr, int pJointId);
 
@@ -255,6 +262,9 @@ public class JALMotion extends JALModule {
 
 	native static private void _setJointStiffness(long objPtr, int pJointId,
 			float pStiffness);
+
+	native static private int _setTimeSeparate(long objPtr,
+			float[] valueMatrix, int[] time, int pInterpolationType);
 
 	native static private void _setWalkArmsEnable(long objPtr,
 			boolean pArmsEnable);

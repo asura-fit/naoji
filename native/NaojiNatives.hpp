@@ -102,8 +102,7 @@ protected:
 
 class JALMotion {
 public:
-	JALMotion(JALBroker *jbroker) :
-		jointNames(32) {
+	JALMotion(JALBroker *jbroker) {
 		try {
 			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
 			proxy = broker->getMotionProxy();
@@ -113,6 +112,11 @@ public:
 		}
 
 		AL_ASSERT(proxy); // Assure that motionproxy is not null
+
+		vector<string> names = proxy->getBodyJointNames();
+		jointNames.arraySetSize(names.size());
+		for (int i = 0; i < names.size(); i++)
+			jointNames[i] = names[i];
 	}
 
 	AL::ALPtr<AL::ALMotionProxy> getProxy() {
@@ -120,33 +124,28 @@ public:
 	}
 
 	bool isDefinedJoint(int id) {
-		if (jointNames.size() <= id)
+		assert(jointNames.isValid());
+		assert(jointNames.isArray());
+		if (jointNames.getSize() <= id)
 			return false;
-		return jointNames[id].size() > 0;
+		return jointNames[id].getSize() > 0;
 	}
 
 	std::string getJointName(int id) {
+		assert(jointNames.isValid());
 		assert(isDefinedJoint(id));
 		return jointNames[id];
 	}
 
-	void defineJoint(int id, std::string jointName) {
-		assert(jointName.size() > 0);
-		if (jointNames.size() <= id)
-			jointNames.resize(id, std::string());
-		jointNames[id] = jointName;
-	}
-
-	void removeJoint(int id) {
-		assert(isDefinedJoint(id));
-		jointNames[id] = std::string();
+	AL::ALValue getBodyJointNames() {
+		return jointNames;
 	}
 
 protected:
 	AL::ALPtr<AL::ALMotionProxy> proxy;
 
 private:
-	std::vector<std::string> jointNames;
+	AL::ALValue jointNames;
 };
 
 class Query {
@@ -215,8 +214,8 @@ public:
 	JALTextToSpeech(JALBroker *jbroker) {
 		try {
 			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
-			proxy = AL::ALPtr<AL::ALTextToSpeechProxy>(new AL::ALTextToSpeechProxy(
-					broker));
+			proxy = AL::ALPtr<AL::ALTextToSpeechProxy>(
+					new AL::ALTextToSpeechProxy(broker));
 		} catch (AL::ALError& e) {
 			std::cout << "Error during initialization: " + e.toString()
 					<< std::endl;

@@ -303,22 +303,6 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateStringQuery(
 	assert(false);
 }
 
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1defineJoint(
-		JNIEnv *env, jclass, jlong objPtr, jint jointId, jstring jointName) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	jmotion->defineJoint(jointId, toString(env, jointName));
-}
-
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1removeJoint(
-		JNIEnv *env, jclass, jlong objPtr, jint jointId) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	jmotion->removeJoint(jointId);
-}
-
 JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1isDefinedJoint(
 		JNIEnv *env, jclass, jlong objPtr, jint jointId) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
@@ -351,21 +335,93 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1clearFootsteps
 	jmotion->getProxy()->clearFootsteps();
 }
 
+void naoji_JALMotion_doMove_internal(JNIEnv *env, jobjectArray jangles,
+		jobjectArray jdurations, ALValue& pAngles, ALValue& pDurations) {
+	assert(env->GetArrayLength(jangles) == env->GetArrayLength(jdurations));
+	jint jointNum = env->GetArrayLength(jangles);
+
+	pAngles.arraySetSize(jointNum);
+	pDurations.arraySetSize(jointNum);
+	for (int i = 0; i < jointNum; i++) {
+		// set angles each joint
+		jfloatArray angleArray = (jfloatArray) env->GetObjectArrayElement(
+				jangles, i);
+		jint commandNum = env->GetArrayLength(angleArray);
+		pAngles[i].arraySetSize(commandNum);
+
+		jfloat* angles = (jfloat*) env->GetPrimitiveArrayCritical(angleArray,
+				NULL);
+		for (int j = 0; j < commandNum; j++) {
+			pAngles[i][j] = angles[j];
+		}
+		env->ReleasePrimitiveArrayCritical(angleArray, angles, JNI_ABORT);
+
+		// set durations each joint
+		jfloatArray durationArray = (jfloatArray) env->GetObjectArrayElement(
+				jdurations, i);
+		// angle length and duration length must have the same size
+		assert(commandNum == env->GetArrayLength(durationArray));
+		pDurations[i].arraySetSize(commandNum);
+
+		jfloat* durations = (jfloat*) env->GetPrimitiveArrayCritical(
+				durationArray, NULL);
+		for (int j = 0; j < commandNum; j++) {
+			pDurations[i][j] = durations[j];
+		}
+		env->ReleasePrimitiveArrayCritical(durationArray, durations, JNI_ABORT);
+	}
+}
+
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMove(
-		JNIEnv *env, jclass, jlong objPtr, jintArray, jfloatArray, jfloatArray,
-		jint) {
+		JNIEnv *env, jclass, jlong objPtr, jintArray jJointIdArray,
+		jobjectArray jangles, jobjectArray jdurations, jint pInterpolationType) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
-	// TODO implement.
+	jint jointNum = env->GetArrayLength(jangles);
+	assert(jointNum == env->GetArrayLength(jJointIdArray));
+	assert(jointNum == env->GetArrayLength(jdurations));
+
+	ALValue pJointNames;
+	pJointNames.arraySetSize(jointNum);
+	jint* jointIdArray = (jint*) env->GetPrimitiveArrayCritical(jJointIdArray,
+			NULL);
+	for (int i = 0; i < jointNum; i++) {
+		pJointNames[i] = jmotion->getJointName(jointIdArray[i]);
+	}
+	env->ReleasePrimitiveArrayCritical(jJointIdArray, jointIdArray, JNI_ABORT);
+	assert(pJointNames.getSize() == jointNum);
+
+	// do copy values to ALValue
+	ALValue pAngles;
+	ALValue pDurations;
+
+	naoji_JALMotion_doMove_internal(env, jangles, jdurations, pAngles,
+			pDurations);
+	return jmotion->getProxy()->post.doMove(pJointNames, pAngles, pDurations,
+			pInterpolationType);
 }
 
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMoveAll(
-		JNIEnv *env, jclass, jlong objPtr, jfloatArray, jfloatArray, jint) {
+		JNIEnv *env, jclass, jlong objPtr, jobjectArray jangles,
+		jobjectArray jdurations, jint pInterpolationType) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
-	// TODO implement.
+	jint jointNum = env->GetArrayLength(jangles);
+	assert(jointNum == env->GetArrayLength(jdurations));
+
+	ALValue pJointNames = jmotion->getBodyJointNames();
+	assert(pJointNames.getSize() == jointNum);
+
+	// do copy values to ALValue
+	ALValue pAngles;
+	ALValue pDurations;
+
+	naoji_JALMotion_doMove_internal(env, jangles, jdurations, pAngles,
+			pDurations);
+	return jmotion->getProxy()->post.doMove(pJointNames, pAngles, pDurations,
+			pInterpolationType);
 }
 
 JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getAngle(
@@ -487,6 +543,51 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setJointStiffn
 
 	string jointName = jmotion->getJointName(pJointId);
 	jmotion->getProxy()->setJointStiffness(jointName, pStiffness);
+}
+
+JNIEXPORT jint
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setTimeSeparate(JNIEnv *env,
+		jclass, jlong objPtr, jfloatArray jvalueMatrix, jintArray jtimeArray,
+		jint pInterpolationType) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	ALValue pJointNames = jmotion->getBodyJointNames();
+	jint jointNum = pJointNames.getSize();
+	jint valueMatrixSize = env->GetArrayLength(jvalueMatrix);
+	jint timeArraySize = env->GetArrayLength(jtimeArray);
+
+	assert(valueMatrixSize == jointNum * timeArraySize);
+
+	// do copy values to ALValue
+	ALValue pAngles;
+	ALValue pDurations;
+
+	pAngles.arraySetSize(jointNum);
+	pDurations.arraySetSize(jointNum);
+
+	jint* timeArray = (jint*) env->GetPrimitiveArrayCritical(jtimeArray, NULL);
+	ALValue pTimeArray;
+	pTimeArray.arraySetSize(timeArraySize);
+	for (int i = 0; i < timeArraySize; i++) {
+		pTimeArray[i] = timeArray[i] / 1000.0f;
+	}
+	env->ReleasePrimitiveArrayCritical(jtimeArray, timeArray, JNI_ABORT);
+
+	jfloat* values = (jfloat*) env->GetPrimitiveArrayCritical(jvalueMatrix,
+			NULL);
+	for (int i = 0; i < jointNum; i++) {
+		// set angles each joint
+		pAngles[i].arraySetSize(timeArraySize);
+		for (int j = 0; j < timeArraySize; j++) {
+			pAngles[i][j] = values[j * jointNum + i];
+		}
+		pDurations[i] = pTimeArray;
+	}
+	env->ReleasePrimitiveArrayCritical(jvalueMatrix, values, JNI_ABORT);
+
+	return jmotion->getProxy()->post.doMove(pJointNames, pAngles, pDurations,
+			pInterpolationType);
 }
 
 JNIEXPORT void

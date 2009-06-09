@@ -71,8 +71,8 @@ public class JDCM extends JALModule {
 		_setTimeSeparate(objPtr, aliasId, type.ordinal(), valueMatrix, time);
 	}
 
-	public void setTimeMixed(int aliasId, MergeType type, float[] valueMatrix,
-			int[] time) {
+	public void setTimeMixed(int aliasId, MergeType type,
+			float[][] valueMatrix, int[][] time) {
 		assert valueMatrix.length == time.length;
 		_setTimeMixed(objPtr, aliasId, type.ordinal(), valueMatrix, time);
 	}
@@ -99,7 +99,7 @@ public class JDCM extends JALModule {
 			float[] value, int[] time);
 
 	native static private void _setTimeMixed(long objPtr, int aliasId,
-			int mergeType, float[] valueMatrix, int[] time);
+			int mergeType, float[][] valueMatrix, int[][] time);
 
 	native static private void _setTimeSeparate(long objPtr, int aliasId,
 			int mergeType, float[] valueMatrix, int[] time);
