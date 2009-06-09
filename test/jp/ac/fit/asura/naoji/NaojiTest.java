@@ -4,6 +4,7 @@
 package jp.ac.fit.asura.naoji;
 
 import jp.ac.fit.asura.naoji.jal.JALMotion;
+import jp.ac.fit.asura.naoji.jal.JALTextToSpeech;
 import jp.ac.fit.asura.naoji.jal.JDCM;
 import jp.ac.fit.asura.naoji.jal.JDCM.MergeType;
 import jp.ac.fit.asura.naoji.robots.NaoV3R.InterpolationType;
@@ -25,6 +26,7 @@ public class NaojiTest implements Naoji {
 	Thread mainThread;
 	private NaojiContext context;
 	private boolean isActive;
+	private JALTextToSpeech tts;
 	private JALMotion motion;
 	private JDCM dcm;
 	private int bodyAliasId;
@@ -34,6 +36,7 @@ public class NaojiTest implements Naoji {
 		this.context = context;
 		motion = context.getParentBroker().createJALMotion();
 		dcm = context.getParentBroker().createJDCM();
+		tts = context.getParentBroker().createJALTextToSpeech();
 
 		String[] joints = { "LShoulderPitch/Position/Actuator/Value",
 				"LShoulderRoll/Position/Actuator/Value",
@@ -92,7 +95,7 @@ public class NaojiTest implements Naoji {
 		System.err.println("NaojiTest run called.");
 		int frame = 0;
 
-		int taskId = motion.gotoBodyStiffness(0.25f, 0.5f,
+		int taskId = motion.gotoBodyStiffness(0.5f, 0.5f,
 				InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 0);
 
@@ -111,15 +114,20 @@ public class NaojiTest implements Naoji {
 							(float) Math.sin(Math.toRadians(frame)), 0.125f, 1);
 					motion.wait(taskId, 10000);
 				} else if (frame == 10) {
+					tts.say("one");
 					taskId = motion.setTimeSeparate(MOTION_TEST1_ANGLES,
 							MOTION_TEST1_DURATIONS, InterpolationType.LINEAR
 									.getId());
-					motion.wait(taskId, 10000);
+					motion.wait(taskId, 20000);
 				} else if (frame == 11) {
-					Thread.sleep(5000);
+					tts.say("two");
+					Thread.sleep(1000);
+					tts.say("three");
 					dcm.setTimeSeparate(bodyAliasId, MergeType.ClearAll,
 							MOTION_TEST1_ANGLES, MOTION_TEST1_DURATIONS);
 					Thread.sleep(10000);
+					tts.say("end");
+					Thread.sleep(1000);
 				} else {
 					frame = 0;
 				}
@@ -133,15 +141,17 @@ public class NaojiTest implements Naoji {
 	}
 
 	static final float[] MOTION_TEST1_ANGLES = { //
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			//
-			1.57f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.57f, 0, 0, 0,
-			//
-			-1.57f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.57f, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0,
+			//
+			1.57f, 0.25f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.57f,
+			-0.25f, 0, 0,
+			//
+			-1.57f, -0.25f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.57f,
+			0.25f, 0, 0,
 			//
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 	};
-	static final int[] MOTION_TEST1_DURATIONS = { 2500, 2500, 2500, 2500 };
+	static final int[] MOTION_TEST1_DURATIONS = { 500, 2000, 3500, 5000 };
 }

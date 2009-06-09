@@ -114,9 +114,9 @@ public:
 		AL_ASSERT(proxy); // Assure that motionproxy is not null
 
 		vector<string> names = proxy->getBodyJointNames();
-		jointNames.arraySetSize(names.size());
-		for (int i = 0; i < names.size(); i++)
-			jointNames[i] = names[i];
+		jointNames.arraySetSize(names.size() - 2);
+		for (int i = 2; i < names.size(); i++)
+			jointNames[i - 2] = names[i];
 	}
 
 	AL::ALPtr<AL::ALMotionProxy> getProxy() {
