@@ -115,6 +115,9 @@ JAVA_LIB += -ljava -ljvm -lverify
 CXXFLAGS += $(CXXINCLUDEPATH)
 LDFLAGS += -lgcc -lc -lstdc++ -ldl
 
+NAOJIN_OBJS=NaojiNatives.o NaojiNativeJALMemory.o NaojiNativeJALMotion.o \
+ NaojiNativeJALProxy.o NaojiNativeJALTextToSpeech.o NaojiNativeJDCM.o
+
 all : naoji_main libnaoji.so libnaojin.so libnaojiv4l2.so
 
 naoji_main : almain.o NaojiModule.o
@@ -123,8 +126,8 @@ naoji_main : almain.o NaojiModule.o
 libnaoji.so : alboot.o NaojiModule.o
 	$(CXX) -shared -fPIC $(LDFLAGS) alboot.o NaojiModule.o $(JAVA_LIB) $(AL_LIB) -o $@
 
-libnaojin.so : NaojiNatives.o NaojiNativeJDCM.o
-	$(CXX) -shared -fPIC $(LDFLAGS) NaojiNatives.o NaojiNativeJDCM.o $(JAVA_LIB) $(AL_LIB)  -o $@
+libnaojin.so : $(NAOJIN_OBJS)
+	$(CXX) -shared -fPIC $(LDFLAGS) $(NAOJIN_OBJS) $(JAVA_LIB) $(AL_LIB)  -o $@
 
 libnaojiv4l2.so : NaojiV4L2.o NaojiI2C.o
 	$(CXX) -shared -fPIC $(LDFLAGS) NaojiV4L2.o NaojiI2C.o $(JAVA_LIB)  -o $@

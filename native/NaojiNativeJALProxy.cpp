@@ -11,6 +11,7 @@
 
 // include JNI Headers
 #include "jp_ac_fit_asura_naoji_NaojiModule.h"
+#include "jp_ac_fit_asura_naoji_jal_JALProxy.h"
 
 #include "jni_utils.hpp"
 
@@ -31,21 +32,17 @@ using namespace Naoji;
 extern "C" {
 #endif
 
-JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_NaojiModule__1createJALBroker(
-		JNIEnv *, jclass, jlong naojiPtr) {
-	NaojiModule *naoji = reinterpret_cast<NaojiModule*> (naojiPtr);
-	assert(naoji != NULL);
-	AL::ALPtr<AL::ALBroker> broker = naoji->getParentBroker();
-	JALBroker *jbroker = new JALBroker(broker);
-	return reinterpret_cast<jlong> (jbroker);
+JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1create(
+		JNIEnv *, jclass, jlong) {
+	// not implemented.
+	assert(false);
+	return 0;
 }
 
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALBroker__1dispose(
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALProxy__1dispose(
 		JNIEnv *, jclass, jlong objPtr) {
-	JALBroker *jbroker = reinterpret_cast<JALBroker*> (objPtr);
-	assert(jbroker != NULL);
-
-	delete jbroker;
+	// not implemented.
+	assert(false);
 }
 
 #ifdef __cplusplus
