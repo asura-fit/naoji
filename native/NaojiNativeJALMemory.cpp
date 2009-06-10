@@ -79,6 +79,7 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1waitNextCycle(
 	int value = jmemory->getProxy()->getData(string("DCM/Time"), 0);
 	if (value == jmemory->getLastTime()) {
 		value = jmemory->getProxy()->getDataOnChange(string("DCM/Time"), 0);
+		// FIXME ???
 		jmemory->setLastTime(value);
 	}
 }
