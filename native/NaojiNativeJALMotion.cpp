@@ -72,6 +72,36 @@ JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1wait(
 	return jmotion->getProxy()->wait(taskId, timeout);
 }
 
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1addWalkArc(
+		JNIEnv *, jclass, jlong, jfloat, jfloat, jint);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1addWalkSideways(
+				JNIEnv *, jclass, jlong, jfloat, jint);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1addWalkStraight(
+				JNIEnv *, jclass, jlong, jfloat, jint);
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1changeAngle(
+		JNIEnv *, jclass, jlong, jint, jfloat);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1changeBodyAngles(
+				JNIEnv *, jclass, jlong, jfloatArray);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1changeChainAngles(
+				JNIEnv *, jclass, jlong, jint, jfloatArray);
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1changeCom(
+		JNIEnv *, jclass, jlong, jfloat, jfloat, jfloat);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1changePosition(
+				JNIEnv *, jclass, jlong, jint, jint, jfloat, jfloat, jfloat,
+				jfloat, jfloat, jfloat, jint);
+
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1clearFootsteps(
 		JNIEnv *, jclass, jlong objPtr) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
@@ -181,6 +211,18 @@ JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getAngle(
 	return angle;
 }
 
+JNIEXPORT jfloat
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getAngleError(
+				JNIEnv *, jclass, jlong, jint);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBalanceMode(
+				JNIEnv *, jclass, jlong);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyAngleErrors(
+				JNIEnv *, jclass, jlong, jfloatArray);
+
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyAngles(
 		JNIEnv *env, jclass, jlong objPtr, jfloatArray pAngles) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
@@ -190,6 +232,10 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyAngles(
 	jsize len = angles.size();
 	env->SetFloatArrayRegion(pAngles, 0, len, &angles[0]);
 }
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyCommandAngles(
+				JNIEnv *, jclass, jlong, jfloatArray);
 
 JNIEXPORT jobjectArray JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyJointNames(
 		JNIEnv *env, jclass, jlong objPtr) {
@@ -208,6 +254,47 @@ JNIEXPORT jobjectArray JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBod
 	return nameArray;
 }
 
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyLimits(
+				JNIEnv *, jclass, jlong, jfloatArray, jfloatArray, jfloatArray);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyStiffnesses(
+				JNIEnv *, jclass, jlong, jfloatArray);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainAngleErrors(
+				JNIEnv *, jclass, jlong, jint, jfloatArray);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainAngles(
+				JNIEnv *, jclass, jlong, jint, jfloatArray);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainCommandAngles(
+				JNIEnv *, jclass, jlong, jint, jfloatArray);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainLimits(
+				JNIEnv *, jclass, jlong, jint, jfloatArray, jfloatArray,
+				jfloatArray);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainStiffnesses(
+				JNIEnv *, jclass, jlong, jint, jfloatArray);
+
+JNIEXPORT jfloat
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getCommandAngle(
+				JNIEnv *, jclass, jlong, jint);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getForwardTransform(
+				JNIEnv *, jclass, jlong, jint, jint, jfloatArray);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getJointLimits(
+				JNIEnv *, jclass, jlong, jint, jfloatArray);
+
 JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getJointStiffness(
 		JNIEnv *, jclass, jlong objPtr, jint pJointId) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
@@ -218,6 +305,29 @@ JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getJointStif
 	return stiffness;
 }
 
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getJointSpeedParams(
+				JNIEnv *, jclass, jlong, jint, jfloatArray);
+
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getPosition(
+		JNIEnv *, jclass, jlong, jint, jint, jfloatArray);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getRemainingFootStepCount(
+				JNIEnv *, jclass, jlong);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getSensorPosition(
+				JNIEnv *, jclass, jlong, jstring, jint, jfloatArray);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getSupportMode(
+				JNIEnv *, jclass, jlong);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getWalkArmsConfig(
+				JNIEnv *, jclass, jlong, jfloatArray);
+
 JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getWalkArmsEnable(
 		JNIEnv *, jclass, jlong objPtr) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
@@ -225,6 +335,10 @@ JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getWalkArm
 
 	return jmotion->getProxy()->getWalkArmsEnable();
 }
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getWalkConfig(
+				JNIEnv *, jclass, jlong, jfloatArray);
 
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoAngle(
 		JNIEnv *, jclass, jlong objPtr, jint pJointId, jfloat pAngle,
@@ -236,6 +350,17 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoAngle(
 	return jmotion->getProxy()->post.gotoAngle(jointName, pAngle, pDuration,
 			pInterpolationType);
 }
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoAngles(
+		JNIEnv *, jclass, jlong, jintArray, jfloatArray, jfloat, jint);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoAnglesWithSpeed(
+				JNIEnv *, jclass, jlong, jintArray, jfloatArray, jint, jint);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoAngleWithSpeed(
+				JNIEnv *, jclass, jlong, jint, jfloat, jint, jint);
 
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoBodyAngles(
 		JNIEnv *env, jclass, jlong objPtr, jfloatArray pAngles,
@@ -252,6 +377,10 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoBodyAngles
 			pInterpolationType);
 }
 
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoBodyAnglesWithSpeed(
+				JNIEnv *, jclass, jlong, jfloatArray, jint, jint);
+
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoBodyStiffness(
 		JNIEnv *, jclass, jlong objPtr, jfloat pStiffness, jfloat pDuration,
 		jint pInterpolationType) {
@@ -261,6 +390,29 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoBodyStiffn
 	return jmotion->getProxy()->post.gotoBodyStiffness(pStiffness, pDuration,
 			pInterpolationType);
 }
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoBodyStiffnesses(
+				JNIEnv *, jclass, jlong, jfloatArray, jfloat, jint);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoChainAngles(
+				JNIEnv *, jclass, jlong, jint, jfloatArray, jfloat, jint);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoChainAnglesWithSpeed(
+				JNIEnv *, jclass, jlong, jint, jfloatArray, jint, jint);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoChainStiffness(
+				JNIEnv *, jclass, jlong, jint, jfloat, jfloat, jint);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoChainStiffnesses(
+				JNIEnv *, jclass, jlong, jint, jfloatArray, jfloat, jint);
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoCom(
+		JNIEnv *, jclass, jlong, jfloat, jfloat, jfloat, jfloat, jint);
 
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoJointStiffness(
 		JNIEnv *, jclass, jlong objPtr, jint pJointId, jfloat pStiffness,
@@ -273,6 +425,38 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoJointStiff
 			pDuration, pInterpolationType);
 }
 
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoJointStiffnesses(
+				JNIEnv *, jclass, jlong, jintArray, jfloatArray, jfloat, jint);
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoPosition(
+		JNIEnv *, jclass, jlong, jint, jint, jfloat, jfloat, jfloat, jfloat,
+		jfloat, jfloat, jint, jfloat, jint);
+
+JNIEXPORT jint
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1gotoTorsoOrientation(
+				JNIEnv *, jclass, jlong, jfloat, jfloat, jfloat, jint);
+
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1killAll(
+		JNIEnv *, jclass, jlong);
+
+JNIEXPORT jboolean JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1killTask(
+		JNIEnv *, jclass, jlong, jint);
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1openHand(
+		JNIEnv *, jclass, jlong, jstring);
+
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setAngle(
+		JNIEnv *, jclass, jlong, jint, jfloat);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setBalanceMode(
+				JNIEnv *, jclass, jlong, jint);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setBodyAngles(
+				JNIEnv *, jclass, jlong, jfloatArray);
+
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setBodyStiffness(
 		JNIEnv *, jclass, jlong objPtr, jfloat pStiffness) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
@@ -281,6 +465,17 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setBodyStiffne
 	jmotion->getProxy()->setBodyStiffness(pStiffness);
 }
 
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setChainAngles(
+				JNIEnv *, jclass, jlong, jint, jfloatArray);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setChainStiffness(
+				JNIEnv *, jclass, jlong, jint, jfloat);
+
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setCom(
+		JNIEnv *, jclass, jlong, jfloat, jfloat, jfloat);
+
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setJointStiffness(
 		JNIEnv *, jclass, jlong objPtr, jint pJointId, jfloat pStiffness) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
@@ -288,6 +483,127 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setJointStiffn
 
 	string jointName = jmotion->getJointName(pJointId);
 	jmotion->getProxy()->setJointStiffness(jointName, pStiffness);
+}
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setJointStiffnesses(
+				JNIEnv *, jclass, jlong, jintArray, jfloatArray);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setJointSpeedParams(
+				JNIEnv *, jclass, jlong, jint, jfloat, jfloat, jfloat);
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setPosition(
+		JNIEnv *, jclass, jlong, jint, jint, jfloat, jfloat, jfloat, jfloat,
+		jfloat, jfloat, jint);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setSupportMode(
+				JNIEnv *, jclass, jlong, jint);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setTorsoOrientation(
+				JNIEnv *, jclass, jlong, jfloat, jfloat);
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkArmsConfig(
+				JNIEnv *, jclass, jlong, jfloat, jfloat, jfloat, jfloat);
+
+JNIEXPORT void
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkArmsEnable(JNIEnv *,
+		jclass, jlong objPtr, jboolean pArmsEnable) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	jmotion->getProxy()->setWalkArmsEnable(pArmsEnable);
+}
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkArmsEnable(
+				JNIEnv *, jclass, jlong, jboolean);
+
+JNIEXPORT void
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkConfig(JNIEnv *,
+		jclass, jlong objPtr, jfloat pMaxStepLength, jfloat pMaxStepHeight,
+		jfloat pMaxStepSide, jfloat pMaxStepTurn, jfloat pZmpOffsetX,
+		jfloat pZmpOffsetY) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	jmotion->getProxy()->setWalkConfig(pMaxStepLength, pMaxStepHeight,
+			pMaxStepSide, pMaxStepTurn, pZmpOffsetX, pZmpOffsetY);
+}
+
+JNIEXPORT void
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkExtraConfig(JNIEnv *,
+		jclass, jlong objPtr, jfloat pLHipRollBacklashCompensator,
+		jfloat pRHipRollBacklashCompensator, jfloat pHipHeight,
+		jfloat pTorsoYOrientation) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	jmotion->getProxy()->setWalkExtraConfig(pLHipRollBacklashCompensator,
+			pRHipRollBacklashCompensator, pHipHeight, pTorsoYOrientation);
+}
+
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1stop(
+		JNIEnv *, jclass, jlong objPtr, jint taskId) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	jmotion->getProxy()->stop(taskId);
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1turn(
+		JNIEnv *, jclass, jlong objPtr, jfloat pAngle, jint pNumSamplesPerStep) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->post.turn(pAngle, pNumSamplesPerStep);
+}
+
+JNIEXPORT void
+		JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1waitUntilWalkIsFinished(
+				JNIEnv *, jclass, jlong);
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walk(
+		JNIEnv *, jclass, jlong);
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkArc(
+		JNIEnv *, jclass, jlong objPtr, jfloat pAngle, jfloat pRadius,
+		jint pNumSamplesPerStep) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->post.walkArc(pAngle, pRadius,
+			pNumSamplesPerStep);
+}
+
+JNIEXPORT jboolean
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkIsActive(JNIEnv *,
+		jclass, jlong objPtr) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->walkIsActive();
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkStraight(
+		JNIEnv *, jclass, jlong objPtr, jfloat pDistance,
+		jint pNumSamplesPerStep) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->post.walkStraight(pDistance, pNumSamplesPerStep);
+}
+
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkSideways(
+		JNIEnv *env, jclass, jlong objPtr, jfloat pDistance,
+		jint pNumSamplesPerStep) {
+	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
+	assert(jmotion != NULL);
+
+	return jmotion->getProxy()->post.walkSideways(pDistance, pNumSamplesPerStep);
 }
 
 JNIEXPORT jint
@@ -333,92 +649,6 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setTimeSeparate(JNIEnv *env,
 
 	return jmotion->getProxy()->post.doMove(pJointNames, pAngles, pDurations,
 			pInterpolationType);
-}
-
-JNIEXPORT void
-JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkConfig(JNIEnv *,
-		jclass, jlong objPtr, jfloat pMaxStepLength, jfloat pMaxStepHeight,
-		jfloat pMaxStepSide, jfloat pMaxStepTurn, jfloat pZmpOffsetX,
-		jfloat pZmpOffsetY) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	jmotion->getProxy()->setWalkConfig(pMaxStepLength, pMaxStepHeight,
-			pMaxStepSide, pMaxStepTurn, pZmpOffsetX, pZmpOffsetY);
-}
-
-JNIEXPORT void
-JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkExtraConfig(JNIEnv *,
-		jclass, jlong objPtr, jfloat pLHipRollBacklashCompensator,
-		jfloat pRHipRollBacklashCompensator, jfloat pHipHeight,
-		jfloat pTorsoYOrientation) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	jmotion->getProxy()->setWalkExtraConfig(pLHipRollBacklashCompensator,
-			pRHipRollBacklashCompensator, pHipHeight, pTorsoYOrientation);
-}
-
-JNIEXPORT void
-JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkArmsEnable(JNIEnv *,
-		jclass, jlong objPtr, jboolean pArmsEnable) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	jmotion->getProxy()->setWalkArmsEnable(pArmsEnable);
-}
-
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1stop(
-		JNIEnv *, jclass, jlong objPtr, jint taskId) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	jmotion->getProxy()->stop(taskId);
-}
-
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1turn(
-		JNIEnv *, jclass, jlong objPtr, jfloat pAngle, jint pNumSamplesPerStep) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	return jmotion->getProxy()->post.turn(pAngle, pNumSamplesPerStep);
-}
-
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkArc(
-		JNIEnv *, jclass, jlong objPtr, jfloat pAngle, jfloat pRadius,
-		jint pNumSamplesPerStep) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	return jmotion->getProxy()->post.walkArc(pAngle, pRadius,
-			pNumSamplesPerStep);
-}
-
-JNIEXPORT jboolean
-JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkIsActive(JNIEnv *,
-		jclass, jlong objPtr) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	return jmotion->getProxy()->walkIsActive();
-}
-
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkStraight(
-		JNIEnv *, jclass, jlong objPtr, jfloat pDistance,
-		jint pNumSamplesPerStep) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	return jmotion->getProxy()->post.walkStraight(pDistance, pNumSamplesPerStep);
-}
-
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkSideways(
-		JNIEnv *env, jclass, jlong objPtr, jfloat pDistance,
-		jint pNumSamplesPerStep) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	return jmotion->getProxy()->post.walkSideways(pDistance, pNumSamplesPerStep);
 }
 
 #ifdef __cplusplus

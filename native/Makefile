@@ -44,7 +44,7 @@ JAVA_HOME_STAGING=$(JAVA_BUILDROOT)$(JAVA_HOME)
 endif
 
 LDFLAGS =
-CXXFLAGS =
+CXXFLAGS = -O2
 
 # debug or non-debug build.
 ifeq ($(USE_DEBUG),1)
