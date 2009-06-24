@@ -266,6 +266,14 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainStiffn
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
+ * Method:    _getCom
+ * Signature: (JI[F)V
+ */
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getCom
+  (JNIEnv *, jclass, jlong, jint, jfloatArray);
+
+/*
+ * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _getCommandAngle
  * Signature: (JI)F
  */

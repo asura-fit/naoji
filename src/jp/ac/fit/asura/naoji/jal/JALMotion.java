@@ -213,6 +213,10 @@ public class JALMotion extends JALModule {
 		_getChainStiffnesses(objPtr, pChainNameId, pStiffnesses);
 	}
 
+	public void getCom(int pSpace, float[] vector3f) {
+		_getCom(objPtr, pSpace, vector3f);
+	}
+
 	public float getCommandAngle(int pJointId) {
 		assert isDefinedJoint(pJointId);
 		return _getCommandAngle(objPtr, pJointId);
@@ -608,6 +612,8 @@ public class JALMotion extends JALModule {
 
 	native static private void _getChainStiffnesses(long objPtr,
 			int pChainNameId, float[] pStiffnesses);
+
+	native static private void _getCom(long objPtr, int pSpace, float[] vector3f);
 
 	native static private float _getCommandAngle(long objPtr, int pJointId);
 
