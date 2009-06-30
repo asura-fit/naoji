@@ -70,7 +70,7 @@ public class NaoV3R {
 	}
 
 	public enum InterpolationType {
-		LINEAR(0), INTERPOLATION_SMOOTH(1);
+		LINEAR(0), SMOOTH(1);
 
 		private int id;
 
@@ -106,6 +106,28 @@ public class NaoV3R {
 			return "NaoV3R Camera id:" + getId() + " name:" + name();
 		}
 	}
+
+	public static int AXIS_MASK_X = 0x01;
+	public static int AXIS_MASK_Y = 0x02;
+	public static int AXIS_MASK_Z = 0x04;
+	public static int AXIS_MASK_WX = 0x08;
+	public static int AXIS_MASK_WY = 0x10;
+	public static int AXIS_MASK_WZ = 0x20;
+	public static int AXIS_MASK_ALL = 0x3F;
+	public static int AXIS_MASK_VEL = 0x07;
+	public static int AXIS_MASK_ROT = 0x38;
+
+	public static int BALANCE_MODE_OFF = 0;
+	public static int BALANCE_MODE_AUTO = 1;
+	public static int BALANCE_MODE_COM_CONTROL = 2;
+
+	public static int SPACE_BODY = 0;
+	public static int SPACE_SUPPORT_LEG = 1;
+
+	public static int SUPPORT_MODE_LEFT = 0;
+	public static int SUPPORT_MODE_DOUBLE_LEFT = 1;
+	public static int SUPPORT_MODE_RIGHT = 2;
+	public static int SUPPORT_MODE_DOUBLE_RIGHT = 3;
 
 	// public static void defineJoints(JALMotion jmotion) {
 	// for (Joint j : Joint.values()) {
