@@ -258,6 +258,29 @@ protected:
 	AL::ALPtr<AL::ALTextToSpeechProxy> proxy;
 };
 
+class JALVideoDevice {
+public:
+	JALVideoDevice(JALBroker *jbroker) {
+		try {
+			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
+
+			proxy = broker->getProxy("NaoCam");
+		} catch (AL::ALError& e) {
+			std::cout << "Error during initialization: " + e.toString()
+					<< std::endl;
+		}
+
+		AL_ASSERT(proxy); // Assure that memoryproxy is not null
+	}
+
+	AL::ALPtr<ALProxy> getProxy() {
+		return proxy;
+	}
+
+protected:
+	ALPtr<ALProxy> proxy;
+};
+
 }
 
 #endif // NaojiNatives_H

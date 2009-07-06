@@ -107,6 +107,23 @@ public class NaoV3R {
 		}
 	}
 
+	public enum CameraParam {
+		Brightness(0), Contrast(1), Saturation(2), Hue(3), RedChroma(4), BlueChroma(
+				5), Gain(6), HFlip(7), VFlip(8), CorrectionLensX(9), CorrectionLensY(
+				10), AEC(11), AWC(12), AGC(13), Exposure(17), ExposureCorrection(
+				21), FPS(15), Resolution(14), CameraSelect(18);
+
+		private int id;
+
+		private CameraParam(int id) {
+			this.id = id;
+		}
+
+		public int getId() {
+			return id;
+		}
+	}
+
 	public static int AXIS_MASK_X = 0x01;
 	public static int AXIS_MASK_Y = 0x02;
 	public static int AXIS_MASK_Z = 0x04;
@@ -120,6 +137,14 @@ public class NaoV3R {
 	public static int BALANCE_MODE_OFF = 0;
 	public static int BALANCE_MODE_AUTO = 1;
 	public static int BALANCE_MODE_COM_CONTROL = 2;
+
+	public static int COLORSPACE_YUV = 0;
+	public static int COLORSPACE_RGB = 1;
+	public static int COLORSPACE_YUV422 = 2;
+
+	public static int RESOLUTION_QQVGA = 0;
+	public static int RESOLUTION_QVGA = 1;
+	public static int RESOLUTION_VGA = 2;
 
 	public static int SPACE_BODY = 0;
 	public static int SPACE_SUPPORT_LEG = 1;
