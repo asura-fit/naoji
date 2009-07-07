@@ -7,6 +7,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* Inaccessible static: _00024assertionsDisabled */
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALVideoDevice
  * Method:    _create
@@ -74,9 +75,9 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1unRegiste
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALVideoDevice
  * Method:    _getImageLocal
- * Signature: (JLjava/lang/String;Ljp/ac/fit/asura/naoji/jal/JALImage;)V
+ * Signature: (JLjava/lang/String;Ljp/ac/fit/asura/naoji/jal/JALImage;)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getImageLocal
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getImageLocal
   (JNIEnv *, jclass, jlong, jstring, jobject);
 
 /*
@@ -90,34 +91,34 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1releaseIm
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALVideoDevice
  * Method:    _getImageRemote
- * Signature: (JLjava/lang/String;Ljp/ac/fit/asura/naoji/jal/JALImage;)Ljp/ac/fit/asura/naoji/jal/JALImage;
+ * Signature: (JLjava/lang/String;Ljp/ac/fit/asura/naoji/jal/JALImage;)V
  */
-JNIEXPORT jobject JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getImageRemote
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getImageRemote
   (JNIEnv *, jclass, jlong, jstring, jobject);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALVideoDevice
  * Method:    _getDirectRawImageLocal
- * Signature: (JLjp/ac/fit/asura/naoji/jal/JALImage;)Ljp/ac/fit/asura/naoji/jal/JALImage;
+ * Signature: (JLjava/lang/String;Ljp/ac/fit/asura/naoji/jal/JALImage;)I
  */
-JNIEXPORT jobject JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getDirectRawImageLocal
-  (JNIEnv *, jclass, jlong, jobject);
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getDirectRawImageLocal
+  (JNIEnv *, jclass, jlong, jstring, jobject);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALVideoDevice
  * Method:    _releaseDirectRawImage
- * Signature: (J)V
+ * Signature: (JLjava/lang/String;)I
  */
-JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1releaseDirectRawImage
-  (JNIEnv *, jclass, jlong);
+JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1releaseDirectRawImage
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALVideoDevice
  * Method:    _getDirectRawImageRemote
- * Signature: (JLjp/ac/fit/asura/naoji/jal/JALImage;)Ljp/ac/fit/asura/naoji/jal/JALImage;
+ * Signature: (JLjava/lang/String;Ljp/ac/fit/asura/naoji/jal/JALImage;)V
  */
-JNIEXPORT jobject JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getDirectRawImageRemote
-  (JNIEnv *, jclass, jlong, jobject);
+JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getDirectRawImageRemote
+  (JNIEnv *, jclass, jlong, jstring, jobject);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALVideoDevice
@@ -210,7 +211,7 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1setParamD
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALVideoDevice
  * Method:    _getAngles
- * Signature: (JFFLjava/awt/geom/Point2D;)V
+ * Signature: (JFFLjava/awt/geom/Point2D$Float;)V
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getAngles
   (JNIEnv *, jclass, jlong, jfloat, jfloat, jobject);

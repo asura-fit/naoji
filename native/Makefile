@@ -116,7 +116,7 @@ CXXFLAGS += $(CXXINCLUDEPATH)
 LDFLAGS += -lgcc -lc -lstdc++ -ldl
 
 NAOJIN_OBJS=NaojiNatives.o NaojiNativeJALMemory.o NaojiNativeJALMotion.o \
- NaojiNativeJALProxy.o NaojiNativeJALTextToSpeech.o NaojiNativeJDCM.o
+ NaojiNativeJALProxy.o NaojiNativeJALTextToSpeech.o NaojiNativeJDCM.o NaojiNativeJALVideoDevice.o
 
 all : naoji_main libnaoji.so libnaojin.so libnaojiv4l2.so
 

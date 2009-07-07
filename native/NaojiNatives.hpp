@@ -273,12 +273,12 @@ public:
 		AL_ASSERT(proxy); // Assure that memoryproxy is not null
 	}
 
-	AL::ALPtr<ALProxy> getProxy() {
+	AL::ALPtr<AL::ALProxy> getProxy() {
 		return proxy;
 	}
 
 protected:
-	ALPtr<ALProxy> proxy;
+	AL::ALPtr<AL::ALProxy> proxy;
 };
 
 }

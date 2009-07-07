@@ -16,7 +16,7 @@ public class JALImage {
 	int height;
 	int nbLayers;
 	int colorSpace;
-	long timeStamp;
+	long timestamp;
 	ByteBuffer data;
 
 	private boolean isRemote;
@@ -59,8 +59,8 @@ public class JALImage {
 	/**
 	 * @return timeStamp
 	 */
-	public long getTimeStamp() {
-		return timeStamp;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 	/**
@@ -68,5 +68,9 @@ public class JALImage {
 	 */
 	public int getWidth() {
 		return width;
+	}
+
+	public int getLength() {
+		return width * height * nbLayers;
 	}
 }

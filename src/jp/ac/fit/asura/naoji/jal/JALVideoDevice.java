@@ -5,8 +5,6 @@ package jp.ac.fit.asura.naoji.jal;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author sey
@@ -48,28 +46,46 @@ public class JALVideoDevice extends JALModule {
 		_unRegister(objPtr, pId);
 	}
 
-	public void getImageLocal(String pId, JALImage image) {
-		_getImageLocal(objPtr, pId, image);
+	public int getImageLocal(String pId, JALImage image) {
+		int res = _getImageLocal(objPtr, pId, image);
+		if (res == 0)
+			return 0;
+		assert image.getLength() <= image.getData().capacity();
+		image.getData().position(0);
+		image.getData().limit(image.getLength());
+		return res;
 	}
 
 	public int releaseImage(String pId) {
 		return _releaseImage(objPtr, pId);
 	}
 
-	public JALImage getImageRemote(String pId, JALImage image) {
-		return _getImageRemote(objPtr, pId, image);
+	public void getImageRemote(String pId, JALImage image) {
+		_getImageRemote(objPtr, pId, image);
+		assert image.getLength() <= image.getData().capacity();
+		image.getData().position(0);
+		image.getData().limit(image.getLength());
 	}
 
-	public JALImage getDirectRawImageLocal(JALImage image) {
-		return _getDirectRawImageLocal(objPtr, image);
+	public int getDirectRawImageLocal(String pId, JALImage image) {
+		int res = _getDirectRawImageLocal(objPtr, pId, image);
+		if (res == 0)
+			return 0;
+		assert image.getLength() <= image.getData().capacity();
+		image.getData().position(0);
+		image.getData().limit(image.getLength());
+		return res;
 	}
 
-	public void releaseDirectRawImage() {
-		_releaseDirectRawImage(objPtr);
+	public int releaseDirectRawImage(String pId) {
+		return _releaseDirectRawImage(objPtr, pId);
 	}
 
-	public JALImage getDirectRawImageRemote(JALImage image) {
-		return _getDirectRawImageRemote(objPtr, image);
+	public void getDirectRawImageRemote(String pId, JALImage image) {
+		_getDirectRawImageRemote(objPtr, pId, image);
+		assert image.getLength() <= image.getData().capacity();
+		image.getData().position(0);
+		image.getData().limit(image.getLength());
 	}
 
 	public boolean setResolution(String pId, int size) {
@@ -116,7 +132,7 @@ public class JALVideoDevice extends JALModule {
 		_setParamDefault(objPtr, pParam);
 	}
 
-	public void getAngles(float xPos, float yPos, Point2D angle) {
+	public void getAngles(float xPos, float yPos, Point2D.Float angle) {
 		_getAngles(objPtr, xPos, yPos, angle);
 	}
 
@@ -158,21 +174,21 @@ public class JALVideoDevice extends JALModule {
 
 	native static private void _unRegister(long objPtr, String pId);
 
-	native static private void _getImageLocal(long objPtr, String pId,
+	native static private int _getImageLocal(long objPtr, String pId,
 			JALImage image);
 
 	native static private int _releaseImage(long objPtr, String pId);
 
-	native static private JALImage _getImageRemote(long objPtr, String pId,
+	native static private void _getImageRemote(long objPtr, String pId,
 			JALImage image);
 
-	native static private JALImage _getDirectRawImageLocal(long objPtr,
+	native static private int _getDirectRawImageLocal(long objPtr, String pId,
 			JALImage image);
 
-	native static private void _releaseDirectRawImage(long objPtr);
+	native static private int _releaseDirectRawImage(long objPtr, String pId);
 
-	native static private JALImage _getDirectRawImageRemote(long objPtr,
-			JALImage image);
+	native static private void _getDirectRawImageRemote(long objPtr,
+			String pId, JALImage image);
 
 	native static private boolean _setResolution(long objPtr, String pId,
 			int size);
@@ -199,7 +215,7 @@ public class JALVideoDevice extends JALModule {
 	native static private void _setParamDefault(long objPtr, int pParam);
 
 	native static private void _getAngles(long objPtr, float xPos, float yPos,
-			Point2D angle);
+			Point2D.Float angle);
 
 	native static private void _resolutionToSizes(long objPtr, int resolution,
 			Dimension dim);
