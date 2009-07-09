@@ -58,7 +58,7 @@ public class NaoV3R {
 	}
 
 	public enum Chain {
-		Head, LArm, RArm, LLeg, RLeg;
+		Head, LArm, LLeg, RLeg, RArm;
 
 		public int getId() {
 			return this.ordinal();

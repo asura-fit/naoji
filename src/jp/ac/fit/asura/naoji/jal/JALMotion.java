@@ -175,12 +175,9 @@ public class JALMotion extends JALModule {
 		return _getBodyJointNames(objPtr);
 	}
 
-	public void getBodyLimits(float[] minAngle, float[] maxAngle,
-			float[] maxChangePerCycle) {
-		assert minAngle.length == jointNum;
-		assert maxAngle.length == jointNum;
-		assert maxChangePerCycle.length == jointNum;
-		_getBodyLimits(objPtr, minAngle, maxAngle, maxChangePerCycle);
+	public void getBodyLimits(float[] matrixNx3) {
+		assert matrixNx3.length == jointNum * 3;
+		_getBodyLimits(objPtr, matrixNx3);
 	}
 
 	public void getBodyStiffnesses(float[] pStiffnesses) {
@@ -200,16 +197,12 @@ public class JALMotion extends JALModule {
 		_getChainCommandAngles(objPtr, pChainNameId, pAngles);
 	}
 
-	public void getChainLimits(int pChainNameId, float[] minAngle,
-			float[] maxAngle, float[] maxChangePerCycle) {
-		assert minAngle.length == maxAngle.length;
-		assert minAngle.length == maxChangePerCycle.length;
-		_getChainLimits(objPtr, pChainNameId, minAngle, maxAngle,
-				maxChangePerCycle);
+	public void getChainLimits(int pChainNameId, float[] matrixNx3) {
+		assert matrixNx3.length % 3 == 0;
+		_getChainLimits(objPtr, pChainNameId, matrixNx3);
 	}
 
 	public void getChainStiffnesses(int pChainNameId, float[] pStiffnesses) {
-		assert pStiffnesses.length == jointNum;
 		_getChainStiffnesses(objPtr, pChainNameId, pStiffnesses);
 	}
 
@@ -592,8 +585,7 @@ public class JALMotion extends JALModule {
 
 	native static private String[] _getBodyJointNames(long objPtr);
 
-	native static private void _getBodyLimits(long objPtr, float[] minAngle,
-			float[] maxAngle, float[] maxChangePerCycle);
+	native static private void _getBodyLimits(long objPtr, float[] matrixNx3f);
 
 	native static private void _getBodyStiffnesses(long objPtr,
 			float[] pStiffnesses);
@@ -608,7 +600,7 @@ public class JALMotion extends JALModule {
 			int pChainNameId, float[] pAngles);
 
 	native static private void _getChainLimits(long objPtr, int pChainNameId,
-			float[] minAngle, float[] maxAngle, float[] maxChangePerCycle);
+			float[] matrixNx3f);
 
 	native static private void _getChainStiffnesses(long objPtr,
 			int pChainNameId, float[] pStiffnesses);

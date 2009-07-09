@@ -211,10 +211,10 @@ JNIEXPORT jobjectArray JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBod
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _getBodyLimits
- * Signature: (J[F[F[F)V
+ * Signature: (J[F)V
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyLimits
-  (JNIEnv *, jclass, jlong, jfloatArray, jfloatArray, jfloatArray);
+  (JNIEnv *, jclass, jlong, jfloatArray);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
@@ -251,10 +251,10 @@ JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainComman
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _getChainLimits
- * Signature: (JI[F[F[F)V
+ * Signature: (JI[F)V
  */
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainLimits
-  (JNIEnv *, jclass, jlong, jint, jfloatArray, jfloatArray, jfloatArray);
+  (JNIEnv *, jclass, jlong, jint, jfloatArray);
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion

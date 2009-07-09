@@ -353,40 +353,28 @@ JNIEXPORT jobjectArray JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBod
 
 JNIEXPORT void
 JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getBodyLimits(JNIEnv *env,
-		jclass, jlong objPtr, jfloatArray jMinAngle, jfloatArray jMaxAngle,
-		jfloatArray jMaxChangePerCycle) {
+		jclass, jlong objPtr, jfloatArray jMatrixNx3f) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
-	ALValue ret = jmotion->getProxy()->getBodyLimits();
+	ALValue ret;
+	try {
+		ret = jmotion->getProxy()->getBodyLimits();
 
-	jint jointNum = env->GetArrayLength(jMinAngle);
-	assert(jointNum == env->GetArrayLength(jMaxAngle));
-	assert(jointNum == env->GetArrayLength(jMaxChangePerCycle));
+		jint jointNum = env->GetArrayLength(jMatrixNx3f) / 3;
 
-	// minAngle
-	jfloat* minAngle =
-			(jfloat*) env->GetPrimitiveArrayCritical(jMinAngle, NULL);
-	for (int i = 0; i < jointNum; i++) {
-		minAngle[i] = ret[0][i];
+		jfloat* matrix = (jfloat*) env->GetPrimitiveArrayCritical(jMatrixNx3f,
+				NULL);
+		for (int i = 0; i < jointNum; i++) {
+			matrix[i * 3] = ret[i][0];
+			matrix[i * 3 + 1] = ret[i][1];
+			matrix[i * 3 + 2] = ret[i][2];
+		}
+		env->ReleasePrimitiveArrayCritical(jMatrixNx3f, matrix, 0);
+	} catch (AL::ALError err) {
+		cerr << err.toString();
+		assert(false);
 	}
-	env->ReleasePrimitiveArrayCritical(jMinAngle, minAngle, 0);
-
-	// maxAngle
-	jfloat* maxAngle =
-			(jfloat*) env->GetPrimitiveArrayCritical(jMaxAngle, NULL);
-	for (int i = 0; i < jointNum; i++) {
-		maxAngle[i] = ret[1][i];
-	}
-	env->ReleasePrimitiveArrayCritical(jMaxAngle, maxAngle, 0);
-
-	// maxChangePerCycle
-	jfloat* maxChangePerCycle = (jfloat*) env->GetPrimitiveArrayCritical(
-			jMaxChangePerCycle, NULL);
-	for (int i = 0; i < jointNum; i++) {
-		maxChangePerCycle[i] = ret[0][i];
-	}
-	env->ReleasePrimitiveArrayCritical(jMaxChangePerCycle, maxChangePerCycle, 0);
 }
 
 JNIEXPORT void
@@ -444,41 +432,29 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainCommandAngles(
 
 JNIEXPORT void
 JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getChainLimits(JNIEnv *env,
-		jclass, jlong objPtr, jint pChainId, jfloatArray jMinAngle,
-		jfloatArray jMaxAngle, jfloatArray jMaxChangePerCycle) {
+		jclass, jlong objPtr, jint pChainId, jfloatArray jMatrixNx3f) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
-	ALValue ret = jmotion->getProxy()->getChainLimits(jmotion->getChainName(
-			pChainId));
+	ALValue ret;
+	try {
+		ret = jmotion->getProxy()->getChainLimits(jmotion->getChainName(
+				pChainId));
 
-	jint jointNum = env->GetArrayLength(jMinAngle);
-	assert(jointNum == env->GetArrayLength(jMaxAngle));
-	assert(jointNum == env->GetArrayLength(jMaxChangePerCycle));
+		jint jointNum = env->GetArrayLength(jMatrixNx3f) / 3;
 
-	// minAngle
-	jfloat* minAngle =
-			(jfloat*) env->GetPrimitiveArrayCritical(jMinAngle, NULL);
-	for (int i = 0; i < jointNum; i++) {
-		minAngle[i] = ret[0][i];
+		jfloat* matrix = (jfloat*) env->GetPrimitiveArrayCritical(jMatrixNx3f,
+				NULL);
+		for (int i = 0; i < jointNum; i++) {
+			matrix[i * 3] = ret[i][0];
+			matrix[i * 3 + 1] = ret[i][1];
+			matrix[i * 3 + 2] = ret[i][2];
+		}
+		env->ReleasePrimitiveArrayCritical(jMatrixNx3f, matrix, 0);
+	} catch (AL::ALError err) {
+		cerr << err.toString();
+		assert(false);
 	}
-	env->ReleasePrimitiveArrayCritical(jMinAngle, minAngle, 0);
-
-	// maxAngle
-	jfloat* maxAngle =
-			(jfloat*) env->GetPrimitiveArrayCritical(jMaxAngle, NULL);
-	for (int i = 0; i < jointNum; i++) {
-		maxAngle[i] = ret[1][i];
-	}
-	env->ReleasePrimitiveArrayCritical(jMaxAngle, maxAngle, 0);
-
-	// maxChangePerCycle
-	jfloat* maxChangePerCycle = (jfloat*) env->GetPrimitiveArrayCritical(
-			jMaxChangePerCycle, NULL);
-	for (int i = 0; i < jointNum; i++) {
-		maxChangePerCycle[i] = ret[0][i];
-	}
-	env->ReleasePrimitiveArrayCritical(jMaxChangePerCycle, maxChangePerCycle, 0);
 }
 
 JNIEXPORT void
@@ -536,8 +512,15 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getJointLimits(JNIEnv *env,
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
-	string jointName = jmotion->getJointName(pJointId);
-	vector<jfloat> jointLimits(jmotion->getProxy()->getJointLimits(jointName));
+	vector<jfloat> jointLimits;
+	try {
+		string jointName = jmotion->getJointName(pJointId);
+		jointLimits = jmotion->getProxy()->getJointLimits(jointName);
+	} catch (AL::ALError err) {
+		cerr << err.toString();
+		assert(false);
+	}
+
 	jsize len = jointLimits.size();
 	assert(len == env->GetArrayLength(pJointLimits));
 	env->SetFloatArrayRegion(pJointLimits, 0, len, &jointLimits[0]);
@@ -1169,7 +1152,7 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walk(
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
-	jmotion->getProxy()->walk();
+	return jmotion->getProxy()->post.walk();
 }
 
 JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1walkArc(
