@@ -1,2 +1,2 @@
-file:modules/lib/naoji_test.jar
-file:naoji_test.jar
+file:modules/lib/naoji_test.jar file:modules/lib/junit.jar
+file:naoji_test.jar file:junit.jar

@@ -36,6 +36,10 @@ public class JALBroker {
 		return tts;
 	}
 
+	public JALVideoDevice createJALVideoDevice() {
+		return new JALVideoDevice(this);
+	}
+
 	public void dispose() {
 		_dispose(objPtr);
 	}

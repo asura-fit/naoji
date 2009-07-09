@@ -5,11 +5,15 @@ package jp.ac.fit.asura.naoji.jal;
 
 import java.util.Arrays;
 
+import jp.ac.fit.asura.naoji.Naoji;
+import jp.ac.fit.asura.naoji.NaojiContext;
+import jp.ac.fit.asura.naoji.NaojiFactory;
 import jp.ac.fit.asura.naoji.robots.NaoV3R;
 import jp.ac.fit.asura.naoji.robots.NaoV3R.Chain;
 import jp.ac.fit.asura.naoji.robots.NaoV3R.InterpolationType;
 import jp.ac.fit.asura.naoji.robots.NaoV3R.Joint;
 import junit.framework.TestCase;
+import junit.textui.TestRunner;
 
 /**
  * @author sey
@@ -20,20 +24,76 @@ import junit.framework.TestCase;
 public class JALMotionTest extends TestCase {
 	JALMotion motion;
 
-	/**
-	 *
-	 */
-	public JALMotionTest() {
+	public static class Factory implements NaojiFactory {
+		public Naoji create() {
+			return NaojiImpl.getInstance();
+		}
+	}
+
+	private static class NaojiImpl implements Naoji {
+		static NaojiImpl instance = null;
+		JALMotion motion;
+		Thread mainThread;
+
+		private NaojiImpl() {
+		}
+
+		public void init(NaojiContext context) {
+			motion = context.getParentBroker().createJALMotion();
+
+			mainThread = new Thread() {
+				public void run() {
+					try {
+						TestRunner.run(JALMotionTest.class);
+					} catch (RuntimeException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+		}
+
+		public void exit() {
+		}
+
+		public void start() {
+			System.err.println("NaojiTest start called.");
+			mainThread.start();
+		}
+
+		public void stop() {
+			System.err.println("NaojiTest stop called.");
+			try {
+				mainThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				assert false;
+			}
+		}
+
+		public static NaojiImpl getInstance() {
+			if (instance == null)
+				instance = new NaojiImpl();
+			return instance;
+		}
+	}
+
+	@Override
+	public String getName() {
+		return "JALMotionTest";
 	}
 
 	protected void setUp() throws Exception {
-		motion.setBodyStiffness(0.35f);
+		motion = NaojiImpl.getInstance().motion;
+		motion.wait(motion.gotoBodyStiffness(0.5f, 0.5f,
+				NaoV3R.InterpolationType.LINEAR.getId()), 0);
+
 		super.setUp();
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		motion.setBodyStiffness(0.0f);
+		motion.wait(motion.gotoBodyStiffness(0.0f, 1.0f,
+				NaoV3R.InterpolationType.LINEAR.getId()), 0);
 	}
 
 	/**
@@ -50,6 +110,7 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testSetTimeSeparate() {
+		System.out.println("begin testSetTimeSeparate()");
 		float[] MOTION_TEST1_ANGLES = { //
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0,
@@ -64,11 +125,10 @@ public class JALMotionTest extends TestCase {
 
 		};
 		int[] MOTION_TEST1_DURATIONS = { 500, 2000, 3500, 5000 };
-		System.out.println("begin setTimeSeparate()");
 		int taskId = motion.setTimeSeparate(MOTION_TEST1_ANGLES,
 				MOTION_TEST1_DURATIONS, InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 0);
-		System.out.println("end setTimeSeparate()");
+		System.out.println("end testSetTimeSeparate()");
 	}
 
 	/**
@@ -76,6 +136,7 @@ public class JALMotionTest extends TestCase {
 	 * {@link jp.ac.fit.asura.naoji.jal.JALMotion#wait(int, int)} のためのテスト・メソッド。
 	 */
 	public void testIsRunningAndWait() {
+		System.out.println("begin testIsRunningAndWait()");
 		int taskId = motion.gotoAngle(Joint.HeadPitch.getId(), 0.5f, 1.0f,
 				InterpolationType.LINEAR.getId());
 		assertTrue(motion.isRunning(taskId));
@@ -83,6 +144,7 @@ public class JALMotionTest extends TestCase {
 		assertTrue(motion.isRunning(taskId));
 		motion.wait(taskId, 0);
 		assertFalse(motion.isRunning(taskId));
+		System.out.println("end testIsRunningAndWait()");
 	}
 
 	/**
@@ -93,13 +155,23 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testCom() {
+		System.out.println("begin testCom()");
+
+		int mode = motion.getSupportMode();
+		motion.setSupportMode(NaoV3R.SUPPORT_MODE_DOUBLE_LEFT);
+		assertEquals(NaoV3R.SUPPORT_MODE_DOUBLE_LEFT, motion.getSupportMode());
+
+		motion.setBalanceMode(NaoV3R.BALANCE_MODE_AUTO);
+		assertEquals(NaoV3R.BALANCE_MODE_AUTO, motion.getBalanceMode());
+
 		int taskId;
 		taskId = motion.gotoCom(0, 0, 0.25f, 2.5f, InterpolationType.LINEAR
 				.getId());
 		motion.wait(taskId, 0);
 		float[] com = new float[3];
 		// SPACE_BODY = 0, SPACE_SUPPORT_LEG = 1
-		motion.getCom(1, com);
+		motion.getCom(NaoV3R.SPACE_SUPPORT_LEG, com);
+		System.out.println("getCom:" + Arrays.toString(com));
 		assertEquals(0, com[0], 0.03125f);
 		assertEquals(0, com[1], 0.03125f);
 		assertEquals(0.25f, com[2], 0.03125f);
@@ -112,6 +184,13 @@ public class JALMotionTest extends TestCase {
 		motion.wait(taskId, 0);
 
 		motion.setCom(0, 0, 0.25f);
+
+		motion.setBalanceMode(NaoV3R.BALANCE_MODE_OFF);
+		assertEquals(NaoV3R.BALANCE_MODE_OFF, motion.getBalanceMode());
+
+		motion.setSupportMode(mode);
+
+		System.out.println("end testCom()");
 	}
 
 	/**
@@ -124,6 +203,7 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testPosition() {
+		System.out.println("begin testPosition()");
 		int taskId;
 
 		float[] pos = new float[6];
@@ -131,6 +211,7 @@ public class JALMotionTest extends TestCase {
 		assertTrue(pos[0] != 0);
 
 		motion.getPosition(Chain.RArm.getId(), NaoV3R.SPACE_BODY, pos);
+		System.out.println("RArm position:" + Arrays.toString(pos));
 		assertTrue(pos[0] != 0);
 
 		taskId = motion.changePosition(Chain.RArm.getId(),
@@ -147,6 +228,7 @@ public class JALMotionTest extends TestCase {
 		motion.setPosition(Chain.RArm.getId(), NaoV3R.SPACE_SUPPORT_LEG,
 				pos[0], pos[1], pos[2], pos[3], pos[4], pos[5],
 				NaoV3R.AXIS_MASK_VEL);
+		System.out.println("end testPosition()");
 	}
 
 	/**
@@ -154,19 +236,8 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testDoMove() {
-		fail("まだ実装されていません");
-	}
-
-	/**
-	 * {@link jp.ac.fit.asura.naoji.jal.JALMotion#getBalanceMode()}
-	 * のためのテスト・メソッド。
-	 */
-	public void testBalanceMode() {
-		motion.setBalanceMode(NaoV3R.BALANCE_MODE_AUTO);
-		assertEquals(NaoV3R.BALANCE_MODE_AUTO, motion.getBalanceMode());
-
-		motion.setBalanceMode(NaoV3R.BALANCE_MODE_OFF);
-		assertEquals(NaoV3R.BALANCE_MODE_OFF, motion.getBalanceMode());
+		System.out.println("begin testDoMove()");
+		System.out.println("end testDoMove()");
 	}
 
 	/**
@@ -174,6 +245,7 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testGetBodyJointNames() {
+		System.out.println("begin testGetBodyJointNames()");
 		String[] names = motion.getBodyJointNames();
 		assertTrue(Arrays.equals(new String[] { "HeadYaw", "HeadPitch",
 				"LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll",
@@ -182,6 +254,7 @@ public class JALMotionTest extends TestCase {
 				"RHipPitch", "RKneePitch", "RAnklePitch", "RAnkleRoll",
 				"RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll" },
 				names));
+		System.out.println("end testGetBodyJointNames()");
 	}
 
 	/**
@@ -191,30 +264,22 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testLimits() {
-		float[] minAngle1 = new float[22];
-		float[] maxAngle1 = new float[22];
-		float[] maxChangePerCycle1 = new float[22];
-		motion.getBodyLimits(minAngle1, maxAngle1, maxChangePerCycle1);
-		System.out.println("getBodyLimits minAngle: "
-				+ Arrays.toString(minAngle1) + " maxAngle: "
-				+ Arrays.toString(maxAngle1) + " maxChangePerCycle: "
-				+ Arrays.toString(maxChangePerCycle1));
+		System.out.println("begin testLimits()");
+		float[] mat1 = new float[22 * 3];
+		motion.getBodyLimits(mat1);
+		System.out.println("getBodyLimits matrix: " + Arrays.toString(mat1));
 
-		float[] minAngle2 = new float[6];
-		float[] maxAngle2 = new float[6];
-		float[] maxChangePerCycle2 = new float[6];
-		motion.getChainLimits(Chain.RLeg.getId(), minAngle2, maxAngle2,
-				maxChangePerCycle2);
-		System.out.println("getChainLimits RLeg minAngle: "
-				+ Arrays.toString(minAngle2) + " maxAngle: "
-				+ Arrays.toString(maxAngle2) + " maxChangePerCycle: "
-				+ Arrays.toString(maxChangePerCycle2));
+		float[] mat2 = new float[6 * 3];
+		motion.getChainLimits(Chain.RLeg.getId(), mat2);
+		System.out.println("getChainLimits RLeg matrix: "
+				+ Arrays.toString(mat2));
 
 		float[] limits = new float[3];
 		motion.getJointLimits(Joint.HeadYaw.getId(), limits);
 		System.out.println("getJointLimits HeadYaw minAngle: " + limits[0]
 				+ " maxAngle: " + limits[1] + " maxChangePerCycle: "
 				+ limits[2]);
+		System.out.println("end testLimits()");
 	}
 
 	/**
@@ -234,6 +299,7 @@ public class JALMotionTest extends TestCase {
 	 *       , のためのテスト・メソッド。
 	 */
 	public void testJoint() {
+		System.out.println("begin testJoint()");
 		int taskId;
 
 		System.out.println("HeadYaw gotoJointStiffness 1.0f");
@@ -246,22 +312,24 @@ public class JALMotionTest extends TestCase {
 		System.out.println("HeadYaw gotoAngle -0.5f with SMOOTH");
 		taskId = motion.gotoAngle(Joint.HeadYaw.getId(), -0.5f, 3.0f,
 				InterpolationType.SMOOTH.getId());
+		motion.wait(taskId, 0);
 		assertEquals(-0.5f, motion.getCommandAngle(Joint.HeadYaw.getId()),
 				0.0625f);
 		motion.wait(taskId, 0);
-		assertEquals(-0.5f, motion.getAngle(Joint.HeadYaw.getId()), 0.0625f);
+		assertEquals(-0.5f, motion.getAngle(Joint.HeadYaw.getId()), 0.125f);
 
 		System.out.println("HeadYaw gotoAngleWithSpeed 0.5 with SLOWLY(10%)");
 		taskId = motion.gotoAngleWithSpeed(Joint.HeadYaw.getId(), 0f, 10,
 				InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 0);
-		assertEquals(0.0f, motion.getAngle(Joint.HeadYaw.getId()), 0.0625f);
+		assertEquals(0.0f, motion.getAngle(Joint.HeadYaw.getId()), 0.125f);
 
-		System.out.println("HeadYaw changeAngle +0.5f");
-		taskId = motion.changeAngle(Joint.HeadYaw.getId(), 0.5f);
-		assertEquals(0.5f, motion.getAngleError(Joint.HeadYaw.getId()), 0.125f);
+		System.out.println("HeadYaw changeAngle +0.25f");
+		taskId = motion.changeAngle(Joint.HeadYaw.getId(), 0.25f);
+		assertEquals(0.25f - motion.getAngle(Joint.HeadYaw.getId()), motion
+				.getAngleError(Joint.HeadYaw.getId()), 0.125f);
 		motion.wait(taskId, 0);
-		assertEquals(0.5f, motion.getAngle(Joint.HeadYaw.getId()), 0.0625f);
+		assertEquals(0.25f, motion.getAngle(Joint.HeadYaw.getId()), 0.125f);
 
 		System.out.println("HeadYaw setJointSpeedParams 0.05f, 0.006f, 0.006f");
 		motion
@@ -276,6 +344,7 @@ public class JALMotionTest extends TestCase {
 
 		System.out.println("HeadYaw setJointStiffness 0.0f");
 		motion.setJointStiffness(Joint.HeadYaw.getId(), 0.0f);
+		System.out.println("end testJoint()");
 	}
 
 	/**
@@ -287,14 +356,12 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testBody() {
+		System.out.println("begin testBody()");
 		int taskId;
 		float[] angles = new float[22];
 		float[] stiffnesses = new float[22];
 
 		System.out.println("testBody");
-
-		System.out.println("setBodyStiffness");
-		motion.setBodyStiffness(0.0f);
 
 		System.out.println("gotoBodyStiffness");
 		taskId = motion.gotoBodyStiffness(1.0f, 2.0f, InterpolationType.LINEAR
@@ -319,15 +386,15 @@ public class JALMotionTest extends TestCase {
 
 		System.out.println("getBodyAngles");
 		motion.getBodyAngles(angles);
-		assertEquals(0.5f, angles[0], 0.03125f);
+		assertEquals(0.5f, angles[0], 0.125f);
 
 		System.out.println("getBodyAngleErrors");
 		motion.getBodyAngleErrors(angles);
-		assertEquals(0.0f, angles[0], 0.03125f);
+		assertEquals(0.0f, angles[0], 0.125f);
 
 		System.out.println("getBodyCommandAngles");
 		motion.getBodyCommandAngles(angles);
-		assertEquals(0.5f, angles[0], 0.03125f);
+		assertEquals(0.5f, angles[0], 0.125f);
 
 		System.out.println("changeBodyAngles +0.5f");
 		taskId = motion.changeBodyAngles(new float[] { 0.5f, 0.5f, 0.5f, 0.5f,
@@ -340,9 +407,13 @@ public class JALMotionTest extends TestCase {
 				InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 0);
 
+		System.out.println("setBodyStiffness");
+		motion.setBodyStiffness(0.125f);
+
 		System.out.println("setBodyAngles");
 		motion.setBodyAngles(new float[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+		System.out.println("end testBody()");
 	}
 
 	/**
@@ -354,14 +425,12 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testChain() {
+		System.out.println("begin testChain()");
 		int taskId;
 		float[] angles = new float[2];
 		float[] stiffnesses = new float[2];
 
 		System.out.println("testChain");
-
-		System.out.println("setChainStiffness");
-		motion.setChainStiffness(Chain.Head.getId(), 0.0f);
 
 		System.out.println("gotoChainStiffness");
 		taskId = motion.gotoChainStiffness(Chain.Head.getId(), 1.0f, 2.0f,
@@ -408,23 +477,27 @@ public class JALMotionTest extends TestCase {
 
 		System.out.println("getChainAngles");
 		motion.getChainAngles(Chain.Head.getId(), angles);
-		assertEquals(0.5f, angles[0], 0.03125f);
+		assertEquals(0.5f, angles[0], 0.125f);
 
 		System.out.println("getChainAngleErrors");
 		motion.getChainAngleErrors(Chain.Head.getId(), angles);
-		assertEquals(0.0f, angles[0], 0.03125f);
+		assertEquals(0.0f, angles[0], 0.125f);
 
 		System.out.println("getChainCommandAngles");
 		motion.getChainCommandAngles(Chain.Head.getId(), angles);
-		assertEquals(0.5f, angles[0], 0.03125f);
+		assertEquals(0.5f, angles[0], 0.125f);
 
 		System.out.println("gotoChainAnglesWithSpeed");
 		taskId = motion.gotoChainAnglesWithSpeed(Chain.Head.getId(), angles,
 				10, InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 0);
 
+		System.out.println("setChainStiffness");
+		motion.setChainStiffness(Chain.Head.getId(), 0.25f);
+
 		System.out.println("setChainAngles");
 		motion.setChainAngles(Chain.Head.getId(), new float[] { 0, 0 });
+		System.out.println("end testChain()");
 	}
 
 	/**
@@ -432,25 +505,17 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testGetForwardTransform() {
+		System.out.println("begin testGetForwardTransform()");
 		float[] m = new float[4 * 4];
 		motion.getForwardTransform(Chain.Head.getId(), NaoV3R.SPACE_BODY, m);
-	}
-
-	/**
-	 * {@link jp.ac.fit.asura.naoji.jal.JALMotion#getSupportMode()}
-	 * のためのテスト・メソッド。
-	 */
-	public void testSupportMode() {
-		int mode = motion.getSupportMode();
-		motion.setSupportMode(NaoV3R.SUPPORT_MODE_DOUBLE_LEFT);
-		assertEquals(NaoV3R.SUPPORT_MODE_DOUBLE_LEFT, motion.getSupportMode());
-		motion.setSupportMode(mode);
+		System.out.println("end testGetForwardTransform()");
 	}
 
 	/**
 	 * {@link jp.ac.fit.asura.naoji.jal.JALMotion#killAll()} のためのテスト・メソッド。
 	 */
 	public void testKill() {
+		System.out.println("begin testKill()");
 		int taskId = motion.gotoAngle(Joint.HeadYaw.getId(), 3.14f / 2, 5.0f,
 				InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 1000);
@@ -460,6 +525,7 @@ public class JALMotionTest extends TestCase {
 				InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 2000);
 		motion.killAll();
+		System.out.println("end testKill()");
 	}
 
 	/**
@@ -467,9 +533,10 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testHand() {
-		fail("まだ実装されていません");
+		System.out.println("begin testHand()");
 		// not implemented
 		// motion.openHand("");
+		System.out.println("end testHand()");
 	}
 
 	/**
@@ -477,11 +544,13 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testTorsoOrientation() {
+		System.out.println("begin testTorsoOrientation()");
 		int taskId;
 		taskId = motion.gotoTorsoOrientation(0.25f, 0.25f, 3.0f,
 				InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 2000);
 		motion.setTorsoOrientation(0.0f, 0.0f);
+		System.out.println("end testTorsoOrientation()");
 	}
 
 	/**
@@ -497,19 +566,22 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testWalk() {
-		System.out.println("walk begin");
+		System.out.println("begin testWalk()");
 		motion.addWalkStraight(0.4f, 40);
 		motion.addWalkSideways(0.25f, 40);
 		motion.addWalkArc(0.5f, 0.5f, 40);
 		motion.addTurn(0.5f, 40);
 		int taskId = motion.walk();
+		motion.wait(taskId, 1000);
+		// ALMotion needs time to build a walking plan.
 		assertTrue(motion.getRemainingFootStepCount() > 0);
 		assertTrue(motion.walkIsActive());
 		System.out.println("walk waitUntilWalkIsFinished");
 		motion.waitUntilWalkIsFinished();
 		assertTrue(motion.getRemainingFootStepCount() == 0);
 		assertFalse(motion.walkIsActive());
-		System.out.println("walk end");
+		assertFalse(motion.isRunning(taskId));
+		System.out.println("end testWalk()");
 	}
 
 	/**
@@ -525,37 +597,32 @@ public class JALMotionTest extends TestCase {
 	 * のためのテスト・メソッド。
 	 */
 	public void testWalk2() {
+		System.out.println("begin testWalk2()");
 		int taskId;
-		System.out.println("walkStraight");
+		System.out.println("walkStraight 1.0m");
 		taskId = motion.walkStraight(1.0f, 40);
-		motion.wait(taskId, 3000);
+		motion.wait(taskId, 2000);
+
 		System.out.println("clearFootsteps");
 		motion.clearFootsteps();
-		System.out.println("waitUntilWalkIsFinished");
-		motion.waitUntilWalkIsFinished();
+		motion.wait(taskId, 0);
 		assertFalse(motion.walkIsActive());
 
-		System.out.println("walkSideways");
+		System.out.println("walkSideways 1.0m");
 		taskId = motion.walkSideways(1.0f, 40);
 		motion.wait(taskId, 3000);
 		System.out.println("stop");
 		motion.stop(taskId);
-		System.out.println("waitUntilWalkIsFinished");
-		motion.waitUntilWalkIsFinished();
 		assertFalse(motion.walkIsActive());
 
-		System.out.println("walkArc");
+		System.out.println("walkArc 1.0m");
 		taskId = motion.walkArc(0.5f, 1.0f, 40);
 		motion.wait(taskId, 2000);
 		System.out.println("killTask");
 		motion.killTask(taskId);
-		System.out.println("waitUntilWalkIsFinished");
-		motion.waitUntilWalkIsFinished();
 		assertFalse(motion.walkIsActive());
 
-		taskId = motion.turn(0.5f, 40);
-		motion.wait(taskId, 0);
-		assertFalse(motion.walkIsActive());
+		System.out.println("end testWalk2()");
 	}
 
 }

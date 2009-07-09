@@ -133,6 +133,7 @@
 		<fail message="target.ip is required." unless="target.ip" />
 		<exec executable="scp">
 			<arg value="${build.test.jar}" />
+			<arg value="${build.lib}/${junit.jar}" />
 			<arg value="root@${target.ip}:${target.libdir}" />
 		</exec>
 		<exec executable="rsync">
