@@ -46,6 +46,9 @@ public class JALVideoDevice extends JALModule {
 		_unRegister(objPtr, pId);
 	}
 
+	/**
+	 * Caution! You shouldn't use this method through remote broker.
+	 */
 	public int getImageLocal(String pId, JALImage image) {
 		int res = _getImageLocal(objPtr, pId, image);
 		if (res == 0)
@@ -67,6 +70,9 @@ public class JALVideoDevice extends JALModule {
 		image.getData().limit(image.getLength());
 	}
 
+	/**
+	 * Caution! You shouldn't use this method through remote broker.
+	 */
 	public int getDirectRawImageLocal(String pId, JALImage image) {
 		int res = _getDirectRawImageLocal(objPtr, pId, image);
 		if (res == 0)

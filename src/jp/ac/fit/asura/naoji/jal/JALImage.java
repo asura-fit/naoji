@@ -12,19 +12,19 @@ import java.nio.ByteBuffer;
  *
  */
 public class JALImage {
-	int width;
-	int height;
-	int nbLayers;
-	int colorSpace;
-	long timestamp;
-	ByteBuffer data;
+	private int width;
+	private int height;
+	private int nbLayers;
+	private int colorSpace;
+	private long timestamp;
+	private ByteBuffer data;
 
 	private boolean isRemote;
 
 	/**
 	 *
 	 */
-	JALImage() {
+	public JALImage() {
 
 	}
 

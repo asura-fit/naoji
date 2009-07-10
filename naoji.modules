@@ -1,2 +1,4 @@
+# The prefix modules/lib/ is required if Naoji is loaded by autoload.ini,
+#  because the working directory of /etc/init.d/naoqi is /opt/naoqi
 file:modules/lib/naoji_test.jar file:modules/lib/junit.jar
 file:naoji_test.jar file:junit.jar

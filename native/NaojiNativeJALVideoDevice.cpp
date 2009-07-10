@@ -238,13 +238,17 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getDirectRawImageLocal(
 	JALVideoDevice *jvideo = reinterpret_cast<JALVideoDevice*> (objPtr);
 	assert(jvideo != NULL);
 
+	jassert(env, imgObj != NULL);
+
 	int res = jvideo->getProxy()->call<int> ("getDirectRawImageLocal",
 			toString(env, pId));
+
 	if (res == 0)
 		return 0;
-	ALVisionImage* image = reinterpret_cast<ALVisionImage*> (res);
 
-	jassert(env, imgObj != NULL);
+	// TODO check validity of pointer 'res'
+	ALVisionImage* image = reinterpret_cast<ALVisionImage*> (res);
+	assert(image != NULL);
 
 	jclass imgClass = env->GetObjectClass(imgObj);
 	jassert(env, imgClass != NULL);
@@ -279,6 +283,7 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getDirectRawImageLocal(
 	jobject buf = env->NewDirectByteBuffer(image->getFrame(), length);
 	jassert(env, buf != NULL);
 	env->SetObjectField(imgObj, dataField, buf);
+
 	return 1;
 }
 
@@ -449,7 +454,7 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1setParam(
 	JALVideoDevice *jvideo = reinterpret_cast<JALVideoDevice*> (objPtr);
 	assert(jvideo != NULL);
 
-	jvideo->getProxy()->call<int> ("setParam", pParam, pNewValue);
+	jvideo->getProxy()->callVoid("setParam", pParam, pNewValue);
 }
 
 JNIEXPORT
@@ -458,7 +463,7 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1setParamDefault(
 	JALVideoDevice *jvideo = reinterpret_cast<JALVideoDevice*> (objPtr);
 	assert(jvideo != NULL);
 
-	jvideo->getProxy()->call<int> ("setParamDefault", pParam);
+	jvideo->getProxy()->callVoid("setParamDefault", pParam);
 }
 
 JNIEXPORT
@@ -513,11 +518,7 @@ jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1sizesToResolution(
 	JALVideoDevice *jvideo = reinterpret_cast<JALVideoDevice*> (objPtr);
 	assert(jvideo != NULL);
 
-	ALValue pos;
-	pos.arraySetSize(2);
-	pos[0] = width;
-	pos[1] = height;
-	return jvideo->getProxy()->call<int> ("sizesToResolution", pos);
+	return jvideo->getProxy()->call<int> ("sizesToResolution", width, height);
 }
 
 JNIEXPORT

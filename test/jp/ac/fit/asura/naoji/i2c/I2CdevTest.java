@@ -4,9 +4,8 @@
 package jp.ac.fit.asura.naoji.i2c;
 
 import java.io.IOException;
-import java.util.Random;
 
-import jp.ac.fit.asura.naoji.robots.NaoV3R.Camera;
+import jp.ac.fit.asura.naoji.robots.NaoV3R;
 import junit.framework.TestCase;
 
 /**
@@ -34,30 +33,21 @@ public class I2CdevTest extends TestCase {
 		res = dev.getSelectedCamera();
 		System.out.println("Current Camera:" + res);
 
-		System.out.println("Select camera:" + Camera.BOTTOM);
-		res = dev.selectCamera(Camera.BOTTOM.getId());
+		System.out.println("Select camera:" + NaoV3R.I2C_CAMERA_BOTTOM);
+		res = dev.selectCamera(NaoV3R.I2C_CAMERA_BOTTOM);
 		assertEquals(0, res);
 
 		res = dev.getSelectedCamera();
 		System.out.println("Current Camera:" + res);
-		assertEquals(Camera.BOTTOM.getId(), res);
+		assertEquals(NaoV3R.I2C_CAMERA_BOTTOM, res);
 
-		System.out.println("Select camera:" + Camera.TOP.getId());
-		res = dev.selectCamera(Camera.TOP.getId());
+		System.out.println("Select camera:" + NaoV3R.I2C_CAMERA_TOP);
+		res = dev.selectCamera(NaoV3R.I2C_CAMERA_TOP);
 		assertEquals(0, res);
 
 		res = dev.getSelectedCamera();
 		System.out.println("Current Camera:" + res);
-		assertEquals(Camera.TOP.getId(), res);
-
-		Camera camera = Camera.values()[new Random()
-				.nextInt(Camera.values().length)];
-		System.out.println("Select camera:" + camera);
-		res = dev.selectCamera(camera.getId());
-		assertEquals(0, res);
-		res = dev.getSelectedCamera();
-		System.out.println("Camera selected:" + res);
-		assertEquals(camera.getId(), res);
+		assertEquals(NaoV3R.I2C_CAMERA_TOP, res);
 	}
 
 	protected void setUp() throws Exception {

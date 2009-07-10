@@ -19,7 +19,7 @@ class ALBroker;
  * DESCRIBE YOUR CLASS HERE
  */
 #define NaojiModule_VERSION_MAJOR "1"
-#define NaojiModule_VERSION_MINOR "2"
+#define NaojiModule_VERSION_MINOR "3"
 
 namespace Naoji {
 
@@ -74,10 +74,6 @@ public:
 	void dataChanged(const std::string& pDataName, const ALValue& pValue,
 			const std::string& pMessage);
 
-	/**
-	 * jvmTestFunction
-	 */
-	ALValue jvmTestFunction();
 	ALValue restartNaojiModule();
 	ALValue reloadNaojiModule();
 

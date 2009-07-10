@@ -48,7 +48,7 @@ CXXFLAGS = -O2 -march=i486
 
 # debug or non-debug build.
 ifeq ($(USE_DEBUG),1)
-CXXFLAGS += -D__DEBUG__
+CXXFLAGS += -g -D__DEBUG__
 else
 CXXFLAGS += -DNDEBUG
 endif
