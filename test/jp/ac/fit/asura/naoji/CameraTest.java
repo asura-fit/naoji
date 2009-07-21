@@ -8,12 +8,12 @@ import java.io.IOException;
 import jp.ac.fit.asura.naoji.i2c.I2Cdev;
 import jp.ac.fit.asura.naoji.i2c.I2CdevTest;
 import jp.ac.fit.asura.naoji.robots.NaoV3R;
-import jp.ac.fit.asura.naoji.robots.NaoV3R.Camera;
 import jp.ac.fit.asura.naoji.v4l2.V4L2Control;
 import jp.ac.fit.asura.naoji.v4l2.V4L2PixelFormat;
 import jp.ac.fit.asura.naoji.v4l2.Videodev;
 import jp.ac.fit.asura.naoji.v4l2.VideodevTest;
 import junit.framework.TestCase;
+import junit.textui.TestRunner;
 
 /**
  * @author sey
@@ -24,6 +24,50 @@ import junit.framework.TestCase;
 public class CameraTest extends TestCase {
 	private Videodev video;
 	private I2Cdev i2c;
+
+	public static class Factory implements NaojiFactory {
+		public Naoji create() {
+			return new NaojiImpl();
+		}
+	}
+
+	private static class NaojiImpl implements Naoji {
+		Thread mainThread;
+
+		public NaojiImpl() {
+		}
+
+		public void init(NaojiContext context) {
+			mainThread = new Thread() {
+				public void run() {
+					try {
+						Thread.sleep(10000);
+						TestRunner.run(CameraTest.class);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			};
+		}
+
+		public void exit() {
+		}
+
+		public void start() {
+			System.err.println("NaojiTest start called.");
+			mainThread.start();
+		}
+
+		public void stop() {
+			System.err.println("NaojiTest stop called.");
+			try {
+				mainThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				assert false;
+			}
+		}
+	}
 
 	public void testSwitch() throws Exception {
 		int res;

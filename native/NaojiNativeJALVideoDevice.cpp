@@ -75,7 +75,7 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1startFrameGrabber(
 	JALVideoDevice *jvideo = reinterpret_cast<JALVideoDevice*> (objPtr);
 	assert(jvideo != NULL);
 
-	return jvideo->getProxy()->call<bool> ("startFrameGrabber");
+	return jvideo->getProxy()->call<int> ("startFrameGrabber") != 0;
 }
 
 JNIEXPORT jboolean
@@ -84,7 +84,7 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1stopFrameGrabber(
 	JALVideoDevice *jvideo = reinterpret_cast<JALVideoDevice*> (objPtr);
 	assert(jvideo != NULL);
 
-	return jvideo->getProxy()->call<bool> ("stopFrameGrabber");
+	return jvideo->getProxy()->call<int> ("stopFrameGrabber") != 0;
 }
 
 JNIEXPORT jstring
@@ -218,10 +218,11 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getImageRemote(
 			"(I)Ljava/nio/ByteBuffer;");
 	jassert(env, allocMid != NULL);
 
-	jsize length = (int) image[0] * (int) image[1] * (int) image[2];
+	jsize length = image[6].getSize();
 	jobject buf = env->CallStaticObjectMethod(bbClass, allocMid, length);
 	jassert(env, buf != NULL);
 	jassert(env, length == env->GetDirectBufferCapacity(buf));
+	jassert(env, length == (int) image[0] * (int) image[1] * (int) image[2]);
 
 	void *ptr = env->GetDirectBufferAddress(buf);
 	jassert(env, ptr != NULL);
@@ -348,10 +349,11 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getDirectRawImageRemote(
 			"(I)Ljava/nio/ByteBuffer;");
 	jassert(env, allocMid != NULL);
 
-	jsize length = (int) image[0] * (int) image[1] * (int) image[2];
+	jsize length = image[6].getSize();
 	jobject buf = env->CallStaticObjectMethod(bbClass, allocMid, length);
 	jassert(env, buf != NULL);
 	jassert(env, length == env->GetDirectBufferCapacity(buf));
+	jassert(env, length == (int) image[0] * (int) image[1] * (int) image[2]);
 
 	void *ptr = env->GetDirectBufferAddress(buf);
 	jassert(env, ptr != NULL);

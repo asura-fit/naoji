@@ -216,11 +216,11 @@ public class Videodev {
 		return _setStandard(dev, value);
 	}
 
-	int toControlId(V4L2Control control) {
+	private int toControlId(V4L2Control control) {
 		return controlIdMap[control.ordinal()];
 	}
 
-	V4L2Control toControl(int controlId) {
+	private V4L2Control toControl(int controlId) {
 		for (int i = 0; i < controlIdMap.length; i++)
 			if (controlId == controlIdMap[i])
 				return V4L2Control.values()[i];

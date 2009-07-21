@@ -8,7 +8,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import jp.ac.fit.asura.naoji.Naoji;
+import jp.ac.fit.asura.naoji.NaojiContext;
+import jp.ac.fit.asura.naoji.NaojiFactory;
 import junit.framework.TestCase;
+import junit.textui.TestRunner;
 
 /**
  * @author $Author: sey $
@@ -18,6 +22,50 @@ import junit.framework.TestCase;
  */
 public class VideodevTest extends TestCase {
 	private Videodev dev;
+
+	public static class Factory implements NaojiFactory {
+		public Naoji create() {
+			return new NaojiImpl();
+		}
+	}
+
+	private static class NaojiImpl implements Naoji {
+		Thread mainThread;
+
+		public NaojiImpl() {
+		}
+
+		public void init(NaojiContext context) {
+			mainThread = new Thread() {
+				public void run() {
+					try {
+						Thread.sleep(10000);
+						TestRunner.run(VideodevTest.class);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			};
+		}
+
+		public void exit() {
+		}
+
+		public void start() {
+			System.err.println("VideodevTest start called.");
+			mainThread.start();
+		}
+
+		public void stop() {
+			System.err.println("VideodevTest stop called.");
+			try {
+				mainThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				assert false;
+			}
+		}
+	}
 
 	public static Videodev createDevice() throws IOException {
 		String device = System.getProperty("jp.ac.fit.asura.naoji.v4l2.DEVICE");
@@ -31,10 +79,10 @@ public class VideodevTest extends TestCase {
 
 		// set format
 		V4L2PixelFormat format = new V4L2PixelFormat();
-		format.width = 640;
-		format.height = 480;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
-				.getFourccCode();
+		format.setWidth(320);
+		format.setHeight(240);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode());
 		res = dev.setFormat(format);
 		assertEquals(0, res);
 
@@ -53,6 +101,8 @@ public class VideodevTest extends TestCase {
 			_testRetrieveImage(dev, false);
 		}
 
+		_testRetrieveImageLoop(dev);
+
 		res = dev.stop();
 		assertEquals(0, res);
 	}
@@ -62,10 +112,10 @@ public class VideodevTest extends TestCase {
 
 		// Test QVGA
 		V4L2PixelFormat format = new V4L2PixelFormat();
-		format.width = 320;
-		format.height = 240;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
-				.getFourccCode();
+		format.setWidth(320);
+		format.setHeight(240);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode());
 		res = dev.setFormat(format);
 		assertEquals(0, res);
 
@@ -73,34 +123,34 @@ public class VideodevTest extends TestCase {
 		V4L2PixelFormat format2 = new V4L2PixelFormat();
 		res = dev.getFormat(format2);
 		assertEquals(0, res);
-		assertEquals(format.width, format2.width);
-		assertEquals(format.height, format2.height);
-		assertEquals(format.pixelFormat, format2.pixelFormat);
+		assertEquals(format.getWidth(), format2.getWidth());
+		assertEquals(format.getHeight(), format2.getHeight());
+		assertEquals(format.getPixelFormat(), format2.getPixelFormat());
 
 		// Test VGA
 		format = new V4L2PixelFormat();
-		format.width = 640;
-		format.height = 480;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
-				.getFourccCode();
+		format.setWidth(640);
+		format.setHeight(480);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode());
 		res = dev.setFormat(format);
 		assertEquals(0, res);
 
 		// Test QCIF
 		format = new V4L2PixelFormat();
-		format.width = 176;
-		format.height = 144;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
-				.getFourccCode();
+		format.setWidth(176);
+		format.setHeight(144);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode());
 		res = dev.setFormat(format);
 		assertEquals(0, res);
 
 		// Test CIF
 		format = new V4L2PixelFormat();
-		format.width = 352;
-		format.height = 288;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
-				.getFourccCode();
+		format.setWidth(352);
+		format.setHeight(288);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode());
 		res = dev.setFormat(format);
 		assertEquals(0, res);
 	}
@@ -110,10 +160,10 @@ public class VideodevTest extends TestCase {
 
 		// Nao実機で使用できる.
 		V4L2PixelFormat format = new V4L2PixelFormat();
-		format.width = 640;
-		format.height = 480;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
-				.getFourccCode();
+		format.setWidth(640);
+		format.setHeight(480);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode());
 		res = dev.setFormat(format);
 		assertEquals(0, res);
 	}
@@ -123,10 +173,10 @@ public class VideodevTest extends TestCase {
 
 		// Nao実機では使えない.
 		V4L2PixelFormat format = new V4L2PixelFormat();
-		format.width = 640;
-		format.height = 480;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
-				.getFourccCode();
+		format.setWidth(640);
+		format.setHeight(480);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
+				.getFourccCode());
 		res = dev.setFormat(format);
 		assertEquals("This test will fail on NaoV3R.", 0, res);
 	}
@@ -136,10 +186,10 @@ public class VideodevTest extends TestCase {
 
 		// Nao実機では使えない.
 		V4L2PixelFormat format = new V4L2PixelFormat();
-		format.width = 640;
-		format.height = 480;
-		format.pixelFormat = V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUV422P
-				.getFourccCode();
+		format.setWidth(640);
+		format.setHeight(480);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUV422P
+				.getFourccCode());
 		res = dev.setFormat(format);
 		assertEquals("This test will fail on NaoV3R.", 0, res);
 	}
@@ -154,10 +204,11 @@ public class VideodevTest extends TestCase {
 		assertEquals(0, res);
 	}
 
-	public void testToControlId() throws Exception {
-		assertEquals(0x00980900, dev
-				.toControlId(V4L2Control.V4L2_CID_BRIGHTNESS));
-	}
+	//
+	// public void testToControlId() throws Exception {
+	// assertEquals(0x00980900, dev
+	// .toControlId(V4L2Control.V4L2_CID_BRIGHTNESS));
+	// }
 
 	public void testControls() {
 		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_AUDIO_MUTE));
@@ -220,6 +271,26 @@ public class VideodevTest extends TestCase {
 		}
 
 		video.disposeImage(buffer);
+	}
+
+	public static void _testRetrieveImageLoop(Videodev video)
+			throws IOException {
+		V4L2Buffer buffer = new V4L2Buffer();
+
+		long beginTime = System.nanoTime();
+		for (int i = 0; i < 100; i++) {
+			video.retrieveImage(buffer);
+			video.disposeImage(buffer);
+		}
+		long time2 = System.nanoTime();
+		for (int i = 0; i < 100; i++) {
+			video.retrieveImage(buffer);
+			video.disposeImage(buffer);
+		}
+		long time3 = System.nanoTime();
+
+		System.out.println(" Loop time1:" + (time2 - beginTime) / 1.0e6 / 100);
+		System.out.println(" Loop time2:" + (time3 - time2) / 1.0e6 / 100);
 	}
 
 	protected void setUp() throws Exception {

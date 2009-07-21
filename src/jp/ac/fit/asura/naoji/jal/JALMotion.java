@@ -31,8 +31,6 @@ public class JALMotion extends JALModule {
 	 * {@link JDCM#setTimeSeparate(int, jp.ac.fit.asura.naoji.jal.JDCM.MergeType, float[], int[])}
 	 * と 互換性のあるvalueMatrix, timeで関節の時系列指令を実行します.
 	 *
-	 * この命令は{@link #doMoveAll(float[], float[], int)}を介して実行されます.
-	 *
 	 * @param valueMatrix
 	 * @param time
 	 * @param pInterpolationType
@@ -124,22 +122,6 @@ public class JALMotion extends JALModule {
 			assert isDefinedJoint(id);
 		return _doMove(objPtr, pJointIds, pAngles, pDurations,
 				pInterpolationType);
-	}
-
-	/**
-	 * HeadYawとHeadPitchを除くすべて関節に対し動作指令を与えます.
-	 * 関節の順番は#getJointNames()で与えられるものと同じ順番です.
-	 *
-	 * その他の事柄は#doMove()と同じです.
-	 *
-	 * @param pAngles
-	 * @param pDurations
-	 * @param pInterpolationType
-	 * @return taskId
-	 */
-	public int doMoveAll(float[][] pAngles, float[][] pDurations,
-			int pInterpolationType) {
-		return _doMoveAll(objPtr, pAngles, pDurations, pInterpolationType);
 	}
 
 	public float getAngle(int pJointId) {
@@ -566,9 +548,6 @@ public class JALMotion extends JALModule {
 
 	native static private int _doMove(long objPtr, int[] pJointIds,
 			float[][] pAngles, float[][] pDurations, int pInterpolationType);
-
-	native static private int _doMoveAll(long objPtr, float[][] pAngles,
-			float[][] pDurations, int pInterpolationType);
 
 	native static private float _getAngle(long objPtr, int pJointId);
 

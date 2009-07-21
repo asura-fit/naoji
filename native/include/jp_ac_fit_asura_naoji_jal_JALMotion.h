@@ -146,14 +146,6 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMove
 
 /*
  * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
- * Method:    _doMoveAll
- * Signature: (J[[F[[FI)I
- */
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMoveAll
-  (JNIEnv *, jclass, jlong, jobjectArray, jobjectArray, jint);
-
-/*
- * Class:     jp_ac_fit_asura_naoji_jal_JALMotion
  * Method:    _getAngle
  * Signature: (JI)F
  */

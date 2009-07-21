@@ -245,28 +245,6 @@ JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMove(
 			pInterpolationType);
 }
 
-JNIEXPORT jint JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1doMoveAll(
-		JNIEnv *env, jclass, jlong objPtr, jobjectArray jangles,
-		jobjectArray jdurations, jint pInterpolationType) {
-	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
-	assert(jmotion != NULL);
-
-	jint jointNum = env->GetArrayLength(jangles);
-	assert(jointNum == env->GetArrayLength(jdurations));
-
-	ALValue pJointNames = jmotion->getHeadlessJointNames();
-	assert(pJointNames.getSize() == jointNum);
-
-	// do copy values to ALValue
-	ALValue pAngles;
-	ALValue pDurations;
-
-	naoji_JALMotion_doMove_internal(env, jangles, jdurations, pAngles,
-			pDurations);
-	return jmotion->getProxy()->post.doMove(pJointNames, pAngles, pDurations,
-			pInterpolationType);
-}
-
 JNIEXPORT jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1getAngle(
 		JNIEnv *, jclass, jlong objPtr, jint pJointId) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);

@@ -38,9 +38,9 @@ public class V4L2PixelFormat {
 		}
 	}
 
-	int width;
-	int height;
-	int pixelFormat;
+	private int width;
+	private int height;
+	private int pixelFormat;
 
 	public int getWidth() {
 		return width;
