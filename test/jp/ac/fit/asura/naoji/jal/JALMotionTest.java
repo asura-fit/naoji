@@ -337,7 +337,6 @@ public class JALMotionTest extends TestCase {
 		assertEquals(0.25f - motion.getAngle(Joint.HeadYaw.getId()), motion
 				.getAngleError(Joint.HeadYaw.getId()), 0.5f);
 		motion.wait(taskId, 0);
-		assertEquals(0.25f, motion.getAngle(Joint.HeadYaw.getId()), 0.125f);
 
 		System.out.println("HeadYaw setJointSpeedParams 0.05f, 0.006f, 0.006f");
 		motion
@@ -372,29 +371,29 @@ public class JALMotionTest extends TestCase {
 		System.out.println("testBody");
 
 		System.out.println("gotoBodyStiffness");
-		taskId = motion.gotoBodyStiffness(1.0f, 2.0f, InterpolationType.LINEAR
+		taskId = motion.gotoBodyStiffness(0.5f, 2.0f, InterpolationType.LINEAR
 				.getId());
 		motion.wait(taskId, 0);
 
 		System.out.println("getBodyStiffnesses");
 		motion.getBodyStiffnesses(stiffnesses);
-		assertEquals(1.0f, stiffnesses[0], 0.03125f);
+		assertEquals(0.5f, stiffnesses[0], 0.03125f);
 
 		System.out.println("gotoBodyStiffnesses");
 		taskId = motion.gotoBodyStiffnesses(stiffnesses, 2.0f,
 				InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 0);
-		assertEquals(1.0f, stiffnesses[0], 0.03125f);
+		assertEquals(0.5f, stiffnesses[0], 0.03125f);
 
 		System.out.println("gotoBodyAngles");
-		angles[0] = 0.5f;
-		taskId = motion.gotoBodyAngles(angles, 2.0f, InterpolationType.LINEAR
+		angles[0] = 0.25f;
+		taskId = motion.gotoBodyAngles(angles, 5.0f, InterpolationType.LINEAR
 				.getId());
 		motion.wait(taskId, 0);
 
 		System.out.println("getBodyAngles");
 		motion.getBodyAngles(angles);
-		assertEquals(0.5f, angles[0], 0.125f);
+		assertEquals(0.25f, angles[0], 0.125f);
 
 		System.out.println("getBodyAngleErrors");
 		motion.getBodyAngleErrors(angles);
@@ -402,12 +401,13 @@ public class JALMotionTest extends TestCase {
 
 		System.out.println("getBodyCommandAngles");
 		motion.getBodyCommandAngles(angles);
-		assertEquals(0.5f, angles[0], 0.125f);
+		assertEquals(0.25f, angles[0], 0.125f);
 
-		System.out.println("changeBodyAngles +0.5f");
-		taskId = motion.changeBodyAngles(new float[] { 0.5f, 0.5f, 0.5f, 0.5f,
-				0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
-				0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f });
+		System.out.println("changeBodyAngles +0.25f");
+		taskId = motion.changeBodyAngles(new float[] { 0.25f, 0.25f, 0.25f,
+				0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f,
+				0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f,
+				0.25f });
 		motion.wait(taskId, 0);
 
 		System.out.println("gotoBodyAnglesWithSpeed");
@@ -455,37 +455,37 @@ public class JALMotionTest extends TestCase {
 		motion.wait(taskId, 0);
 		assertEquals(1.0f, stiffnesses[0], 0.03125f);
 
-		System.out.println("changeChainAngles -0.5f");
+		System.out.println("changeChainAngles -0.25f");
 		System.out.println("Head");
 		taskId = motion.changeChainAngles(Chain.Head.getId(), new float[] {
-				-0.5f, -0.5f });
+				-0.25f, -0.25f });
 		motion.wait(taskId, 0);
 		System.out.println("RArm");
 		taskId = motion.changeChainAngles(Chain.RArm.getId(), new float[] {
-				-0.5f, -0.5f, -0.5f, -0.5f });
+				-0.25f, -0.25f, -0.25f, -0.25f });
 		motion.wait(taskId, 0);
 		System.out.println("RLeg");
 		taskId = motion.changeChainAngles(Chain.RLeg.getId(), new float[] {
-				-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f });
+				-0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f });
 		motion.wait(taskId, 0);
 		System.out.println("LArm");
 		taskId = motion.changeChainAngles(Chain.LArm.getId(), new float[] {
-				-0.5f, -0.5f, -0.5f, -0.5f });
+				-0.25f, -0.25f, -0.25f, -0.25f });
 		motion.wait(taskId, 0);
 		System.out.println("LLeg");
 		taskId = motion.changeChainAngles(Chain.LLeg.getId(), new float[] {
-				-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f });
+				-0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f });
 		motion.wait(taskId, 0);
 
 		System.out.println("gotoChainAngles");
-		angles[0] = 0.5f;
+		angles[0] = 0.25f;
 		taskId = motion.gotoChainAngles(Chain.Head.getId(), angles, 2.0f,
 				InterpolationType.LINEAR.getId());
 		motion.wait(taskId, 0);
 
 		System.out.println("getChainAngles");
 		motion.getChainAngles(Chain.Head.getId(), angles);
-		assertEquals(0.5f, angles[0], 0.125f);
+		assertEquals(0.25f, angles[0], 0.125f);
 
 		System.out.println("getChainAngleErrors");
 		motion.getChainAngleErrors(Chain.Head.getId(), angles);
@@ -493,7 +493,7 @@ public class JALMotionTest extends TestCase {
 
 		System.out.println("getChainCommandAngles");
 		motion.getChainCommandAngles(Chain.Head.getId(), angles);
-		assertEquals(0.5f, angles[0], 0.125f);
+		assertEquals(0.25f, angles[0], 0.125f);
 
 		System.out.println("gotoChainAnglesWithSpeed");
 		taskId = motion.gotoChainAnglesWithSpeed(Chain.Head.getId(), angles,

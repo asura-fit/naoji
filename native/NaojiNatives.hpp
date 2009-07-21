@@ -156,11 +156,11 @@ public:
 		case 1:
 			return "LArm";
 		case 2:
-			return "RArm";
-		case 3:
 			return "LLeg";
-		case 4:
+		case 3:
 			return "RLeg";
+		case 4:
+			return "RArm";
 		default:
 			return "UNKNOWN";
 		}
