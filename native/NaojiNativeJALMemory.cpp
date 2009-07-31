@@ -126,16 +126,22 @@ jfloat JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1getDataFloat__JI(
 
 JNIEXPORT jstring
 JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1getDataString__JLjava_lang_String_2(
-		JNIEnv *, jclass, jlong, jstring) {
-	assert(false);
-	return NULL;
+		JNIEnv *env, jclass, jlong objPtr, jstring key) {
+	JALMemory *jmemory = reinterpret_cast<JALMemory*> (objPtr);
+	assert(jmemory != NULL);
+
+	string value = jmemory->getProxy()->getData(toString(env, key), 0);
+	return env->NewStringUTF(value.c_str());
 }
 
 JNIEXPORT jstring
 JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1getDataString__JI(
-		JNIEnv *env, jclass, jlong, jint) {
-	assert(false);
-	return NULL;
+		JNIEnv *env, jclass, jlong objPtr, jint id) {
+	JALMemory *jmemory = reinterpret_cast<JALMemory*> (objPtr);
+	assert(jmemory != NULL);
+
+	string value = jmemory->getProxy()->getData(jmemory->getKey(id), 0);
+	return env->NewStringUTF(value.c_str());
 }
 
 JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1createQuery(
@@ -154,16 +160,18 @@ JNIEXPORT jlong JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1createQuery(
 		env->DeleteLocalRef(jstr);
 	}
 	query->names = names;
-	query->size = size;
 
 	return reinterpret_cast<jlong> (query);
 }
 
 JNIEXPORT
-void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1disposeQuery(JNIEnv *,
-		jclass, jlong queryPtr) {
+void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1disposeQuery(
+		JNIEnv *env, jclass, jlong queryPtr) {
 	Query *query = reinterpret_cast<Query*> (queryPtr);
 	assert(query != NULL);
+
+	env->DeleteGlobalRef(query->bufferObj);
+	query->bufferObj = NULL;
 
 	delete query;
 }
@@ -179,15 +187,20 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1setQueryBuffer(
 	jlong length = env->GetDirectBufferCapacity(buffer);
 	jassert(env, length != -1);
 
+	query->bufferObj = env->NewGlobalRef(buffer);
 	query->buffer.b = (jbyte*) ptr;
 	query->bufferLength = length;
 }
 
 JNIEXPORT
 void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1setQueryBufferString(
-		JNIEnv *, jclass, jlong, jobjectArray jstrings) {
-	// TODO implement
-	assert(false);
+		JNIEnv *env, jclass, jlong queryPtr, jobjectArray jstrings) {
+	Query *query = reinterpret_cast<Query*> (queryPtr);
+	assert(query != NULL);
+
+	query->bufferObj = env->NewGlobalRef(jstrings);
+	query->buffer.s = (jobjectArray) query->bufferObj;
+	query->bufferLength = -1;
 }
 
 JNIEXPORT
@@ -199,7 +212,7 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateFloatQuery(
 	try {
 		ALValue data = query->jmemory->getProxy()->getListData(query->names);
 		int size = data.getSize();
-		assert(query->size == size);
+		assert(query->names.getSize() == size);
 
 		jfloat* buf = reinterpret_cast<jfloat*> (query->buffer.b);
 		for (int i = 0; i < size; i++) {
@@ -221,7 +234,7 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateIntQuery(
 	try {
 		ALValue data = query->jmemory->getProxy()->getListData(query->names);
 		int size = data.getSize();
-		assert(query->size == size);
+		assert(query->names.getSize() == size);
 
 		jint* buf = reinterpret_cast<jint*> (query->buffer.b);
 		for (int i = 0; i < size; i++) {
@@ -235,9 +248,23 @@ void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateIntQuery(
 
 JNIEXPORT
 void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMemory__1updateStringQuery(
-		JNIEnv *, jclass, jlong queryPtr) {
-	// TODO implement
-	assert(false);
+		JNIEnv *env, jclass, jlong queryPtr) {
+	Query *query = reinterpret_cast<Query*> (queryPtr);
+	assert(query != NULL);
+
+	try {
+		ALValue data = query->jmemory->getProxy()->getListData(query->names);
+		int size = data.getSize();
+		assert(query->names.getSize() == size);
+
+		for (int i = 0; i < size; i++) {
+			env->SetObjectArrayElement(query->buffer.s, i, env->NewStringUTF(
+					((string)data[i]).c_str()));
+		}
+	} catch (AL::ALError err) {
+		std::cerr << err.toString() << std::endl;
+		assert(false);
+	}
 }
 
 #ifdef __cplusplus

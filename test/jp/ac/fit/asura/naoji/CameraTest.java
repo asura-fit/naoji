@@ -142,6 +142,11 @@ public class CameraTest extends TestCase {
 		for (int i = 0; i < 10; i++)
 			VideodevTest._testRetrieveImage(video, false);
 
+          _testSwitchCameraLoop1();
+          _testSwitchCameraLoop1();
+          _testSwitchCameraLoop2();
+          _testSwitchCameraLoop2();
+
 		res = video.stop();
 		assertEquals(0, res);
 	}
@@ -191,6 +196,33 @@ public class CameraTest extends TestCase {
 
 	}
 
+	private void _testSwitchCameraLoop1() throws IOException {
+		System.out.println("Switching camera...");
+
+		long beginTime = System.nanoTime();
+                int camera = NaoV3R.I2C_CAMERA_TOP;
+		for (int i = 0; i < 100; i++) {
+		int res = video.stop();
+		video.dispose();
+		i2c.selectCamera(camera);
+		video = VideodevTest.createDevice();
+		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
+		V4L2PixelFormat format = new V4L2PixelFormat();
+		format.setWidth(320);
+		format.setHeight(240);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode());
+		res = video.setFormat(format);
+		res = video.setFPS(30);
+		res = video.init(2);
+		res = video.start();
+                  camera = camera == NaoV3R.I2C_CAMERA_TOP ? NaoV3R.I2C_CAMERA_BOTTOM : NaoV3R.I2C_CAMERA_TOP;
+		}
+		long time2 = System.nanoTime();
+		System.out.println(" Camera switching time1:" + (time2 - beginTime)
+				/ 1.0e6 / 100);
+	}
+
 	/*
 	 * かなり手を抜いたカメラの切り替え. 10msぐらいかかる.
 	 *
@@ -212,6 +244,25 @@ public class CameraTest extends TestCase {
 		long afterswitch = System.nanoTime();
 		System.out.println("Camera switched. time:"
 				+ (afterswitch - beforeswitch) / 1e6 + " [ms]");
+	}
+
+	private void _testSwitchCameraLoop2() throws IOException {
+		System.out.println("Switching camera...");
+
+		long beginTime = System.nanoTime();
+                int camera = NaoV3R.I2C_CAMERA_TOP;
+		for (int i = 0; i < 100; i++) {
+		int res = video.stop();
+
+		System.out.println("Select camera:" + camera);
+		i2c.selectCamera(camera);
+
+		res = video.start();
+                  camera = camera == NaoV3R.I2C_CAMERA_TOP ? NaoV3R.I2C_CAMERA_BOTTOM : NaoV3R.I2C_CAMERA_TOP;
+		}
+		long time2 = System.nanoTime();
+		System.out.println(" Camera switching time2:" + (time2 - beginTime)
+				/ 1.0e6 / 100);
 	}
 
 	/*

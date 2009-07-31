@@ -187,8 +187,8 @@ public:
 public:
 	JALMemory *jmemory;
 	ALValue names;
-	jsize size;
 	jlong bufferLength;
+	jobject bufferObj;
 	union {
 		jbyte *b;
 		jobjectArray s;
