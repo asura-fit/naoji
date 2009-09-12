@@ -37,13 +37,13 @@ public class JALVideoDevice extends JALModule {
 		return _stopFrameGrabber(objPtr);
 	}
 
-	public String register(String pGVMname, int pResolution, int pColorSpace,
+	public String subscribe(String pGVMname, int pResolution, int pColorSpace,
 			int pFps) {
-		return _register(objPtr, pGVMname, pResolution, pColorSpace, pFps);
+		return _subscribe(objPtr, pGVMname, pResolution, pColorSpace, pFps);
 	}
 
-	public void unRegister(String pId) {
-		_unRegister(objPtr, pId);
+	public void unsubscribe(String pId) {
+		_unsubscribe(objPtr, pId);
 	}
 
 	/**
@@ -175,10 +175,10 @@ public class JALVideoDevice extends JALModule {
 
 	native static private boolean _stopFrameGrabber(long objPtr);
 
-	native static private String _register(long objPtr, String pGVMname,
+	native static private String _subscribe(long objPtr, String pGVMname,
 			int pResolution, int pColorSpace, int pFps);
 
-	native static private void _unRegister(long objPtr, String pId);
+	native static private void _unsubscribe(long objPtr, String pId);
 
 	native static private int _getImageLocal(long objPtr, String pId,
 			JALImage image);

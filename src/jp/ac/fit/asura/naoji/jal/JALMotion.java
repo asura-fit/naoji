@@ -438,17 +438,16 @@ public class JALMotion extends JALModule {
 	}
 
 	public void setWalkConfig(float pMaxStepLength, float pMaxStepHeight,
-			float pMaxStepSide, float pMaxStepTurn, float pZmpOffsetX,
-			float pZmpOffsetY) {
+			float pMaxStepSide, float pMaxStepTurn, float pHipHeight,
+			float pTorsoYOrientation) {
 		_setWalkConfig(objPtr, pMaxStepLength, pMaxStepHeight, pMaxStepSide,
-				pMaxStepTurn, pZmpOffsetX, pZmpOffsetY);
+				pMaxStepTurn, pHipHeight, pTorsoYOrientation);
 	}
 
-	public void setWalkExtraConfig(float pLHipRollBacklashCompensator,
-			float pRHipRollBacklashCompensator, float pHipHeight,
-			float pTorsoYOrientation) {
-		_setWalkExtraConfig(objPtr, pLHipRollBacklashCompensator,
-				pRHipRollBacklashCompensator, pHipHeight, pTorsoYOrientation);
+	public void setWalkTrapezoidConfig(float pLHipRollBacklashCompensator,
+			float pRHipRollBacklashCompensator) {
+		_setWalkTrapezoidConfig(objPtr, pLHipRollBacklashCompensator,
+				pRHipRollBacklashCompensator);
 	}
 
 	public void stop(int pBrokerTaskID) {
@@ -489,11 +488,6 @@ public class JALMotion extends JALModule {
 	native static private boolean _isDefinedJoint(long objPtr, int id);
 
 	native static private void _dispose(long objPtr);
-
-	// Chain definitions, not implemented.
-	private boolean _isDefinedChain(int id) {
-		return false;
-	}
 
 	private int _getChainId(String chainName) {
 		throw new UnsupportedOperationException();
@@ -722,12 +716,11 @@ public class JALMotion extends JALModule {
 
 	native static private void _setWalkConfig(long objPtr,
 			float pMaxStepLength, float pMaxStepHeight, float pMaxStepSide,
-			float pMaxStepTurn, float pZmpOffsetX, float pZmpOffsetY);
+			float pMaxStepTurn, float pHipHeight, float pTorsoYOrientation);
 
-	native static private void _setWalkExtraConfig(long objPtr,
+	native static private void _setWalkTrapezoidConfig(long objPtr,
 			float pLHipRollBacklashCompensator,
-			float pRHipRollBacklashCompensator, float pHipHeight,
-			float pTorsoYOrientation);
+			float pRHipRollBacklashCompensator);
 
 	native static private void _stop(long objPtr, int pBrokerTaskID);
 

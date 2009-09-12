@@ -1076,28 +1076,28 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkArmsEnable(JNIEnv *,
 	jmotion->getProxy()->setWalkArmsEnable(pArmsEnable);
 }
 
+
+
 JNIEXPORT void
 JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkConfig(JNIEnv *,
 		jclass, jlong objPtr, jfloat pMaxStepLength, jfloat pMaxStepHeight,
-		jfloat pMaxStepSide, jfloat pMaxStepTurn, jfloat pZmpOffsetX,
-		jfloat pZmpOffsetY) {
+		jfloat pMaxStepSide, jfloat pMaxStepTurn, jfloat pHipHeight, jfloat pTorsoYOrientation) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
 	jmotion->getProxy()->setWalkConfig(pMaxStepLength, pMaxStepHeight,
-			pMaxStepSide, pMaxStepTurn, pZmpOffsetX, pZmpOffsetY);
+			pMaxStepSide, pMaxStepTurn, pHipHeight, pTorsoYOrientation);
 }
 
 JNIEXPORT void
-JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkExtraConfig(JNIEnv *,
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkTrapezoidConfig(JNIEnv *,
 		jclass, jlong objPtr, jfloat pLHipRollBacklashCompensator,
-		jfloat pRHipRollBacklashCompensator, jfloat pHipHeight,
-		jfloat pTorsoYOrientation) {
+		jfloat pRHipRollBacklashCompensator) {
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
-	jmotion->getProxy()->setWalkExtraConfig(pLHipRollBacklashCompensator,
-			pRHipRollBacklashCompensator, pHipHeight, pTorsoYOrientation);
+	jmotion->getProxy()->setWalkTrapezoidConfig(pLHipRollBacklashCompensator,
+			pRHipRollBacklashCompensator);
 }
 
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1stop(

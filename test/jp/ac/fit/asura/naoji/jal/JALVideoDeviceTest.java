@@ -108,7 +108,7 @@ public class JALVideoDeviceTest extends TestCase {
 
 	public void testVideo1() throws Exception {
 		System.out.println("begin testVideo1.");
-		pId = video.register("testVideo1", Camera.RESOLUTION_QVGA,
+		pId = video.subscribe("testVideo1", Camera.RESOLUTION_QVGA,
 				Camera.COLORSPACE_YUV422Interlaced, 30);
 		assertNotNull(pId);
 		assertFalse(pId.isEmpty());
@@ -204,7 +204,7 @@ public class JALVideoDeviceTest extends TestCase {
 		assertEquals(Camera.CAMERA_SELECT_BOTTOM, video
 				.getParam(Camera.PARAM_CameraSelect));
 
-		video.unRegister(pId);
+		video.unsubscribe(pId);
 		System.out.println("end testVideo1.");
 	}
 
@@ -212,7 +212,7 @@ public class JALVideoDeviceTest extends TestCase {
 	// management in ALVision.
 	public void testGetDirectRawImageLocal() throws Exception {
 		System.out.println("begin " + getName());
-		pId = video.register(getName(), Camera.RESOLUTION_QVGA,
+		pId = video.subscribe(getName(), Camera.RESOLUTION_QVGA,
 				Camera.COLORSPACE_YUV422Interlaced, 30);
 		assertNotNull(pId);
 		assertFalse(pId.isEmpty());
@@ -253,7 +253,7 @@ public class JALVideoDeviceTest extends TestCase {
 
 		assertEquals(1, video.releaseDirectRawImage(pId));
 
-		video.unRegister(pId);
+		video.unsubscribe(pId);
 		System.out.println("end " + getName());
 	}
 
@@ -261,7 +261,7 @@ public class JALVideoDeviceTest extends TestCase {
 	// management in ALVision.
 	public void _testGetDirectRawImageRemote() throws Exception {
 		System.out.println("begin " + getName());
-		pId = video.register(getName(), Camera.RESOLUTION_QVGA,
+		pId = video.subscribe(getName(), Camera.RESOLUTION_QVGA,
 				Camera.COLORSPACE_YUV422Interlaced, 30);
 		assertNotNull(pId);
 		assertFalse(pId.isEmpty());
@@ -301,7 +301,7 @@ public class JALVideoDeviceTest extends TestCase {
 		}
 
 		System.out.println("unRegister " + pId);
-		video.unRegister(pId);
+		video.unsubscribe(pId);
 		// NaoCam hang ups when unregister is called.
 		System.out.println("end " + getName());
 	}
@@ -310,7 +310,7 @@ public class JALVideoDeviceTest extends TestCase {
 	public void _testGetImageLocal() throws Exception {
 		System.out.println("begin " + getName());
 		video.startFrameGrabber();
-		pId = video.register(getName(), Camera.RESOLUTION_QVGA,
+		pId = video.subscribe(getName(), Camera.RESOLUTION_QVGA,
 				Camera.COLORSPACE_YUV422Interlaced, 30);
 		assertNotNull(pId);
 		assertFalse(pId.isEmpty());
@@ -351,7 +351,7 @@ public class JALVideoDeviceTest extends TestCase {
 
 		assertEquals(1, video.releaseImage(pId));
 
-		video.unRegister(pId);
+		video.unsubscribe(pId);
 		video.stopFrameGrabber();
 		System.out.println("end " + getName());
 	}
@@ -360,7 +360,7 @@ public class JALVideoDeviceTest extends TestCase {
 	public void _testGetImageRemote() throws Exception {
 		System.out.println("begin " + getName());
 		video.startFrameGrabber();
-		pId = video.register(getName(), Camera.RESOLUTION_QVGA,
+		pId = video.subscribe(getName(), Camera.RESOLUTION_QVGA,
 				Camera.COLORSPACE_YUV422Interlaced, 30);
 		assertNotNull(pId);
 		assertFalse(pId.isEmpty());
@@ -399,14 +399,14 @@ public class JALVideoDeviceTest extends TestCase {
 		} catch (Exception e) {
 		}
 
-		video.unRegister(pId);
+		video.unsubscribe(pId);
 		video.stopFrameGrabber();
 		System.out.println("end " + getName());
 	}
 
 	public void testGetDirectRawImageLocalLoop() throws Exception {
 		System.out.println("begin " + getName());
-		pId = video.register(getName(), Camera.RESOLUTION_QVGA,
+		pId = video.subscribe(getName(), Camera.RESOLUTION_QVGA,
 				Camera.COLORSPACE_YUV422Interlaced, 30);
 		assertNotNull(pId);
 		assertFalse(pId.isEmpty());
@@ -432,7 +432,7 @@ public class JALVideoDeviceTest extends TestCase {
 		System.out.println(" Loop time1:" + (time2 - beginTime) / 1.0e6 / 100);
 		System.out.println(" Loop time2:" + (time3 - time2) / 1.0e6 / 100);
 
-		video.unRegister(pId);
+		video.unsubscribe(pId);
 
 		System.out.println("end " + getName());
 	}
@@ -440,7 +440,7 @@ public class JALVideoDeviceTest extends TestCase {
 	// We can't use getImageRemote when module connected in local mode
 	public void _testGetImageRemoteLoop() throws Exception {
 		System.out.println("begin " + getName());
-		pId = video.register(getName(), Camera.RESOLUTION_QVGA,
+		pId = video.subscribe(getName(), Camera.RESOLUTION_QVGA,
 				Camera.COLORSPACE_YUV422Interlaced, 30);
 		assertNotNull(pId);
 		assertFalse(pId.isEmpty());
@@ -460,25 +460,25 @@ public class JALVideoDeviceTest extends TestCase {
 		System.out.println(" Loop time1:" + (time2 - beginTime) / 1.0e6 / 100);
 		System.out.println(" Loop time2:" + (time3 - time2) / 1.0e6 / 100);
 
-		video.unRegister(pId);
+		video.unsubscribe(pId);
 
 		System.out.println("end " + getName());
 	}
 
 	public void testCameraSelect() throws Exception {
 		System.out.println("begin " + getName());
-		pId = video.register("testCameraSelect", Camera.RESOLUTION_QVGA,
+		pId = video.subscribe("testCameraSelect", Camera.RESOLUTION_QVGA,
 				Camera.COLORSPACE_YUV422Interlaced, 30);
 		assertNotNull(pId);
 		assertFalse(pId.isEmpty());
 		video.setParam(Camera.PARAM_CameraSelect, Camera.CAMERA_SELECT_BOTTOM);
-		video.unRegister(pId);
+		video.unsubscribe(pId);
 		System.out.println("end " + getName());
 	}
 
 	public void testCameraSelect2() throws Exception {
 		System.out.println("begin " + getName());
-		pId = video.register("testCameraSelect", Camera.RESOLUTION_QVGA,
+		pId = video.subscribe("testCameraSelect", Camera.RESOLUTION_QVGA,
 				Camera.COLORSPACE_YUV422Interlaced, 30);
 		assertNotNull(pId);
 		assertFalse(pId.isEmpty());
@@ -501,7 +501,7 @@ public class JALVideoDeviceTest extends TestCase {
 				/ 1.0e6 / 100);
 		System.out.println(" Camera switching time2:" + (time3 - time2) / 1.0e6
 				/ 100);
-		video.unRegister(pId);
+		video.unsubscribe(pId);
 		System.out.println("end " + getName());
 	}
 }

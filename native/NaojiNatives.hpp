@@ -264,7 +264,7 @@ public:
 		try {
 			AL::ALPtr<AL::ALBroker> broker = jbroker->getALPtr();
 
-			proxy = broker->getProxy("NaoCam");
+			proxy = broker->getProxy("ALVideoDevice");
 		} catch (AL::ALError& e) {
 			std::cout << "Error during initialization: " + e.toString()
 					<< std::endl;

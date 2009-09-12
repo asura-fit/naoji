@@ -2,8 +2,8 @@
 USE_CROSS=
 USE_DEBUG=
 
-CTC_DIR=/home/nao/ctc-robocup-1.2.1
-AL_DIR=/home/nao/NaoQiRobocup-1.2.0-Linux
+CTC_DIR=/home/nao/ctc-robocup-1.3.13
+AL_DIR=/home/nao/NaoQiRobocup-1.3.13-Linux
 
 LDFLAGS =
 
@@ -67,7 +67,7 @@ AL_LIB = \
   $(AL_DIR)/extern/c/aldebaran/alcommon/lib/linux/libalcommon.a \
   $(AL_DIR)/extern/c/linux/lib/libboost_filesystem-mt.a \
   $(AL_DIR)/extern/c/linux/lib/libboost_signals-mt.a \
-  $(AL_DIR)/extern/c/linux/lib/libboost_thread-gcc41-mt.a \
+  $(AL_DIR)/extern/c/linux/lib/libboost_thread-mt.a \
   -lpthread \
   $(AL_DIR)/extern/c/linux/lib/libtinyxml.a
 

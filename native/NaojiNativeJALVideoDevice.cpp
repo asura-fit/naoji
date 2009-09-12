@@ -8,7 +8,7 @@
 #include "alerror.h"
 
 #include "alvisiondefinitions.h"
-#include "alvisionimage.h"
+#include "alimage.h"
 
 #include <jni.h>       /* where everything is defined */
 
@@ -88,24 +88,24 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1stopFrameGrabber(
 }
 
 JNIEXPORT jstring
-JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1register(JNIEnv *env,
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1subscribe(JNIEnv *env,
 		jclass, jlong objPtr, jstring pGVMname, jint pResolution,
 		jint pColorSpace, jint pFps) {
 	JALVideoDevice *jvideo = reinterpret_cast<JALVideoDevice*> (objPtr);
 	assert(jvideo != NULL);
 
-	string pId = jvideo->getProxy()->call<string> ("register", toString(env,
+	string pId = jvideo->getProxy()->call<string> ("subscribe", toString(env,
 			pGVMname), pResolution, pColorSpace, pFps);
 	return env->NewStringUTF(pId.c_str());
 }
 
 JNIEXPORT void
-JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1unRegister(JNIEnv *env,
+JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1unsubscribe(JNIEnv *env,
 		jclass, jlong objPtr, jstring pId) {
 	JALVideoDevice *jvideo = reinterpret_cast<JALVideoDevice*> (objPtr);
 	assert(jvideo != NULL);
 
-	jvideo->getProxy()->callVoid("unRegister", toString(env, pId));
+	jvideo->getProxy()->callVoid("unsubscribe", toString(env, pId));
 }
 
 JNIEXPORT jint
@@ -118,7 +118,7 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getImageLocal(
 			toString(env, pId));
 	if (res == 0)
 		return 0;
-	ALVisionImage* image = reinterpret_cast<ALVisionImage*> (res);
+	ALImage* image = reinterpret_cast<ALImage*> (res);
 
 	jassert(env, imgObj != NULL);
 
@@ -248,7 +248,7 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALVideoDevice__1getDirectRawImageLocal(
 		return 0;
 
 	// TODO check validity of pointer 'res'
-	ALVisionImage* image = reinterpret_cast<ALVisionImage*> (res);
+	ALImage* image = reinterpret_cast<ALImage*> (res);
 	assert(image != NULL);
 
 	jclass imgClass = env->GetObjectClass(imgObj);

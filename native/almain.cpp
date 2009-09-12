@@ -70,10 +70,6 @@ int main(int argc, char *argv[]) {
 		i++;
 	}
 
-	// If server port is not set
-	if (!brokerPort)
-		brokerPort = FindFreePort(brokerIP);
-
 	std::cout << "Try to connect to parent Broker at ip :" << parentBrokerIP
 			<< " and port : " << parentBrokerPort << std::endl;
 	std::cout << "Start the server bind on this ip :  " << brokerIP
