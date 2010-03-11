@@ -2,8 +2,8 @@
 USE_CROSS=
 USE_DEBUG=
 
-CTC_DIR=/home/nao/ctc-robocup-1.3.13
-AL_DIR=/home/nao/NaoQiRobocup-1.3.13-Linux
+CTC_DIR=/home/nao/ctc-robocup-1.3.17
+AL_DIR=/home/nao/NaoQiRobocup-1.3.17-Linux
 
 LDFLAGS =
 

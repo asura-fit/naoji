@@ -77,7 +77,13 @@ public class VideodevTest extends TestCase {
 	public void testSuite() throws Exception {
 		int res;
 
+		// init camera
+		System.out.println("init camera");
+		res = dev.setControl(V4L2Control.V4L2_CID_CAM_INIT, 1);
+		assertEquals(0, res);
+
 		// set format
+		System.out.println("set format");
 		V4L2PixelFormat format = new V4L2PixelFormat();
 		format.setWidth(320);
 		format.setHeight(240);
@@ -87,24 +93,31 @@ public class VideodevTest extends TestCase {
 		assertEquals(0, res);
 
 		//
+		System.out.println("set fps");
 		res = dev.setFPS(30);
 		assertEquals(0, res);
 
+		System.out.println("init buffers(2)");
 		res = dev.init(2);
 		assertTrue("Result:" + res, res > 0);
 
+		System.out.println("start");
 		res = dev.start();
 		assertEquals(0, res);
 
 		for (int i = 0; i < 10; i++) {
 			// retrieves
+			System.out.println("_testRetrieveImage " + i);
 			_testRetrieveImage(dev, false);
 		}
 
+		System.out.println("_testRetrieveImageLoop");
 		_testRetrieveImageLoop(dev);
 
+		System.out.println("stop");
 		res = dev.stop();
 		assertEquals(0, res);
+		System.out.println("end");
 	}
 
 	public void testSizeFormat() throws Exception {
@@ -211,7 +224,7 @@ public class VideodevTest extends TestCase {
 	// }
 
 	public void testControls() {
-		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_AUDIO_MUTE));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_AUTOEXPOSURE));
 		assertTrue(dev
 				.isSupportedControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE));
 		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_AUTOGAIN));
@@ -228,6 +241,10 @@ public class VideodevTest extends TestCase {
 		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_SATURATION));
 		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_VCENTER));
 		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_VFLIP));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_AEC_ALGORITHM));
+		assertTrue(dev
+				.isSupportedControl(V4L2Control.V4L2_CID_EXPOSURE_CORRECTION));
+		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_SHARPNESS));
 	}
 
 	public static void _testRetrieveImage(Videodev video, boolean doSaveImage)

@@ -9,6 +9,7 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <linux/videodev.h>
+#include <linux/videodev2.h>
 
 #include <jni.h>       /* where everything is defined */
 
@@ -52,12 +53,17 @@ void JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1_1init(JNIEnv *, jclass)
 	sV4L2IntConst["V4L2_CID_VCENTER"] = V4L2_CID_VCENTER;
 	sV4L2IntConst["V4L2_CID_AUTOGAIN"] = V4L2_CID_AUTOGAIN;
 	sV4L2IntConst["V4L2_CID_AUTO_WHITE_BALANCE"] = V4L2_CID_AUTO_WHITE_BALANCE;
-	// In lxv4l2/ov7670.c, V4L2_CID_AUDIO_MUTE means AEC Enable
-	//	sV4L2IntConst["V4L2_CID_EXPOSURE_AUTO"] = V4L2_CID_AUDIO_MUTE;
-	sV4L2IntConst["V4L2_CID_AUDIO_MUTE"] = V4L2_CID_AUDIO_MUTE;
 	sV4L2IntConst["V4L2_CID_EXPOSURE"] = V4L2_CID_EXPOSURE;
+	sV4L2IntConst["V4L2_CID_SHARPNESS"] = (V4L2_CID_BASE+27);
 	// Aldebaran's non-standard header.
-	sV4L2IntConst["V4L2_CID_CAM_INIT"] = 0x980919;
+	// see linux-aldebaran-2.6.22.19-rt/drivers/media/video/lxv4l2/ov7670.c
+	// and linux-aldebaran-2.6.22.19-rt/include/videodev2.h
+	sV4L2IntConst["V4L2_CID_AUTOEXPOSURE"] = (V4L2_CID_BASE+32);
+	sV4L2IntConst["V4L2_CID_CAM_INIT"] = (V4L2_CID_BASE+33);
+	sV4L2IntConst["V4L2_CID_EXPOSURE_CORRECTION"] = (V4L2_CID_BASE+34);
+	sV4L2IntConst["V4L2_CID_AEC_ALGORITHM"] = (V4L2_CID_BASE+35);
+
+	// sV4L2IntConst["V4L2_CID_CAM_INIT"] = 0x980919;
 	//	sV4L2IntConst["V4L2_CID_CAM_INIT"] = V4L2_CID_CAM_INIT;
 
 	sV4L2LongConst["V4L2_STD_UNK101"] = 0x10000000UL; /* HD_480P */

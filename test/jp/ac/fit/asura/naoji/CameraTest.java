@@ -83,7 +83,7 @@ public class CameraTest extends TestCase {
 		assertEquals(0, res);
 
 		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
-		video.setControl(V4L2Control.V4L2_CID_AUDIO_MUTE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTOEXPOSURE, 0);
 		video.setControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0);
 		video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0);
 		video.setControl(V4L2Control.V4L2_CID_HFLIP, 1);
@@ -114,7 +114,7 @@ public class CameraTest extends TestCase {
 
 		i2c.selectCamera(NaoV3R.I2C_CAMERA_BOTTOM);
 		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
-		video.setControl(V4L2Control.V4L2_CID_AUDIO_MUTE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTOEXPOSURE, 0);
 		video.setControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0);
 		video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0);
 		res = video.setFormat(format);
