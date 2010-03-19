@@ -82,12 +82,13 @@ public class CameraTest extends TestCase {
 		res = i2c.selectCamera(NaoV3R.I2C_CAMERA_TOP);
 		assertEquals(0, res);
 
-		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
-		video.setControl(V4L2Control.V4L2_CID_AUTOEXPOSURE, 0);
-		video.setControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0);
-		video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0);
-		video.setControl(V4L2Control.V4L2_CID_HFLIP, 1);
-		video.setControl(V4L2Control.V4L2_CID_VFLIP, 1);
+		assertEquals(0, video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0));
+		assertEquals(0, video.setControl(V4L2Control.V4L2_CID_AUTOEXPOSURE, 0));
+		assertEquals(0, video.setControl(
+				V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0));
+		assertEquals(0, video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0));
+		assertEquals(0, video.setControl(V4L2Control.V4L2_CID_HFLIP, 1));
+		assertEquals(0, video.setControl(V4L2Control.V4L2_CID_VFLIP, 1));
 
 		// set format
 		V4L2PixelFormat format = new V4L2PixelFormat();
@@ -113,10 +114,11 @@ public class CameraTest extends TestCase {
 		assertEquals(0, res);
 
 		i2c.selectCamera(NaoV3R.I2C_CAMERA_BOTTOM);
-		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
-		video.setControl(V4L2Control.V4L2_CID_AUTOEXPOSURE, 0);
-		video.setControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0);
-		video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0);
+		assertEquals(0, video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0));
+		assertEquals(0, video.setControl(V4L2Control.V4L2_CID_AUTOEXPOSURE, 0));
+		assertEquals(0, video.setControl(
+				V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0));
+		assertEquals(0, video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0));
 		res = video.setFormat(format);
 		assertEquals(0, res);
 		res = video.start();
@@ -308,5 +310,95 @@ public class CameraTest extends TestCase {
 	protected void tearDown() throws Exception {
 		video.dispose();
 		i2c.dispose();
+	}
+
+	public void testSwitchThread() throws Exception {
+		System.out.println("testSwitchThread");
+		int res;
+
+		res = i2c.init();
+		assertEquals(0, res);
+
+		res = i2c.getSelectedCamera();
+		System.out.println("Current Camera:" + res);
+
+		System.out.println("Select camera:" + NaoV3R.I2C_CAMERA_TOP);
+		res = i2c.selectCamera(NaoV3R.I2C_CAMERA_TOP);
+		assertEquals(0, res);
+
+		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTOEXPOSURE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0);
+		video.setControl(V4L2Control.V4L2_CID_HFLIP, 1);
+		video.setControl(V4L2Control.V4L2_CID_VFLIP, 1);
+
+		// set format
+		V4L2PixelFormat format = new V4L2PixelFormat();
+		format.setWidth(320);
+		format.setHeight(240);
+		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+				.getFourccCode());
+		res = video.setFormat(format);
+		assertEquals(0, res);
+
+		//
+		res = video.setFPS(30);
+		assertEquals(0, res);
+
+		res = video.init(3);
+		assertEquals("Result:" + res, 3, res);
+
+		res = video.start();
+		assertEquals(0, res);
+		// VideodevTest._testRetrieveImage(video, true);
+
+		res = video.stop();
+		assertEquals(0, res);
+
+		i2c.selectCamera(NaoV3R.I2C_CAMERA_BOTTOM);
+		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTOEXPOSURE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE, 0);
+		video.setControl(V4L2Control.V4L2_CID_AUTOGAIN, 0);
+		res = video.setFormat(format);
+		assertEquals(0, res);
+		res = video.start();
+
+		// VideodevTest._testRetrieveImage(video, true);
+
+		Thread camThread = new Thread() {
+			@Override
+			public void run() {
+				try {
+					_testSwitchCamera1(NaoV3R.I2C_CAMERA_TOP);
+					for (int i = 0; i < 10; i++)
+						VideodevTest._testRetrieveImage(video, false);
+					_testSwitchCamera1(NaoV3R.I2C_CAMERA_BOTTOM);
+
+					for (int i = 0; i < 10; i++)
+						VideodevTest._testRetrieveImage(video, false);
+					_testSwitchCamera2(NaoV3R.I2C_CAMERA_TOP);
+					for (int i = 0; i < 10; i++)
+						VideodevTest._testRetrieveImage(video, false);
+					_testSwitchCamera2(NaoV3R.I2C_CAMERA_BOTTOM);
+					for (int i = 0; i < 10; i++)
+						VideodevTest._testRetrieveImage(video, false);
+					_testSwitchCamera3(NaoV3R.I2C_CAMERA_TOP);
+					for (int i = 0; i < 10; i++)
+						VideodevTest._testRetrieveImage(video, false);
+					_testSwitchCamera3(NaoV3R.I2C_CAMERA_BOTTOM);
+					for (int i = 0; i < 10; i++)
+						VideodevTest._testRetrieveImage(video, false);
+				} catch (IOException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
+			}
+		};
+		camThread.start();
+		camThread.join();
+		res = video.stop();
+		assertEquals(0, res);
 	}
 }

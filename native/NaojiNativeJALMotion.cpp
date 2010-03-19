@@ -1085,8 +1085,12 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkConfig(JNIEnv *,
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
-	jmotion->getProxy()->setWalkConfig(pMaxStepLength, pMaxStepHeight,
-			pMaxStepSide, pMaxStepTurn, pHipHeight, pTorsoYOrientation);
+	try {
+		jmotion->getProxy()->setWalkConfig(pMaxStepLength, pMaxStepHeight,
+				pMaxStepSide, pMaxStepTurn, pHipHeight, pTorsoYOrientation);
+	} catch (AL::ALError err) {
+		cerr << err.toString();
+	}
 }
 
 JNIEXPORT void
@@ -1096,8 +1100,12 @@ JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1setWalkTrapezoidConfig(JNIEnv
 	JALMotion *jmotion = reinterpret_cast<JALMotion*> (objPtr);
 	assert(jmotion != NULL);
 
-	jmotion->getProxy()->setWalkTrapezoidConfig(pLHipRollBacklashCompensator,
-			pRHipRollBacklashCompensator);
+	try {
+		jmotion->getProxy()->setWalkTrapezoidConfig(pLHipRollBacklashCompensator,
+				pRHipRollBacklashCompensator);
+	} catch (AL::ALError err) {
+		cerr << err.toString();
+	}
 }
 
 JNIEXPORT void JNICALL Java_jp_ac_fit_asura_naoji_jal_JALMotion__1stop(

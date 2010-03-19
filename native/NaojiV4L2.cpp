@@ -91,6 +91,10 @@ JNICALL Java_jp_ac_fit_asura_naoji_v4l2_Videodev__1createVideodev(JNIEnv *env,
 	const char *chars = env->GetStringUTFChars(deviceName, NULL);
 	jint dev = open(chars, O_RDWR);
 	env->ReleaseStringUTFChars(deviceName, chars);
+
+	// if(dev >= 0){
+	// 	jint res = ioctl(dev, _IOW ('d', 102, __u32), NULL);
+	// }
 	return dev;
 }
 
