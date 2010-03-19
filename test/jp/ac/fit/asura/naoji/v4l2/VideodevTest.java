@@ -79,7 +79,7 @@ public class VideodevTest extends TestCase {
 
 		// init camera
 		System.out.println("init camera");
-		res = dev.setControl(V4L2Control.V4L2_CID_CAM_INIT, 1);
+		res = dev.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
 		assertEquals(0, res);
 
 		// set format
@@ -97,9 +97,10 @@ public class VideodevTest extends TestCase {
 		res = dev.setFPS(30);
 		assertEquals(0, res);
 
-		System.out.println("init buffers(2)");
-		res = dev.init(2);
-		assertTrue("Result:" + res, res > 0);
+		// NaoQi 1.3.17以降では3以上でないと使えない?
+		System.out.println("init buffers(3)");
+		res = dev.init(3);
+		assertEquals("Result:" + res, 3, res);
 
 		System.out.println("start");
 		res = dev.start();
@@ -122,6 +123,7 @@ public class VideodevTest extends TestCase {
 
 	public void testSizeFormat() throws Exception {
 		int res;
+		System.out.println("testSizeFormat");
 
 		// Test QVGA
 		V4L2PixelFormat format = new V4L2PixelFormat();
@@ -191,7 +193,7 @@ public class VideodevTest extends TestCase {
 		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_UYVY
 				.getFourccCode());
 		res = dev.setFormat(format);
-		assertEquals("This test will fail on NaoV3R.", 0, res);
+		assertEquals("This test will fail on NaoV3R.", -1, res);
 	}
 
 	public void testPixelFormatYUV422P() throws Exception {
@@ -204,11 +206,12 @@ public class VideodevTest extends TestCase {
 		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUV422P
 				.getFourccCode());
 		res = dev.setFormat(format);
-		assertEquals("This test will fail on NaoV3R.", 0, res);
+		assertEquals("This test will fail on NaoV3R.", -1, res);
 	}
 
 	public void testFPS() throws Exception {
 		int res;
+		System.out.println("testFPS");
 		res = dev.setFPS(10);
 		assertEquals(0, res);
 		res = dev.setFPS(15);
@@ -224,6 +227,7 @@ public class VideodevTest extends TestCase {
 	// }
 
 	public void testControls() {
+		System.out.println("testControls");
 		assertTrue(dev.isSupportedControl(V4L2Control.V4L2_CID_AUTOEXPOSURE));
 		assertTrue(dev
 				.isSupportedControl(V4L2Control.V4L2_CID_AUTO_WHITE_BALANCE));
@@ -269,9 +273,9 @@ public class VideodevTest extends TestCase {
 		System.out.println("  length:" + buffer.getLength());
 		System.out.println("  timestamp:" + buffer.getTimestamp());
 		System.out.println("  used time:"
-				+ (current - buffer.getTimestamp() / 1e3));
+				+ (current - buffer.getTimestamp() / 1000L));
 
-		assertEquals(current, buffer.getTimestamp() / 1e3, 1000);
+		assertEquals(current, buffer.getTimestamp() / 1000L, 1000L);
 
 		if (doSaveImage) {
 			OutputStream os = new FileOutputStream("image"

@@ -102,8 +102,8 @@ public class CameraTest extends TestCase {
 		res = video.setFPS(30);
 		assertEquals(0, res);
 
-		res = video.init(2);
-		assertTrue("Result:" + res, res > 0);
+		res = video.init(3);
+		assertEquals("Result:" + res, 3, res);
 
 		res = video.start();
 		assertEquals(0, res);
@@ -127,6 +127,7 @@ public class CameraTest extends TestCase {
 		for (int i = 0; i < 10; i++)
 			VideodevTest._testRetrieveImage(video, false);
 		_testSwitchCamera1(NaoV3R.I2C_CAMERA_BOTTOM);
+
 		for (int i = 0; i < 10; i++)
 			VideodevTest._testRetrieveImage(video, false);
 		_testSwitchCamera2(NaoV3R.I2C_CAMERA_TOP);
@@ -142,10 +143,15 @@ public class CameraTest extends TestCase {
 		for (int i = 0; i < 10; i++)
 			VideodevTest._testRetrieveImage(video, false);
 
-          _testSwitchCameraLoop1();
-          _testSwitchCameraLoop1();
-          _testSwitchCameraLoop2();
-          _testSwitchCameraLoop2();
+		System.out.println("_testSwitchCameraLoop1 1");
+		_testSwitchCameraLoop1();
+		System.out.println("_testSwitchCameraLoop1 2");
+		_testSwitchCameraLoop1();
+		System.out.println("_testSwitchCameraLoop2 1");
+		_testSwitchCameraLoop2();
+		System.out.println("_testSwitchCameraLoop2 2");
+		_testSwitchCameraLoop2();
+		System.out.println("testSwitch end");
 
 		res = video.stop();
 		assertEquals(0, res);
@@ -157,6 +163,7 @@ public class CameraTest extends TestCase {
 	 * それぞれのカメラでパラメータの設定(ホワイトバランスなど)が必要.
 	 */
 	private void _testSwitchCamera1(int camera) throws IOException {
+		System.out.println("_testSwitchCamera1");
 		long beforeswitch = System.nanoTime();
 		System.out.println("Switching camera...");
 
@@ -184,8 +191,8 @@ public class CameraTest extends TestCase {
 		res = video.setFPS(30);
 		assertEquals(0, res);
 
-		res = video.init(2);
-		assertTrue("Result:" + res, res > 0);
+		res = video.init(3);
+		assertEquals("Result:" + res, 3, res);
 
 		res = video.start();
 		assertEquals(0, res);
@@ -197,26 +204,29 @@ public class CameraTest extends TestCase {
 	}
 
 	private void _testSwitchCameraLoop1() throws IOException {
+		System.out.println("_testSwitchCameraLoop1");
 		System.out.println("Switching camera...");
 
 		long beginTime = System.nanoTime();
-                int camera = NaoV3R.I2C_CAMERA_TOP;
+		int camera = NaoV3R.I2C_CAMERA_TOP;
 		for (int i = 0; i < 100; i++) {
-		int res = video.stop();
-		video.dispose();
-		i2c.selectCamera(camera);
-		video = VideodevTest.createDevice();
-		video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
-		V4L2PixelFormat format = new V4L2PixelFormat();
-		format.setWidth(320);
-		format.setHeight(240);
-		format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
-				.getFourccCode());
-		res = video.setFormat(format);
-		res = video.setFPS(30);
-		res = video.init(2);
-		res = video.start();
-                  camera = camera == NaoV3R.I2C_CAMERA_TOP ? NaoV3R.I2C_CAMERA_BOTTOM : NaoV3R.I2C_CAMERA_TOP;
+			System.out.println("_testSwitchCameraLoop1 Loop " + i);
+			int res = video.stop();
+			video.dispose();
+			i2c.selectCamera(camera);
+			video = VideodevTest.createDevice();
+			video.setControl(V4L2Control.V4L2_CID_CAM_INIT, 0);
+			V4L2PixelFormat format = new V4L2PixelFormat();
+			format.setWidth(320);
+			format.setHeight(240);
+			format.setPixelFormat(V4L2PixelFormat.PixelFormat.V4L2_PIX_FMT_YUYV
+					.getFourccCode());
+			res = video.setFormat(format);
+			res = video.setFPS(30);
+			res = video.init(3);
+			res = video.start();
+			camera = camera == NaoV3R.I2C_CAMERA_TOP ? NaoV3R.I2C_CAMERA_BOTTOM
+					: NaoV3R.I2C_CAMERA_TOP;
 		}
 		long time2 = System.nanoTime();
 		System.out.println(" Camera switching time1:" + (time2 - beginTime)
@@ -229,6 +239,7 @@ public class CameraTest extends TestCase {
 	 * それぞれのカメラでパラメータの設定(ホワイトバランスなど)が必要.
 	 */
 	private void _testSwitchCamera2(int camera) throws IOException {
+		System.out.println("_testSwitchCamera2");
 		long beforeswitch = System.nanoTime();
 		System.out.println("Switching camera...");
 
@@ -247,18 +258,20 @@ public class CameraTest extends TestCase {
 	}
 
 	private void _testSwitchCameraLoop2() throws IOException {
+		System.out.println("_testSwitchCameraLoop2");
 		System.out.println("Switching camera...");
 
 		long beginTime = System.nanoTime();
-                int camera = NaoV3R.I2C_CAMERA_TOP;
+		int camera = NaoV3R.I2C_CAMERA_TOP;
 		for (int i = 0; i < 100; i++) {
-		int res = video.stop();
+			int res = video.stop();
 
-		System.out.println("Select camera:" + camera);
-		i2c.selectCamera(camera);
+			System.out.println("Select camera:" + camera);
+			i2c.selectCamera(camera);
 
-		res = video.start();
-                  camera = camera == NaoV3R.I2C_CAMERA_TOP ? NaoV3R.I2C_CAMERA_BOTTOM : NaoV3R.I2C_CAMERA_TOP;
+			res = video.start();
+			camera = camera == NaoV3R.I2C_CAMERA_TOP ? NaoV3R.I2C_CAMERA_BOTTOM
+					: NaoV3R.I2C_CAMERA_TOP;
 		}
 		long time2 = System.nanoTime();
 		System.out.println(" Camera switching time2:" + (time2 - beginTime)
@@ -273,6 +286,7 @@ public class CameraTest extends TestCase {
 	 * 切り替え直後の数フレームは切り替える前のカメラの画像がきたり、画像が乱れたりする.
 	 */
 	private void _testSwitchCamera3(int camera) throws IOException {
+		System.out.println("_testSwitchCamera3");
 		long beforeswitch = System.nanoTime();
 		System.out.println("Switching camera...");
 

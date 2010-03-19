@@ -124,6 +124,9 @@ int NaojiModule::initJVM(JNIEnv **env) {
 	 * Set JVM options.
 	 * We can use -Dxxx, -Xxxx, -verbose options.
 	 * see http://java.sun.com/javase/ja/6/docs/ja/technotes/guides/jni/spec/invocation.html#wp16334
+	 *
+	 * Note: We should use JAVA_TOOL_OPTIONS environment value.
+	 * see jvmti http://java.sun.com/javase/ja/6/docs/ja/technotes/guides/jvmti/index.html
 	 */
 	options[vm_args.nOptions++].optionString
 			= "-Djava.class.path=.:naoji.jar:modules/lib:modules/lib/naoji.jar"; /* user classes */

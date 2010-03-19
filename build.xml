@@ -139,6 +139,9 @@
 		<exec executable="rsync">
 			<arg value="--ignore-existing" />
 			<arg value="naoji.modules" />
+			<arg value="run_cameratest.sh" />
+			<arg value="run_i2ctest.sh" />
+			<arg value="run_v4l2test.sh" />
 			<arg value="root@${target.ip}:${target.libdir}" />
 		</exec>
 	</target>
